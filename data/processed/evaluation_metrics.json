@@ -1,0 +1,74 @@
+[
+  {
+    "role": "Backend Developer",
+    "experience_mode": "entry",
+    "test_transactions_count": 34,
+    "eclat_hr_at_3": 0.2941,
+    "baseline_hr_at_3": 0.2941,
+    "eclat_hr_at_5": 0.3235,
+    "baseline_hr_at_5": 0.3824,
+    "non_trivial_eclat_hr_at_5": 0.1364,
+    "non_trivial_baseline_hr_at_5": 0.0455,
+    "lift_over_baseline_pct": -15.4
+  },
+  {
+    "role": "Backend Developer",
+    "experience_mode": "all",
+    "test_transactions_count": 160,
+    "eclat_hr_at_3": 0.3125,
+    "baseline_hr_at_3": 0.375,
+    "eclat_hr_at_5": 0.3438,
+    "baseline_hr_at_5": 0.5062,
+    "non_trivial_eclat_hr_at_5": 0.2169,
+    "non_trivial_baseline_hr_at_5": 0.0964,
+    "lift_over_baseline_pct": -32.1
+  },
+  {
+    "role": "Frontend Developer",
+    "experience_mode": "entry",
+    "test_transactions_count": 19,
+    "eclat_hr_at_3": 0.4211,
+    "baseline_hr_at_3": 0.5263,
+    "eclat_hr_at_5": 0.4211,
+    "baseline_hr_at_5": 0.6842,
+    "non_trivial_eclat_hr_at_5": 0.4,
+    "non_trivial_baseline_hr_at_5": 0.0,
+    "lift_over_baseline_pct": -38.5
+  },
+  {
+    "role": "Frontend Developer",
+    "experience_mode": "all",
+    "test_transactions_count": 95,
+    "eclat_hr_at_3": 0.4316,
+    "baseline_hr_at_3": 0.4211,
+    "eclat_hr_at_5": 0.4842,
+    "baseline_hr_at_5": 0.5895,
+    "non_trivial_eclat_hr_at_5": 0.2143,
+    "non_trivial_baseline_hr_at_5": 0.1429,
+    "lift_over_baseline_pct": -17.9
+  },
+  {
+    "role": "Data Analyst",
+    "experience_mode": "entry",
+    "test_transactions_count": 13,
+    "eclat_hr_at_3": 0.0769,
+    "baseline_hr_at_3": 0.5385,
+    "eclat_hr_at_5": 0.0769,
+    "baseline_hr_at_5": 0.5385,
+    "non_trivial_eclat_hr_at_5": 0.0,
+    "non_trivial_baseline_hr_at_5": 0.0,
+    "lift_over_baseline_pct": -85.7
+  },
+  {
+    "role": "Data Analyst",
+    "experience_mode": "all",
+    "test_transactions_count": 54,
+    "eclat_hr_at_3": 0.4074,
+    "baseline_hr_at_3": 0.6481,
+    "eclat_hr_at_5": 0.4259,
+    "baseline_hr_at_5": 0.7593,
+    "non_trivial_eclat_hr_at_5": 0.3684,
+    "non_trivial_baseline_hr_at_5": 0.3158,
+    "lift_over_baseline_pct": -43.9
+  }
+]

@@ -1,0 +1,23 @@
+# Environment & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv/
+env/
+venv/
+
+# Large Datasets (GitHub 100MB limit)
+data/raw/postings.csv
+data/raw/*.zip
+data/raw/*.tar.gz
+
+# Processed intermediate binaries (if large)
+# data/processed/*.pkl
+
+# Frontend dependencies & builds
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+.DS_Store
+Thumbs.db
