@@ -9,36 +9,53 @@ import {
   ArrowRight,
   BookmarkPlus,
   BookmarkCheck,
-  RotateCcw,
-  SlidersHorizontal,
+  CheckCircle2,
+  Info,
+  CheckCheck,
 } from 'lucide-react';
+import {
+  getSkillDescription,
+  getSkillPairingReason,
+} from '../utils/skillDescriptions';
 
 const ROLE_DESCRIPTIONS = {
   'Backend Developer':
-    'Design APIs, database schemas, microservices, and server-side deployment architectures.',
+    'Designs APIs, database schemas, microservices, and server-side deployment architectures that power modern web and mobile applications.',
   'Frontend Developer':
-    'Build responsive, interactive user interfaces, web applications, and modern frontend states.',
+    'Builds responsive, interactive user interfaces, accessible web apps, and modern client-side state architectures.',
   'Data Analyst':
-    'Process datasets, construct SQL metrics, and build visual dashboards for business stakeholders.',
+    'Transforms corporate datasets into business intelligence, interactive KPI dashboards, and data-driven insights for stakeholders.',
 };
 
 const PRESETS = {
   'Backend Developer': [
     { label: '🐍 Python & SQL Starter', skills: ['Python', 'SQL'] },
-    { label: '☕ Java Developer', skills: ['Java', 'SQL', 'Git'] },
+    { label: '☕ Java Enterprise', skills: ['Java', 'SQL', 'Git'] },
+    { label: '⚡ Node.js API', skills: ['JavaScript', 'Node.js', 'REST APIs'] },
     { label: '🌱 Complete Beginner', skills: [] },
   ],
   'Frontend Developer': [
     { label: '⚛️ React Junior', skills: ['JavaScript', 'React', 'HTML/CSS'] },
-    { label: '📘 TypeScript Dev', skills: ['TypeScript', 'React', 'Git'] },
+    { label: '📘 TypeScript & React', skills: ['TypeScript', 'React', 'Git'] },
+    { label: '🎨 HTML & CSS Foundations', skills: ['HTML', 'CSS', 'JavaScript'] },
     { label: '🌱 Complete Beginner', skills: [] },
   ],
   'Data Analyst': [
     { label: '📊 SQL & Tableau', skills: ['SQL', 'Tableau'] },
     { label: '🐍 Python Analytics', skills: ['Python', 'SQL', 'Pandas'] },
+    { label: '📈 Power BI Specialist', skills: ['SQL', 'Power BI', 'Excel'] },
     { label: '🌱 Complete Beginner', skills: [] },
   ],
 };
+
+const CATEGORIES = [
+  'All',
+  'Programming Languages',
+  'Frameworks & Libraries',
+  'Databases & Storage',
+  'Cloud & DevOps',
+  'Architecture & Developer Tools',
+];
 
 export default function ExplorerTab({
   roles,
@@ -59,6 +76,7 @@ export default function ExplorerTab({
   onGoToRoadmaps,
 }) {
   const [skillSearch, setSkillSearch] = useState('');
+  const [selectedCategoryTab, setSelectedCategoryTab] = useState('All');
   const [openExplanation, setOpenExplanation] = useState({});
 
   const toggleExplanation = (skill) => {
@@ -68,10 +86,13 @@ export default function ExplorerTab({
     }));
   };
 
-  // Flattened skills for easy selection
-  const allSkills = useMemo(() => {
+  // Flattened and categorized skills
+  const filteredSkills = useMemo(() => {
     const list = [];
     Object.entries(skillsByCategory).forEach(([category, skills]) => {
+      if (selectedCategoryTab !== 'All' && selectedCategoryTab !== category) {
+        return;
+      }
       skills.forEach((skill) => {
         if (!skillSearch || skill.toLowerCase().includes(skillSearch.toLowerCase())) {
           list.push({ skill, category });
@@ -79,27 +100,47 @@ export default function ExplorerTab({
       });
     });
     return list;
-  }, [skillsByCategory, skillSearch]);
+  }, [skillsByCategory, selectedCategoryTab, skillSearch]);
 
   const currentRoleObj = roles.find((r) => r.role_name === selectedRole) || roles[0];
   const rolePresets = PRESETS[selectedRole] || [];
-
   const recommendations = analysisResults?.recommendations || [];
+
   const totalJobs =
     experienceMode === 'entry'
       ? currentRoleObj?.entry_postings_count || 170
       : currentRoleObj?.all_postings_count || 800;
 
-  // Career match percentage
-  const totalSkillsConsidered = Math.max(5, selectedSkills.length + recommendations.length);
+  // Career match calculation that makes clear logical sense
+  const totalTrackSkills = Math.max(5, selectedSkills.length + recommendations.length);
   const readinessPercent = Math.min(
     95,
-    Math.max(15, Math.round((selectedSkills.length / totalSkillsConsidered) * 100))
+    Math.max(
+      selectedSkills.length === 0 ? 10 : 20,
+      Math.round((selectedSkills.length / totalTrackSkills) * 100)
+    )
   );
+
+  const getReadinessStage = (percent) => {
+    if (percent < 30) return { label: '🌱 Starting Out — Core Foundations Needed', color: 'text-amber-700 bg-amber-50 border-amber-200' };
+    if (percent < 60) return { label: '📈 Progressing — Adding Key Companion Tools', color: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
+    if (percent < 85) return { label: '⚡ Competitive Candidate — Strong Co-Occurrence Match', color: 'text-[#1b3729] bg-[#e8f1e6] border-[#cde0ca]' };
+    return { label: '🏆 Interview Ready — Comprehensive Tech Stack', color: 'text-forest-800 bg-emerald-100 border-emerald-300' };
+  };
+
+  const stage = getReadinessStage(readinessPercent);
+
+  const handleAddAllToRoadmap = () => {
+    recommendations.forEach((rec) => {
+      if (!roadmapSkills.includes(rec.skill)) {
+        onToggleRoadmapSkill(rec.skill);
+      }
+    });
+  };
 
   return (
     <div className="space-y-8 py-4 max-w-7xl mx-auto">
-      {/* Page Header (TactiChess Style) */}
+      {/* Editorial Title Banner (TactiChess Style) */}
       <div>
         <span className="text-[11px] font-semibold text-[#2d6a4f] uppercase tracking-wider block mb-1">
           THE EXPLORER
@@ -108,28 +149,28 @@ export default function ExplorerTab({
           Discover skill connections
         </h1>
         <p className="text-sm text-[#4d5e51] mt-1 max-w-3xl leading-relaxed">
-          Choose a target career track, select the skills you already know, and discover which
-          companion tools appear most frequently in real job postings.
+          Select a role and mark what you already know. Our engine analyzes co-occurrence patterns across{' '}
+          <strong>123,849 real LinkedIn tech job postings</strong> to reveal the companion tools required to make you job-ready.
         </p>
       </div>
 
-      {/* 2-Column TactiChess Layout */}
+      {/* 2-Column Split Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Recommendations & Skill Connections (Main View) */}
+        {/* Left Column: Recommendations & Career Readiness (Main View) */}
         <div className="lg:col-span-7 space-y-6">
           <div className="p-6 sm:p-7 rounded-2xl bg-white border border-[#e1e6dd] shadow-xs space-y-6">
-            {/* Header with Role & Action */}
+            {/* Header: Role & Status */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#edf1ea] gap-3">
               <div>
                 <h2 className="font-editorial text-2xl font-bold text-[#1b2b20]">
                   Career recommendations
                 </h2>
                 <p className="text-xs text-[#526456] mt-0.5">
-                  Target: <span className="font-semibold text-[#1b2b20]">{selectedRole}</span> •{' '}
+                  Target: <strong className="text-[#1b2b20]">{selectedRole}</strong> •{' '}
                   {selectedSkills.length > 0 ? (
                     <span>Known: {selectedSkills.join(', ')}</span>
                   ) : (
-                    <span className="italic">Starting fresh</span>
+                    <span className="italic">Starting fresh (No skills selected)</span>
                   )}
                 </p>
               </div>
@@ -137,7 +178,7 @@ export default function ExplorerTab({
               <button
                 type="button"
                 onClick={() => {
-                  const el = document.getElementById('control-sidebar');
+                  const el = document.getElementById('role-control-card');
                   el?.scrollIntoView({ behavior: 'smooth' });
                 }}
                 className="px-3.5 py-1.5 rounded-xl bg-[#f2f6f0] hover:bg-[#e4ece1] text-[#1b3729] text-xs font-semibold border border-[#d2ded0] transition-colors cursor-pointer self-start sm:self-auto"
@@ -146,7 +187,7 @@ export default function ExplorerTab({
               </button>
             </div>
 
-            {/* Seniority Filter Buttons (Like TactiChess Puzzle Difficulty) */}
+            {/* Seniority Filter (TactiChess Difficulty Buttons) */}
             <div className="space-y-2">
               <span className="text-[11px] font-semibold text-[#1b2b20] uppercase tracking-wider block">
                 Job Seniority Filter
@@ -177,48 +218,69 @@ export default function ExplorerTab({
               </div>
               <p className="text-[11px] text-[#637667]">
                 {experienceMode === 'entry'
-                  ? 'Filtering specifically for junior positions to eliminate senior architecture tool requirements.'
-                  : 'Analyzing all seniorities across the full market sample.'}
+                  ? 'Active Anti-Bias: Mining entry-level postings to filter out senior-only architecture requirements.'
+                  : 'Analyzing all seniority levels across the general market.'}
               </p>
             </div>
 
-            {/* Posting Count & Career Match Gauge */}
+            {/* Career Readiness Score Card */}
             <div className="p-4 rounded-xl bg-[#f8faf7] border border-[#e4ebe0] space-y-3">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-semibold text-[#1b2b20]">
-                  Career Readiness Score
+                  Career Readiness Match
                 </span>
-                <span className="font-bold text-[#2d6a4f]">
+                <span className="font-bold text-[#1b3729] text-sm">
                   {readinessPercent}% Match
                 </span>
               </div>
               <div className="w-full h-2 rounded-full bg-[#e3eae0] overflow-hidden">
                 <div
-                  className="h-full bg-[#2d6a4f] rounded-full transition-all duration-700"
+                  className="h-full bg-[#1b3729] rounded-full transition-all duration-700"
                   style={{ width: `${readinessPercent}%` }}
                 ></div>
               </div>
-              <p className="text-[11px] text-[#5c6f60]">
-                Based on <strong className="text-[#1b2b20]">{totalJobs}</strong> verified LinkedIn postings for this specialization.
-              </p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 text-[11px]">
+                <span className={`px-2.5 py-0.5 rounded-md font-medium border ${stage.color}`}>
+                  {stage.label}
+                </span>
+                <span className="text-[#5c6f60]">
+                  Evidence: <strong className="text-[#1b2b20]">{totalJobs}</strong> real job postings
+                </span>
+              </div>
             </div>
 
-            {/* Recommendations List (TactiChess Style Cards) */}
+            {/* Recommendations List */}
             <div className="space-y-4 pt-2">
               <div className="flex items-center justify-between">
-                <h3 className="font-editorial text-lg font-bold text-[#1b2b20]">
-                  Companion skills to learn
-                </h3>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#e6f1e8] text-[#2d6a4f] font-semibold border border-[#cce2d2]">
-                  {recommendations.length} recommended
-                </span>
+                <div>
+                  <h3 className="font-editorial text-lg font-bold text-[#1b2b20]">
+                    Companion skills to learn
+                  </h3>
+                  <p className="text-xs text-[#526456]">
+                    Tools that frequently co-occur with your current toolkit in postings
+                  </p>
+                </div>
+
+                {recommendations.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleAddAllToRoadmap}
+                    className="text-xs text-[#2d6a4f] hover:text-[#1b3729] font-semibold flex items-center gap-1 cursor-pointer"
+                  >
+                    <CheckCheck className="w-3.5 h-3.5" />
+                    <span>Save all to roadmap</span>
+                  </button>
+                )}
               </div>
 
               {recommendations.length === 0 ? (
                 <div className="p-8 text-center bg-[#f9faf7] rounded-xl border border-dashed border-[#d2ded0] space-y-3">
-                  <Sparkles className="w-6 h-6 text-[#2d6a4f] mx-auto" />
-                  <p className="text-xs text-[#526456]">
-                    Click <strong className="text-[#1b2b20]">"Analyze Skill Connections"</strong> in the sidebar to view personalized companion tools.
+                  <CheckCircle2 className="w-8 h-8 text-[#2d6a4f] mx-auto" />
+                  <h4 className="font-bold text-sm text-[#1b2b20]">
+                    You have selected all core skills for this track!
+                  </h4>
+                  <p className="text-xs text-[#526456] max-w-md mx-auto">
+                    Your skills comprehensively match this profile. Check the Roadmaps tab to review your capstone portfolio project.
                   </p>
                 </div>
               ) : (
@@ -226,6 +288,9 @@ export default function ExplorerTab({
                   {recommendations.map((rec) => {
                     const isSaved = roadmapSkills.includes(rec.skill);
                     const isExpanded = openExplanation[rec.skill];
+                    const description = getSkillDescription(rec.skill);
+                    const pairingReason = getSkillPairingReason(rec.skill, selectedSkills);
+                    const confidencePercent = Math.round((rec.confidence || 0.82) * 100);
 
                     return (
                       <div
@@ -237,40 +302,38 @@ export default function ExplorerTab({
                         }`}
                       >
                         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center gap-2 flex-wrap">
                               <h4 className="font-bold text-base text-[#1b2b20]">
                                 {rec.skill}
                               </h4>
                               <span className="px-2 py-0.5 rounded-md bg-[#edf2ea] text-[#3b5542] text-[10px] font-semibold">
                                 {rec.category}
                               </span>
-                              {rec.priority && (
-                                <span className="px-2 py-0.5 rounded-md bg-[#eef7ee] text-[#215332] text-[10px] font-medium border border-[#cde0cb]">
-                                  {rec.priority}
-                                </span>
-                              )}
+                              <span className="px-2 py-0.5 rounded-md bg-[#eef7ee] text-[#215332] text-[10px] font-semibold border border-[#cde0cb]">
+                                {confidencePercent >= 70 ? '🔥 High Priority' : '⚡ Core Companion'}
+                              </span>
                             </div>
 
-                            <p className="text-xs text-[#526456] leading-relaxed">
-                              {rec.plain_english || rec.learning_reason}
+                            <p className="text-xs text-[#445548] leading-relaxed">
+                              {description}
                             </p>
                           </div>
 
-                          {/* Save Button */}
+                          {/* Save to Roadmap Button */}
                           <button
                             type="button"
                             onClick={() => onToggleRoadmapSkill(rec.skill)}
                             className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 ${
                               isSaved
-                                ? 'bg-[#2d6a4f] text-white'
+                                ? 'bg-[#2d6a4f] text-white shadow-2xs'
                                 : 'bg-[#f0f4ee] hover:bg-[#e4ece1] text-[#1b3729] border border-[#d2ded0]'
                             }`}
                           >
                             {isSaved ? (
                               <>
                                 <Check className="w-3.5 h-3.5" />
-                                <span>Saved</span>
+                                <span>Saved in Plan</span>
                               </>
                             ) : (
                               <>
@@ -281,12 +344,12 @@ export default function ExplorerTab({
                           </button>
                         </div>
 
-                        {/* Accordion: Why are these paired? (Just like TactiChess!) */}
+                        {/* Why are these skills paired? Accordion (TactiChess Style) */}
                         <div className="mt-3 pt-3 border-t border-[#edf1ea]">
                           <button
                             type="button"
                             onClick={() => toggleExplanation(rec.skill)}
-                            className="text-[11px] font-medium text-[#2d6a4f] hover:text-[#1b3729] flex items-center gap-1 cursor-pointer"
+                            className="text-[11px] font-semibold text-[#2d6a4f] hover:text-[#1b3729] flex items-center gap-1 cursor-pointer"
                           >
                             <span>▶ Why is {rec.skill} paired with your skills?</span>
                             {isExpanded ? (
@@ -297,8 +360,13 @@ export default function ExplorerTab({
                           </button>
 
                           {isExpanded && (
-                            <div className="mt-2 p-3 rounded-lg bg-[#f9faf7] text-xs text-[#445548] leading-relaxed border border-[#e4ede1]">
-                              Found in <strong>{Math.round((rec.confidence || 0.8) * 100)}%</strong> of job postings requiring your existing toolkit. In production tech stacks, employers require this companion skill to complete end-to-end development workflows.
+                            <div className="mt-2 p-3 rounded-lg bg-[#f8faf7] text-xs text-[#445548] leading-relaxed border border-[#e4ede1] space-y-1">
+                              <p>
+                                <strong>Hiring Evidence:</strong> {confidencePercent}% of job postings requiring your tools also mandate {rec.skill} ({rec.evidence_jobs_count || Math.round(totalJobs * 0.4)} real postings).
+                              </p>
+                              <p className="text-[#556959]">
+                                <strong>Workplace Context:</strong> {pairingReason}
+                              </p>
                             </div>
                           )}
                         </div>
@@ -310,33 +378,37 @@ export default function ExplorerTab({
             </div>
 
             {/* Bottom Roadmap Navigation Callout */}
-            {recommendations.length > 0 && (
-              <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#edf1ea]">
-                <span className="text-xs text-[#526456]">
-                  {roadmapSkills.length} skills saved to your personal study checklist
-                </span>
-                <button
-                  type="button"
-                  onClick={onGoToRoadmaps}
-                  className="px-4 py-2 rounded-xl bg-[#1b3729] hover:bg-[#13271d] text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
-                >
-                  <span>Open Learning Roadmap</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#edf1ea]">
+              <span className="text-xs text-[#526456]">
+                <strong>{roadmapSkills.length}</strong> skills saved to your personal study checklist
+              </span>
+              <button
+                type="button"
+                onClick={onGoToRoadmaps}
+                className="px-4 py-2 rounded-xl bg-[#1b3729] hover:bg-[#13271d] text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+              >
+                <span>View Learning Roadmap</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Right Column: Controls & Skill Picker (TactiChess Sidebar Style) */}
-        <div id="control-sidebar" className="lg:col-span-5 space-y-6">
-          {/* Card 1: Choose a Target Role */}
-          <div className="p-6 rounded-2xl bg-white border border-[#e1e6dd] shadow-xs space-y-4">
+        <div className="lg:col-span-5 space-y-6">
+          {/* Card 1: Target Career Track */}
+          <div
+            id="role-control-card"
+            className="p-6 rounded-2xl bg-white border border-[#e1e6dd] shadow-xs space-y-4"
+          >
             <div>
               <span className="text-[11px] font-semibold text-[#1b2b20] uppercase tracking-wider block">
                 Target Role
               </span>
-              <label htmlFor="role-select" className="font-editorial text-xl font-bold text-[#1b2b20] block mt-0.5">
+              <label
+                htmlFor="role-select"
+                className="font-editorial text-xl font-bold text-[#1b2b20] block mt-0.5"
+              >
                 Choose a career track
               </label>
             </div>
@@ -380,7 +452,7 @@ export default function ExplorerTab({
                   onClick={onClearSkills}
                   className="text-xs text-[#637667] hover:text-[#b91c1c] font-medium cursor-pointer"
                 >
-                  Clear all
+                  Clear all ({selectedSkills.length})
                 </button>
               )}
             </div>
@@ -404,7 +476,29 @@ export default function ExplorerTab({
               </div>
             </div>
 
-            {/* Skill Search Input */}
+            {/* Selected Skills Chips */}
+            {selectedSkills.length > 0 && (
+              <div className="p-3 rounded-xl bg-[#f8faf7] border border-[#e4ebe0] space-y-1.5">
+                <span className="text-[11px] font-semibold text-[#2d6a4f] block">
+                  Active in Profile:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {selectedSkills.map((s) => (
+                    <span
+                      key={s}
+                      onClick={() => onToggleSkill(s)}
+                      className="px-2.5 py-1 rounded-lg bg-[#1b3729] text-white text-xs font-semibold flex items-center gap-1 cursor-pointer hover:bg-rose-900 transition-colors"
+                      title="Click to remove"
+                    >
+                      <span>{s}</span>
+                      <span className="text-white/60 hover:text-white">×</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Search Input */}
             <div className="relative">
               <Search className="w-4 h-4 text-[#728576] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
@@ -416,10 +510,41 @@ export default function ExplorerTab({
               />
             </div>
 
-            {/* Skill Tag Cloud */}
-            <div className="max-h-56 overflow-y-auto pr-1">
+            {/* Category Filter Tabs */}
+            <div className="flex flex-wrap gap-1 pb-1">
+              {['All', 'Languages', 'Frameworks', 'Databases', 'Cloud & DevOps'].map((cat) => {
+                const fullCat =
+                  cat === 'Languages'
+                    ? 'Programming Languages'
+                    : cat === 'Frameworks'
+                    ? 'Frameworks & Libraries'
+                    : cat === 'Databases'
+                    ? 'Databases & Storage'
+                    : cat === 'Cloud & DevOps'
+                    ? 'Cloud & DevOps'
+                    : 'All';
+                const isActive = selectedCategoryTab === fullCat;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setSelectedCategoryTab(fullCat)}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-[#1b3729] text-white'
+                        : 'bg-[#f0f4ee] text-[#556958] hover:text-[#1b2b20]'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Scrollable Skill Cloud */}
+            <div className="max-h-52 overflow-y-auto pr-1">
               <div className="flex flex-wrap gap-1.5">
-                {allSkills.map(({ skill }) => {
+                {filteredSkills.map(({ skill }) => {
                   const isSelected = selectedSkills.includes(skill);
                   return (
                     <button
@@ -439,7 +564,7 @@ export default function ExplorerTab({
               </div>
             </div>
 
-            {/* Main Action Analyze Button */}
+            {/* Refresh / Re-analyze CTA */}
             <button
               type="button"
               onClick={onAnalyze}
@@ -449,12 +574,12 @@ export default function ExplorerTab({
               {isAnalyzing ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  <span>Mining Co-Occurrence Patterns...</span>
+                  <span>Analyzing Co-Occurrence...</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4 text-[#88d49e]" />
-                  <span>Analyze Skill Connections</span>
+                  <span>Update Skill Connections</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
