@@ -1,16 +1,25 @@
 import React from 'react';
-import { Server, Layout, BarChart3, Info, Users, GraduationCap } from 'lucide-react';
+import { Server, Layout, BarChart3, GraduationCap, Briefcase, Check, ArrowRight } from 'lucide-react';
 
-const ROLE_ICONS = {
-  'Backend Developer': Server,
-  'Frontend Developer': Layout,
-  'Data Analyst': BarChart3,
-};
-
-const ROLE_DESCRIPTIONS = {
-  'Backend Developer': 'API design, database schemas, microservices, distributed caching, and container orchestration.',
-  'Frontend Developer': 'User interfaces, single-page apps, responsive design, state management, and web performance.',
-  'Data Analyst': 'Data visualization, SQL queries, business metrics, descriptive analytics, and reporting dashboards.',
+const ROLE_METADATA = {
+  'Backend Developer': {
+    icon: Server,
+    color: 'from-blue-500/20 to-indigo-500/20 border-blue-500/40 text-blue-400',
+    description: 'Build robust APIs, databases, servers, and cloud microservices that power web and mobile applications.',
+    popularSkills: ['Python', 'SQL', 'Docker', 'REST APIs', 'Java'],
+  },
+  'Frontend Developer': {
+    icon: Layout,
+    color: 'from-purple-500/20 to-pink-500/20 border-purple-500/40 text-purple-400',
+    description: 'Design and build interactive, responsive user interfaces and engaging modern web experiences.',
+    popularSkills: ['JavaScript', 'React', 'HTML/CSS', 'TypeScript', 'Git'],
+  },
+  'Data Analyst': {
+    icon: BarChart3,
+    color: 'from-emerald-500/20 to-teal-500/20 border-emerald-500/40 text-emerald-400',
+    description: 'Turn raw data into business intelligence, interactive dashboards, and actionable visual insights.',
+    popularSkills: ['SQL', 'Python', 'Tableau', 'Power BI', 'Excel'],
+  },
 };
 
 export default function RoleSelector({
@@ -22,68 +31,61 @@ export default function RoleSelector({
 }) {
   return (
     <div className="space-y-6">
-      {/* Step Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Header & Experience Switcher */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-violet-400 text-xs font-mono uppercase tracking-wider mb-1">
-            <span className="w-5 h-5 rounded-full bg-violet-500/20 text-violet-300 flex items-center justify-center font-bold">1</span>
-            Target IT Specialization
-          </div>
-          <h2 className="text-xl sm:text-2xl font-heading font-bold text-white">Choose Your Desired Career Track</h2>
+          <span className="text-violet-400 text-xs font-semibold uppercase tracking-wider block mb-1">
+            Step 1 of 3
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-heading font-bold text-white tracking-tight">
+            Choose Your Target Role
+          </h2>
+          <p className="text-sm text-slate-400 mt-1">
+            Select the career path you want to pursue. We'll analyze real job postings to find your skill gaps.
+          </p>
         </div>
 
-        {/* Seniority Filter Switcher (Resolves Loophole #1) */}
-        <div className="bg-slate-900/90 border border-slate-800 p-1.5 rounded-xl flex items-center gap-1">
+        {/* Experience Level Switcher */}
+        <div className="bg-slate-900/90 border border-slate-800 p-1.5 rounded-2xl flex items-center gap-1.5 self-start lg:self-auto shadow-inner">
           <button
             type="button"
             onClick={() => onChangeExperienceMode('entry')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
               experienceMode === 'entry'
-                ? 'bg-violet-600 text-white shadow-md shadow-violet-600/30'
+                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-600/30 font-semibold'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
             }`}
           >
-            <GraduationCap className="w-3.5 h-3.5" />
+            <GraduationCap className="w-4 h-4 text-emerald-400" />
             <span>Entry-Level & Junior</span>
           </button>
 
           <button
             type="button"
             onClick={() => onChangeExperienceMode('all')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
               experienceMode === 'all'
-                ? 'bg-violet-600 text-white shadow-md shadow-violet-600/30'
+                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-600/30 font-semibold'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
             }`}
           >
-            <Users className="w-3.5 h-3.5" />
-            <span>All Seniority Levels</span>
+            <Briefcase className="w-4 h-4 text-cyan-400" />
+            <span>All Industry Levels</span>
           </button>
         </div>
       </div>
 
-      {/* Seniority Loophole Callout */}
-      <div className="flex items-start gap-3 p-3.5 rounded-xl bg-indigo-950/40 border border-indigo-800/40 text-xs text-indigo-200">
-        <Info className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
-        <div>
-          <span className="font-semibold text-white">Anti-Bias Filter Active: </span>
-          {experienceMode === 'entry' ? (
-            <span>
-              Currently mining <strong>Junior & Entry-Level postings only</strong>. This prevents senior architecture tools (like multi-region Kubernetes or Terraform) from skewing fresh-graduate advice.
-            </span>
-          ) : (
-            <span>
-              Currently mining across <strong>all seniority levels</strong>. This gives you a broad view of general industry demand across mid and senior tiers.
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Roles Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Role Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {roles.map((role) => {
           const isSelected = selectedRole === role.role_name;
-          const Icon = ROLE_ICONS[role.role_name] || Server;
+          const meta = ROLE_METADATA[role.role_name] || {
+            icon: Server,
+            color: 'from-violet-500/20 to-indigo-500/20 border-violet-500/40 text-violet-400',
+            description: 'Technical job role requirements.',
+            popularSkills: ['Python', 'SQL', 'Git'],
+          };
+          const Icon = meta.icon;
           const postingCount =
             experienceMode === 'entry'
               ? role.entry_postings_count
@@ -93,40 +95,47 @@ export default function RoleSelector({
             <div
               key={role.role_name}
               onClick={() => onSelectRole(role.role_name)}
-              className={`p-5 rounded-2xl cursor-pointer border transition-all text-left flex flex-col justify-between ${
+              className={`p-6 rounded-2xl cursor-pointer border transition-all text-left flex flex-col justify-between relative group ${
                 isSelected
-                  ? 'bg-gradient-to-b from-violet-900/40 to-slate-900 border-violet-500 shadow-xl shadow-violet-950/40 ring-1 ring-violet-500'
-                  : 'bg-slate-900/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900'
+                  ? 'bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950/40 border-violet-500 shadow-xl shadow-violet-950/40 ring-2 ring-violet-500/60'
+                  : 'bg-slate-900/70 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900'
               }`}
             >
+              {/* Selected Indicator Pill */}
+              {isSelected && (
+                <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-violet-600 text-[11px] font-semibold text-white flex items-center gap-1 shadow-md">
+                  <Check className="w-3 h-3 stroke-[3]" /> Selected
+                </div>
+              )}
+
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${
-                    isSelected ? 'bg-violet-600 text-white' : 'bg-slate-800 text-slate-400'
-                  }`}>
-                    <Icon className="w-5 h-5" />
+                {/* Icon & Posting Count */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${meta.color} border`}>
+                    <Icon className="w-6 h-6" />
                   </div>
-                  <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-slate-800/90 text-slate-300 border border-slate-700/60">
-                    {postingCount.toLocaleString()} {experienceMode === 'entry' ? 'entry jobs' : 'jobs'}
+                  <span className="text-xs font-mono px-3 py-1 rounded-full bg-slate-800/90 text-slate-300 border border-slate-700/60">
+                    <strong>{postingCount.toLocaleString()}</strong> postings
                   </span>
                 </div>
 
-                <h3 className="font-heading font-bold text-lg text-white mb-1.5">{role.role_name}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                  {ROLE_DESCRIPTIONS[role.role_name] || 'Technical skill co-occurrence and requirements.'}
+                {/* Title & Description */}
+                <h3 className="font-heading font-bold text-xl text-white mb-2">{role.role_name}</h3>
+                <p className="text-xs text-slate-300 leading-relaxed mb-5">
+                  {meta.description}
                 </p>
               </div>
 
-              {/* Core Skill Tags Preview */}
-              <div>
-                <span className="text-[10px] uppercase font-mono text-slate-500 block mb-1.5">Top Baseline Skills:</span>
-                <div className="flex flex-wrap gap-1">
-                  {(role.top_1_itemsets || []).slice(0, 4).map((item) => (
+              {/* Common Skills Preview */}
+              <div className="pt-4 border-t border-slate-800/80">
+                <span className="text-[11px] text-slate-400 block mb-2 font-medium">Frequently required skills:</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {meta.popularSkills.map((skill) => (
                     <span
-                      key={item.skill}
-                      className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800/80 text-slate-300 border border-slate-700/40"
+                      key={skill}
+                      className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/50"
                     >
-                      {item.skill}
+                      {skill}
                     </span>
                   ))}
                 </div>
