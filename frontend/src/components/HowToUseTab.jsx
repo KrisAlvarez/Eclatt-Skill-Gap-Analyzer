@@ -1,128 +1,90 @@
 import React from 'react';
-import {
-  Compass,
-  CheckCircle2,
-  Sparkles,
-  ArrowRight,
-  Target,
-  FileCheck,
-  Briefcase,
-  HelpCircle,
-} from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export default function HowToUseTab({ onGoToExplorer }) {
   const steps = [
     {
-      num: '01',
-      title: 'Choose Your Career Specialization',
-      desc: 'Select Backend Developer, Frontend Developer, or Data Analyst depending on your career target. Toggle the Junior filter to ensure recommendations fit entry-level qualifications.',
+      num: '1',
+      title: 'Pick a career track',
+      desc: 'Choose Backend Developer, Frontend Developer, or Data Analyst in the Explorer dropdown.',
     },
     {
-      num: '02',
-      title: 'Pick Skills You Already Know',
-      desc: 'Click on programming languages, frameworks, or databases you have built projects with, or choose a 1-click starter preset (e.g. Python & SQL Starter).',
+      num: '2',
+      title: 'Select what you know',
+      desc: 'Click on the skills you have already studied or used (e.g. Python, SQL, or React).',
     },
     {
-      num: '03',
-      title: 'Discover Missing Companion Tools',
-      desc: 'Instead of just showing the most popular tools, SkillGap analyzes co-occurrence patterns in 123K real job descriptions to identify the exact companion skills your stack is missing.',
+      num: '3',
+      title: 'See what goes with them',
+      desc: 'SkillGap scans real job postings to show you what companion skills employers usually look for alongside your toolkit.',
     },
     {
-      num: '04',
-      title: 'Track Your Learning Checklist',
-      desc: 'Save missing skills directly to your Learning Roadmap and follow the sequential phases to build a portfolio project that impresses hiring managers.',
+      num: '4',
+      title: 'Save to your roadmap',
+      desc: 'Add recommendations to your study roadmap and check them off as you practice.',
     },
   ];
 
   const faqs = [
     {
-      q: 'How does SkillGap differ from generic "Top 10 Tech Skills" articles?',
-      a: 'Generic lists recommend the exact same popular tools (like Python and Git) to everyone. SkillGap evaluates conditional pairs: if you already know Python and SQL, it identifies that 93% of backend employers also demand Docker and REST APIs. If you know Java, it pivots to Spring Boot.',
+      q: 'How does this work?',
+      a: 'We parsed 123,000 real LinkedIn job postings to find co-occurrence patterns. If a job asks for Python and SQL, the data shows whether it also asks for Docker or REST APIs.',
     },
     {
-      q: 'Will I be overwhelmed with senior architecture tools like Kubernetes or Terraform?',
-      a: 'No. LinkedIn is heavily skewed toward senior roles (89% of postings). SkillGap includes an Anti-Bias filter that isolates entry-level and junior job postings so fresh graduates and students get actionable, realistic advice.',
-    },
-    {
-      q: 'Is my data saved?',
-      a: 'Your chosen skills and roadmap items are stored in your active browser session so you can modify and print your plan anytime without creating an account.',
+      q: 'What is the entry-level filter?',
+      a: 'Most tech postings online are for senior engineers. The entry-level filter removes senior-only tools so the recommendations are realistic for students and junior candidates.',
     },
   ];
 
   return (
-    <div className="space-y-12 py-4 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="pb-6 border-b border-[#e1e6dd]">
-        <span className="text-[11px] font-semibold text-[#2d6a4f] uppercase tracking-wider block mb-1">
-          GUIDE & TUTORIAL
+    <div className="space-y-8 py-4 max-w-3xl mx-auto">
+      <div className="pb-4 border-b border-[#e1e6dd]">
+        <span className="text-[11px] font-semibold text-[#2d6a4f] uppercase tracking-wider block mb-0.5">
+          HOW TO USE
         </span>
-        <h1 className="font-editorial text-3xl sm:text-4xl font-bold text-[#1b2b20] tracking-tight">
+        <h1 className="font-editorial text-2xl sm:text-3xl font-bold text-[#1b2b20]">
           How to use SkillGap
         </h1>
-        <p className="text-sm text-[#4d5e51] mt-1 max-w-xl">
-          Follow these 4 simple steps to analyze your skill gaps and prepare for technical interviews.
+        <p className="text-xs text-[#526456] mt-0.5">
+          Simple steps to discover your next learning goal.
         </p>
       </div>
 
-      {/* 4 Steps Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {steps.map((s) => (
-          <div
-            key={s.num}
-            className="p-6 rounded-2xl bg-white border border-[#e1e6dd] shadow-xs space-y-3 relative"
-          >
-            <span className="font-editorial text-3xl font-bold text-[#2d6a4f]/25 block">
+          <div key={s.num} className="p-5 rounded-2xl bg-white border border-[#e1e6dd] space-y-2">
+            <span className="w-7 h-7 rounded-full bg-[#f0f4ee] text-[#1b3729] flex items-center justify-center text-xs font-bold">
               {s.num}
             </span>
-            <h3 className="font-editorial text-lg font-bold text-[#1b2b20]">
-              {s.title}
-            </h3>
+            <h3 className="font-bold text-sm text-[#1b2b20]">{s.title}</h3>
             <p className="text-xs text-[#526456] leading-relaxed">{s.desc}</p>
           </div>
         ))}
       </div>
 
-      {/* CTA Box */}
-      <div className="p-8 rounded-2xl bg-[#eef5ed] border border-[#cde0cb] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-5 rounded-2xl bg-[#f4f7f2] border border-[#d8e2d6] flex items-center justify-between">
         <div>
-          <h3 className="font-editorial text-2xl font-bold text-[#1b2b20]">
-            Ready to find your missing companion skills?
-          </h3>
-          <p className="text-xs text-[#526456] mt-1">
-            It takes less than 30 seconds to run your first career gap analysis.
-          </p>
+          <h4 className="font-bold text-sm text-[#1b2b20]">Ready to try it?</h4>
+          <p className="text-xs text-[#526456]">Pick a role and run your analysis in a few clicks.</p>
         </div>
-
         <button
           type="button"
           onClick={onGoToExplorer}
-          className="px-6 py-3 rounded-xl bg-[#1b3729] hover:bg-[#13271d] text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer shrink-0 shadow-xs"
+          className="px-4 py-2 rounded-xl bg-[#1b3729] hover:bg-[#13271d] text-white text-xs font-semibold flex items-center gap-1 cursor-pointer"
         >
-          <span>Launch Explorer</span>
+          <span>Open Explorer</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      {/* FAQ Section */}
-      <div className="space-y-4 pt-4">
-        <div className="flex items-center gap-2">
-          <HelpCircle className="w-5 h-5 text-[#2d6a4f]" />
-          <h2 className="font-editorial text-2xl font-bold text-[#1b2b20]">
-            Frequently Asked Questions
-          </h2>
-        </div>
-
-        <div className="space-y-3">
-          {faqs.map((faq, idx) => (
-            <div
-              key={idx}
-              className="p-5 rounded-xl bg-white border border-[#e1e6dd] shadow-xs space-y-2"
-            >
-              <h4 className="font-bold text-sm text-[#1b2b20]">{faq.q}</h4>
-              <p className="text-xs text-[#526456] leading-relaxed">{faq.a}</p>
-            </div>
-          ))}
-        </div>
+      <div className="space-y-3 pt-2">
+        <h3 className="font-editorial text-lg font-bold text-[#1b2b20]">Questions</h3>
+        {faqs.map((faq, i) => (
+          <div key={i} className="p-4 rounded-xl bg-white border border-[#e1e6dd] space-y-1">
+            <h4 className="font-bold text-xs text-[#1b2b20]">{faq.q}</h4>
+            <p className="text-xs text-[#526456] leading-relaxed">{faq.a}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

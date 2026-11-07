@@ -1,164 +1,121 @@
 /**
- * Human-friendly descriptions and industry context for canonical skills.
- * Ensures all recommendations in the UI make direct, practical sense.
+ * Simple, human descriptions for skills.
+ * Plain English without buzzwords.
  */
 
 export const SKILL_INFO = {
-  // Languages
   Python: {
-    tagline: 'Versatile scripting and backend language',
-    purpose: 'Used for writing backend server logic, automated data pipelines, and REST APIs.',
-    whyPaired: 'Powers backend microservices and data queries alongside SQL and Docker.',
+    purpose: 'Used for writing backend server code, scripts, and working with data.',
+    why: 'Most backend and data jobs pairing Python also require a database (SQL) and container tools.',
   },
   JavaScript: {
-    tagline: 'Universal language of the web',
-    purpose: 'Powers client-side interactivity, DOM manipulation, and dynamic single-page web applications.',
-    whyPaired: 'Foundational language required by virtually all frontend frameworks like React and Vue.',
+    purpose: 'The language that runs in web browsers to make pages interactive.',
+    why: 'Required by every modern web framework like React, Vue, and Node.',
   },
   TypeScript: {
-    tagline: 'Type-safe JavaScript for robust applications',
-    purpose: 'Catches runtime errors during compilation and makes large codebases maintainable.',
-    whyPaired: 'Industry standard for production React and Node.js enterprise codebases.',
+    purpose: 'JavaScript with type checking to prevent bugs in larger apps.',
+    why: 'Companies use this on top of JavaScript and React for production code.',
   },
   Java: {
-    tagline: 'Enterprise object-oriented powerhouse',
-    purpose: 'Builds high-throughput corporate banking systems, backend microservices, and large-scale APIs.',
-    whyPaired: 'Universally paired with Spring Boot, SQL, and Docker in enterprise backend engineering.',
+    purpose: 'A popular language for building reliable enterprise backends and APIs.',
+    why: 'Almost always paired with Spring Boot and SQL in job postings.',
   },
   SQL: {
-    tagline: 'Relational database query language',
-    purpose: 'Retrieves, updates, joins, and aggregates data stored in relational database tables.',
-    whyPaired: 'Essential companion across every IT role—backend developers and data analysts must query databases.',
-  },
-  HTML: {
-    tagline: 'Semantic backbone of web pages',
-    purpose: 'Defines the content structure, forms, tables, and document hierarchy of web applications.',
-    whyPaired: 'Inseparable pairing with CSS and JavaScript for building any visual web interface.',
-  },
-  CSS: {
-    tagline: 'Visual presentation and responsive styling',
-    purpose: 'Controls layouts, colors, flexbox grids, animations, and mobile responsiveness.',
-    whyPaired: 'Always required alongside HTML and modern frameworks to produce polished user experiences.',
+    purpose: 'Used to save, update, and search data in databases.',
+    why: 'Every backend service and data analyst role needs to talk to a database.',
   },
   'HTML/CSS': {
-    tagline: 'Frontend markup and styling fundamentals',
-    purpose: 'Constructs accessible, responsive layouts and visual design for web interfaces.',
-    whyPaired: 'Core prerequisite before learning component-driven frontend frameworks like React.',
+    purpose: 'The building blocks for creating and styling web pages.',
+    why: 'The starting foundation before building components in React.',
   },
-
-  // Frameworks & Libraries
+  HTML: {
+    purpose: 'Defines the structure and content of a web page.',
+    why: 'Paired with CSS and JavaScript for any website.',
+  },
+  CSS: {
+    purpose: 'Styles layouts, fonts, colors, and mobile responsiveness.',
+    why: 'Always used with HTML to make interfaces look clean.',
+  },
   React: {
-    tagline: 'Industry-standard UI component library',
-    purpose: 'Builds fast, interactive single-page applications using declarative reusable components and hooks.',
-    whyPaired: 'Top frontend framework demanded by recruiters; always accompanied by JavaScript, HTML/CSS, and Git.',
+    purpose: 'A popular library for building reusable web page components.',
+    why: 'The most requested frontend tool in modern job postings.',
   },
   'Node.js': {
-    tagline: 'Server-side JavaScript runtime environment',
-    purpose: 'Enables developers to write backend APIs and asynchronous event-driven services in JavaScript.',
-    whyPaired: 'Allows full-stack developers to use a single language across client and server.',
+    purpose: 'Lets you run JavaScript on the server to build APIs.',
+    why: 'Commonly paired with React so you can use one language for front and back.',
   },
   'Spring Boot': {
-    tagline: 'Enterprise Java microservice framework',
-    purpose: 'Accelerates Java API development with auto-configuration, dependency injection, and security.',
-    whyPaired: 'Co-occurs in over 85% of Java backend postings as the de facto microservice framework.',
+    purpose: 'A framework that makes building Java APIs much faster.',
+    why: 'Over 85% of Java backend listings specifically ask for Spring Boot.',
   },
   FastAPI: {
-    tagline: 'High-performance modern Python API framework',
-    purpose: 'Builds lightweight, auto-documented async REST APIs with type-hints and OpenAPI schemas.',
-    whyPaired: 'Modern companion for Python microservices, database interaction, and machine learning endpoints.',
+    purpose: 'A fast and simple Python framework for building REST APIs.',
+    why: 'Modern Python backend teams use this to serve APIs and data.',
   },
   Django: {
-    tagline: 'Batteries-included Python web framework',
-    purpose: 'Provides built-in ORM, admin dashboard, user authentication, and CSRF security.',
-    whyPaired: 'Standard framework for rapid Python backend web development backed by PostgreSQL or MySQL.',
+    purpose: 'A complete Python web framework with built-in database tools and login.',
+    why: 'Used by companies to build web services quickly with Python.',
   },
   Pandas: {
-    tagline: 'Data manipulation and analysis library',
-    purpose: 'Transforms, cleans, merges, and aggregates structured tabular data in Python.',
-    whyPaired: 'The core Python data science library paired with SQL and visualization tools in data roles.',
+    purpose: 'A Python library used to clean, filter, and inspect data tables.',
+    why: 'Standard tool for analysts moving beyond spreadsheets.',
   },
-
-  // Databases & Storage
   PostgreSQL: {
-    tagline: 'Advanced open-source relational database',
-    purpose: 'Stores structured transactional application data with strict ACID compliance and JSON support.',
-    whyPaired: 'De facto production database paired with Python, Java, and Node.js backend servers.',
+    purpose: 'A reliable open-source database used by most tech startups and companies.',
+    why: 'Standard database paired with Python, Node, and Java servers.',
   },
   MySQL: {
-    tagline: 'Popular open-source relational database',
-    purpose: 'Reliable, widely deployed database engine for web applications and CMS platforms.',
-    whyPaired: 'Standard backend relational database used across web applications.',
+    purpose: 'A widely used open-source relational database.',
+    why: 'Common backend storage for web applications.',
   },
   MongoDB: {
-    tagline: 'Flexible document-based NoSQL database',
-    purpose: 'Stores unstructured or semi-structured JSON-like documents without strict schemas.',
-    whyPaired: 'Common companion with Node.js and Express in the MERN stack.',
+    purpose: 'A database that stores data in flexible JSON-like documents.',
+    why: 'Popular in JavaScript and Node stacks.',
   },
   Redis: {
-    tagline: 'In-memory caching and session store',
-    purpose: 'Speeds up API response times by caching frequently queried database records and managing sessions.',
-    whyPaired: 'Heavily required in backend roles to handle caching, message queuing, and rate limiting.',
+    purpose: 'A very fast in-memory store used for caching and sessions.',
+    why: 'Backend teams use it so apps load faster without hitting the main database every time.',
   },
-
-  // DevOps & Cloud
   Docker: {
-    tagline: 'Application containerization platform',
-    purpose: 'Packages applications with all their dependencies so they run reliably across any machine or cloud server.',
-    whyPaired: 'Essential companion: 93% of backend postings requiring Python/Java also demand Docker for deployment.',
+    purpose: 'Packages an app and its settings so it runs the same on any computer or cloud server.',
+    why: '93% of backend postings requiring Python or Java also look for Docker.',
   },
   AWS: {
-    tagline: 'Market-leading cloud infrastructure platform',
-    purpose: 'Hosts databases, serverless compute, microservices, and storage in the cloud.',
-    whyPaired: 'Co-occurs in modern backend job specs requiring cloud-native deployments.',
+    purpose: 'Amazon cloud platform used to host websites, databases, and servers.',
+    why: 'Companies look for developers who know how to deploy their code to the cloud.',
   },
   Git: {
-    tagline: 'Distributed version control system',
-    purpose: 'Tracks code changes, coordinates branching, and enables multi-developer team collaboration.',
-    whyPaired: 'Universal baseline tool required in 100% of professional software engineering environments.',
+    purpose: 'Tracks code changes and lets teams collaborate without overwriting each other.',
+    why: 'Expected for almost every software role so you can work with a team.',
   },
   'REST APIs': {
-    tagline: 'Standard HTTP client-server architecture',
-    purpose: 'Defines how frontend and backend exchange JSON data via GET, POST, PUT, and DELETE methods.',
-    whyPaired: 'The communicative bridge connecting frontend interfaces and backend databases.',
+    purpose: 'The standard way frontend apps and backend servers talk to each other.',
+    why: 'Frontend and backend developers both need to understand API endpoints.',
   },
-
-  // Business Intelligence & Analytics
   Tableau: {
-    tagline: 'Interactive business intelligence dashboard platform',
-    purpose: 'Creates visual charts, geographical maps, and interactive KPI dashboards for decision-makers.',
-    whyPaired: 'Top visualization requirement for Data Analysts alongside SQL data queries.',
+    purpose: 'Turns data into visual charts and dashboards for business teams.',
+    why: 'Top reporting tool asked for in data analyst postings.',
   },
   'Power BI': {
-    tagline: 'Microsoft enterprise reporting and BI suite',
-    purpose: 'Connects to enterprise databases to build automated reports, dashboards, and metrics.',
-    whyPaired: 'Heavily demanded in corporate business analyst and data specialist job postings.',
+    purpose: 'Microsoft dashboard tool for reports and business metrics.',
+    why: 'Very common in business and corporate data roles.',
   },
   Excel: {
-    tagline: 'Spreadsheet modeling and data organization',
-    purpose: 'Performs pivot tables, VLOOKUPs, ad-hoc calculations, and quick exploratory data checks.',
-    whyPaired: 'Fundamental data tool paired with SQL in entry-level analyst postings.',
+    purpose: 'Spreadsheets for quick calculations, pivot tables, and sorting data.',
+    why: 'A baseline tool almost all data analysts use alongside SQL.',
   },
 };
 
-/**
- * Returns a human-friendly description for any technical skill.
- */
-export function getSkillDescription(skillName) {
-  if (SKILL_INFO[skillName]) {
-    return SKILL_INFO[skillName].purpose;
-  }
-  return `Essential industry technology used in ${skillName} development workflows.`;
+export function getSkillPurpose(name) {
+  return SKILL_INFO[name]?.purpose || `Used in modern ${name} workflows.`;
 }
 
-/**
- * Returns why a skill is paired with existing skills.
- */
-export function getSkillPairingReason(skillName, knownSkills = []) {
-  if (SKILL_INFO[skillName]?.whyPaired) {
-    return SKILL_INFO[skillName].whyPaired;
+export function getSkillReason(name, known = []) {
+  if (SKILL_INFO[name]?.why) {
+    return SKILL_INFO[name].why;
   }
-  if (knownSkills.length > 0) {
-    return `Co-occurs with ${knownSkills.slice(0, 2).join(' & ')} to complete production application workflows.`;
+  if (known.length > 0) {
+    return `Frequently required alongside ${known.slice(0, 2).join(' and ')} in real jobs.`;
   }
-  return 'Core requirement frequently bundled in job postings for this specialization.';
+  return 'A common requirement found across postings for this role.';
 }
