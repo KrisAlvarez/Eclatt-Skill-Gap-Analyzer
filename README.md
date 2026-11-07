@@ -1,6 +1,6 @@
 # SkillGap: An ECLAT-Based IT Skill Pattern and Gap Analysis System
 
-[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![FastAPI](https://img.shields.io/badge/Server-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/Frontend-React-61DAFB?logo=react&logoColor=black)](https://react.dev)
 [![Algorithm](https://img.shields.io/badge/Algorithm-ECLAT-FF6F00)](https://en.wikipedia.org/wiki/Association_rule_learning)
 [![Dataset](https://img.shields.io/badge/Dataset-LinkedIn_2024-0A66C2?logo=linkedin&logoColor=white)](https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024)
@@ -9,124 +9,137 @@
 > **Core Algorithm:** ECLAT (Equivalence Class Clustering and bottom-up Lattice Traversal)  
 > **Application Domain:** Information Technology (IT) Career Development  
 > **Target Audience:** IT Students, Fresh Graduates, and Career Changers  
-> **Deployment Architecture:** GitHub &rarr; Render (FastAPI REST Backend) + Vercel (React Frontend)
+> **Deployment Architecture:** GitHub &rarr; Render (FastAPI REST Server) + Vercel (React Frontend)
 
 ---
 
-## 🧭 Repository Navigation Guide
+## 🧭 Master Repository Navigation Guide
 
-Every file and folder in this repository is strictly organized to make browsing, developing, and auditing seamless:
+The project is structured into clear, decoupled domains so that anyone can immediately locate the **Server Side**, the **ECLAT Algorithms**, the **Frontend UI**, the **Datasets**, the **Test Suites**, and the **Academic Defense Documentation**:
 
 ```
 Eclatt-Skill-Gap-Analyzer/
-├── 📁 backend/                      # Python FastAPI REST API & ML mining engine
-│   ├── 📁 app/                      # Application source packages
-│   │   ├── 📁 core/                 # Config, environment settings, and logging
-│   │   ├── 📁 data/                 # In-memory TID-lists, transaction loaders
-│   │   ├── 📁 models/               # Pydantic schemas (Request/Response models)
-│   │   └── 📁 routes/               # API route controllers (endpoints)
-│   ├── 📁 scripts/                  # Dataset validation and exploration scripts
-│   │   ├── check_dataset.py         # Transaction stats, ECLAT TID-list demo
+│
+├── 🖥️ server/                       # THE SERVER SIDE (FastAPI REST API Service)
+│   ├── app/                         # Server application packages
+│   │   ├── main.py                  # FastAPI server entry point, CORS middleware, routing
+│   │   ├── config.py                # Pydantic server settings & file paths
+│   │   ├── schemas/                 # Request & Response models (Pydantic)
+│   │   │   └── models.py            # GapAnalysisRequest, GapRecommendation, RolesResponse
+│   │   └── routes/                  # API Endpoint Controllers
+│   │       ├── analyze.py           # POST /api/v1/analyze (3-Tier recommendation engine)
+│   │       ├── roles.py             # GET /api/v1/roles (Roles & taxonomy catalog)
+│   │       └── metrics.py           # GET /api/v1/metrics (Hit-Rate@K validation metrics)
+│   ├── requirements.txt             # Server Python dependencies
+│   └── README.md                    # Server architecture, endpoints & run guide
+│
+├── 🧮 eclat_algorithm/              # THE ECLAT ALGORITHMS (Machine Learning Engine)
+│   ├── miner.py                     # Core ECLATMiner: Vertical TID-lists & Lattice Intersections
+│   ├── taxonomy.py                  # Canonical IT Skills Taxonomy & alias regex normalizer
+│   ├── evaluation.py                # Leave-One-Out Masked Skill Recovery & Naive Baseline
+│   ├── builder.py                   # Data preprocessing & hybrid title+stack classifier
+│   ├── runner.py                    # Precomputes & serializes rules to rules.json
+│   ├── scripts/                     # Standalone CLI tools to run and test ECLAT:
+│   │   ├── build_dataset.py         # Builds clean transactions from raw postings
+│   │   ├── run_mining.py            # Executes ECLAT offline & saves rules.json
+│   │   ├── run_evaluation.py        # Computes Hit-Rate@K benchmark & saves metrics
+│   │   ├── check_dataset.py         # TID-list demonstration & pair intersection test
 │   │   ├── check_dataset2.py        # Title distributions & co-occurrence counts
 │   │   └── check_duplicates.py      # Multi-table deduplication audit
-│   ├── 📁 tests/                    # Backend unit & integration test suite
-│   └── 📄 README.md                 # Detailed backend setup & run instructions
+│   └── README.md                    # Full mathematical proof, lattice theory & ECLAT guide
 │
-├── 📁 data/                         # Data layer (raw Kaggle datasets & processed transactions)
-│   ├── 📁 raw/                      # Raw LinkedIn (2024) dataset files
+├── 🎨 frontend/                     # THE FRONTEND (React / Vite UI Client)
+│   ├── src/
+│   │   ├── api/client.js            # API client connecting to FastAPI server
+│   │   ├── components/              # Interactive UI Widgets
+│   │   │   ├── Navbar.jsx           # App header & server status badge
+│   │   │   ├── RoleSelector.jsx     # Track switcher (Backend, Frontend, Data Analyst)
+│   │   │   ├── SkillSelector.jsx    # Category-grouped multi-select skill chips
+│   │   │   ├── AnalysisResults.jsx  # Recommendations, Lift/Confidence badges, explanations
+│   │   │   ├── EvaluationDashboard.jsx # Hit-Rate@K vs Naive Baseline visualizer
+│   │   │   └── DefenseModal.jsx     # Defense Q&A & 7 loopholes modal
+│   │   ├── App.jsx                  # Main view & state manager
+│   │   └── index.css                # Styling system
+│   ├── package.json                 # Node dependencies
+│   └── README.md                    # Frontend setup & development guide
+│
+├── 📊 data/                         # DATA LAYER (Raw & Processed Data)
+│   ├── raw/                         # Raw LinkedIn 2024 Kaggle CSV files
 │   │   ├── job_skills.csv           # Job-to-skill junction table (213K+ links)
 │   │   ├── postings.csv             # Full job postings with seniority tags (516 MB)
-│   │   └── skills.csv               # Skill abbreviation-to-name dictionary
-│   ├── 📁 processed/                # Filtered transactions and precomputed indexes
-│   └── 📄 README.md                 # Data dictionary, schema, and git policy
+│   │   └── skills.csv               # Skill abbreviation dictionary
+│   ├── processed/                   # Preprocessed transactions & precomputed indexes
+│   │   ├── clean_transactions.json  # Sanitized role-segmented transactions
+│   │   ├── rules.json               # Precomputed association rules (sub-millisecond lookups)
+│   │   └── evaluation_metrics.json  # Hit-Rate@3, Hit-Rate@5, Lift over baseline
+│   └── README.md                    # Dataset dictionary, schema & storage notes
 │
-├── 📁 docs/                         # Academic documentation & research repository
-│   ├── 📄 project-plan.md           # 🌟 DEFENSE BLUEPRINT & Academic Specification
-│   ├── 📁 research/                 # Methodological analysis and loophole resolutions
-│   │   ├── clean_loopholes.md       # In-depth analysis of 7 academic loopholes & fixes
+├── 🧪 tests/                        # AUTOMATED TEST SUITE
+│   ├── test_eclat.py                # Unit tests: TID-lists, itemsets, rules, fallback tiers
+│   └── test_server.py               # Integration tests: FastAPI endpoints (/health, /analyze, etc.)
+│
+├── 📑 docs/                         # DEFENSE SPECIFICATIONS & RESEARCH
+│   ├── project-plan.md              # 🌟 Master Academic Blueprint & Defense Plan
+│   ├── research/                    # Critical evaluation notes & loophole resolutions
+│   │   ├── clean_loopholes.md       # In-depth resolution of 7 academic loopholes
 │   │   ├── clean_recommendations.md # Scope, role segmentation & model guidelines
 │   │   ├── chatgpt_evaluation_full.md # Full defense-readiness evaluation transcript
-│   │   ├── skillgap_chatgpt_response.md # Original blueprint formulate transcript
-│   │   ├── 📁 tools/                # Extraction scripts for chat archives
-│   │   ├── 📁 raw/                  # Archived web scrapes & raw data logs
-│   │   └── 📄 README.md             # Research directory guide
-│   └── 📄 README.md                 # Documentation hub guide
+│   │   ├── tools/                   # Scraper scripts
+│   │   └── raw/                     # Archived web scrapes & raw data logs
+│   └── README.md                    # Documentation index
 │
-├── 📁 frontend/                     # React single-page application (UI/UX)
-│   ├── 📁 public/                   # Static assets (favicons, icons)
-│   ├── 📁 src/
-│   │   ├── 📁 api/                  # Axios/fetch backend API connectors
-│   │   ├── 📁 assets/               # CSS styles, SVGs, and images
-│   │   ├── 📁 components/           # Reusable UI widgets (SkillSelector, RuleCard)
-│   │   └── 📁 pages/                # Route views (Dashboard, GapAnalysis, Metrics)
-│   └── 📄 README.md                 # Frontend component overview & dev commands
-│
-├── 📁 postman/                      # Postman API workspace definitions & environments
-├── 📁 .postman/                     # Postman CLI configuration metadata
-├── 📄 .gitignore                    # Git ignore file (excludes >100MB postings.csv, etc.)
-└── 📄 README.md                     # This file (master navigation hub)
+├── render.yaml                      # Render cloud deployment blueprint
+├── pytest.ini                       # Pytest test configuration
+├── requirements.txt                 # Root Python dependencies
+└── README.md                        # Master repository navigation hub (this file)
 ```
 
 ---
 
-## 🎯 Executive Summary & Purpose
+## ⚡ Quickstart Commands
 
-IT students and graduates often struggle to identify the secondary and tertiary technical skills expected alongside core programming languages. Traditional job search platforms provide flat lists of requirements without uncovering **conditional dependencies** (e.g., *How does the demand for Docker or Redis shift once a candidate already possesses Python and PostgreSQL?*).
+### 1. Test the ECLAT Algorithms
+Run the standalone CLI scripts to verify dataset integrity and ECLAT mining:
+```bash
+# Verify TID-list vertical set intersections
+python -m eclat_algorithm.scripts.check_dataset
 
-**SkillGap** models IT skill co-occurrence using **vertical transaction lists (TID-lists)** with the **ECLAT algorithm** to:
-1. Discover frequent co-occurring skill itemsets for 3 core IT tracks (Backend, Frontend, Data Analyst).
-2. Compute conditional association rules evaluated by **Support**, **Confidence**, and **Lift**.
-3. Detect candidate-specific skill gaps and cluster recommendations based on user-selected competencies.
-4. Validate recommendation performance against a naive frequency baseline using **Masked Skill Recovery (Leave-One-Out Hit-Rate@K)**.
+# Run offline ECLAT rule mining
+python -m eclat_algorithm.scripts.run_mining
+
+# Run Masked Skill Recovery benchmark
+python -m eclat_algorithm.scripts.run_evaluation
+```
+
+### 2. Run All Automated Tests
+```bash
+pytest
+```
+*(All 10 unit and integration tests run in ~0.5s).*
+
+### 3. Launch the Server Side (FastAPI API)
+```bash
+uvicorn server.app.main:app --reload --port 8000
+```
+- Interactive Swagger documentation: `http://localhost:8000/docs`
+
+### 4. Launch the Frontend (React / Vite)
+```bash
+cd frontend
+npm run dev
+```
+- Web Application: `http://localhost:5173`
 
 ---
 
-## 🛡️ Resolution of Academic Loopholes & Forensic Fixes
+## 🛡️ Resolution of 7 Academic Loopholes
 
 | Loophole Identified | Root Academic Risk | SkillGap Engineering Solution | Reference |
 | :--- | :--- | :--- | :--- |
-| **0. Data Source Mismatch** | Raw data has 35 broad industry codes (`Sales`, `MGMT`), not IT skills | **Data Rectification Protocol:** Migrate to granular skills (`asaniczka` or regex extraction); 300+ whitelist | [`docs/project-plan.md`](./docs/project-plan.md#3-data-pipeline--taxonomy-rectification-resolving-flaw-0--4) |
-| **1. Seniority Bias** | 89% mid-senior posts skew advice toward senior tooling | Dual mode: **Entry-Level Market** (`experience_filter='entry'`) vs **General Market** (`'all'`) | [`docs/project-plan.md`](./docs/project-plan.md#42-seniority-multi-signal-filtering-loophole-1) |
-| **2. Predictive Overreach** | ECLAT cannot guarantee hiring or sequence priorities | Framed strictly as empirical co-occurrence patterns; ranked by **Lift** and **Confidence** | [`docs/project-plan.md`](./docs/project-plan.md#12-academic-problem-statement) |
-| **3. ECLAT vs Count(*)** | Popular skills alone don't justify machine learning | Generates **conditional dependencies** ($P(B \mid A)$) vs marginal frequency ($P(B)$) | [`docs/project-plan.md`](./docs/project-plan.md#51-why-eclat-over-apriori) |
-| **4. Unvetted Skills** | Soft skills and generic perks pollute transactions | Strict IT skill taxonomy whitelist with canonical normalization | [`docs/project-plan.md`](./docs/project-plan.md#32-canonical-technical-skill-whitelist) |
-| **5. Excessive Scope** | 15+ job roles lead to sparse mapping and noise | Scoped strictly to **3 core tracks**: Backend, Frontend, and Data Analyst | [`docs/project-plan.md`](./docs/project-plan.md#4-bounded-occupational-scope--role-classification-loophole-5) |
-| **6. Lack of Evaluation** | Subjective recommendations cannot be defended | **Masked Skill Recovery (Leave-One-Out Hit-Rate@K)** + Long-Tail evaluation split | [`docs/project-plan.md`](./docs/project-plan.md#7-rigorous-evaluation-methodology-loophole-3--6) |
-| **7. Cold-Start Failure** | Zero input skills or unseen combinations yield empty rules | 3-tier fallback: exact antecedent $\rightarrow$ sub-lattice step-down $\rightarrow$ 1-itemset role baseline | [`docs/project-plan.md`](./docs/project-plan.md#6-cold-start-protocol--sub-lattice-fallback-loophole-7) |
-
----
-
-## ⚡ Quickstart
-
-### 1. Inspect & Validate Dataset
-The project includes verification scripts to audit dataset integrity and test the vertical TID-list intersection logic:
-
-```bash
-# Check skill frequency and run pair intersection (ECLAT vertical op)
-python backend/scripts/check_dataset.py
-
-# Check title distribution and top co-occurring skill pairs
-python backend/scripts/check_dataset2.py
-
-# Audit dataset for duplicate rows and keys
-python backend/scripts/check_duplicates.py
-```
-
-### 2. Run Backend API
-```bash
-# Run FastAPI development server
-uvicorn backend.app.main:app --reload --port 8000
-```
-Interactive Swagger API documentation will be available at: `http://localhost:8000/docs`
-
----
-
-## 📚 Core Documentation Index
-
-- **Academic Blueprint & Defense Guide**: [`docs/project-plan.md`](./docs/project-plan.md)
-- **Detailed Loophole Resolutions**: [`docs/research/clean_loopholes.md`](./docs/research/clean_loopholes.md)
-- **Methodology & Architectural Recommendations**: [`docs/research/clean_recommendations.md`](./docs/research/clean_recommendations.md)
-- **Complete Evaluation Transcript**: [`docs/research/chatgpt_evaluation_full.md`](./docs/research/chatgpt_evaluation_full.md)
-- **Backend Guide**: [`backend/README.md`](./backend/README.md)
-- **Data Dictionary**: [`data/README.md`](./data/README.md)
-- **Frontend Architecture**: [`frontend/README.md`](./frontend/README.md)
+| **1. Seniority Bias** | 89% mid-senior posts skew advice toward senior tooling | Dual mode: **Entry-Level Market** (`experience_mode='entry'`) vs **General Market** (`'all'`) | [`docs/project-plan.md`](./docs/project-plan.md#32-addressing-seniority-bias-loophole-1) |
+| **2. Predictive Overreach** | ECLAT cannot guarantee hiring or sequence priorities | Framed strictly as empirical co-occurrence patterns; ranked by **Lift** and **Confidence** | [`docs/research/clean_loopholes.md`](./docs/research/clean_loopholes.md) |
+| **3. ECLAT vs Count(*)** | Popular skills alone don't justify machine learning | Generates **conditional dependencies** ($P(B \mid A)$) vs marginal frequency ($P(B)$) | [`docs/project-plan.md`](./docs/project-plan.md#13-refined-objective) |
+| **4. Unvetted Skills** | Soft skills and generic perks pollute transactions | Strict IT skill taxonomy whitelist with canonical normalization | [`eclat_algorithm/taxonomy.py`](./eclat_algorithm/taxonomy.py) |
+| **5. Excessive Scope** | 15+ job roles lead to sparse mapping and noise | Scoped strictly to **3 core tracks**: Backend, Frontend, and Data Analyst | [`docs/project-plan.md`](./docs/project-plan.md#33-focused-scope-3-core-it-tracks-loophole-5) |
+| **6. Lack of Evaluation** | Subjective recommendations cannot be defended | **Masked Skill Recovery (Leave-One-Out Hit-Rate@K)** on a 20% held-out test split | [`eclat_algorithm/evaluation.py`](./eclat_algorithm/evaluation.py) |
+| **7. Cold-Start Failure** | Zero input skills or unseen combinations yield empty rules | 3-tier cascade: Exact Match &rarr; Sub-Lattice Step-Down &rarr; Unconditional Prior | [`server/app/routes/analyze.py`](./server/app/routes/analyze.py) |
