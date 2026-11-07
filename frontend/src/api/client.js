@@ -1,9 +1,9 @@
 /**
  * API Client for SkillGap Backend Service.
- * Connects to FastAPI on localhost or Render production URL.
+ * Connects to live Render API or local override.
  */
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://eclatt-skill-gap-analyzer.onrender.com';
 
 async function request(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
