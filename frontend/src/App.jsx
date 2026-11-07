@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
-import RoleSelector from './components/RoleSelector';
-import SkillSelector from './components/SkillSelector';
-import AnalysisResults from './components/AnalysisResults';
-import LearningRoadmap from './components/LearningRoadmap';
-import TechnicalDeepDive from './components/TechnicalDeepDive';
+import ExplorerView from './components/ExplorerView';
+import HomeView from './components/HomeView';
+import CareerTracksView from './components/CareerTracksView';
+import HowToUseView from './components/HowToUseView';
+import AboutView from './components/AboutView';
 import { api } from './api/client';
-import { Sparkles, AlertTriangle, RefreshCw } from 'lucide-react';
+import { RefreshCw, AlertTriangle } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('analyzer'); // 'analyzer' | 'roadmap' | 'technical'
+  // Tabs: 'home' | 'explorer' | 'tracks' | 'how-to-use' | 'about'
+  // Default to 'explorer' to immediately show the TactiChess-style explorer
+  const [activeTab, setActiveTab] = useState('explorer');
 
-  // Data states
+  // Backend Data states
   const [roles, setRoles] = useState([]);
   const [skillsByCategory, setSkillsByCategory] = useState({});
   const [loadingInitial, setLoadingInitial] = useState(true);
@@ -21,12 +23,13 @@ export default function App() {
   const [selectedRole, setSelectedRole] = useState('Backend Developer');
   const [experienceMode, setExperienceMode] = useState('entry'); // 'entry' | 'all'
   const [selectedSkills, setSelectedSkills] = useState(['Python', 'SQL']);
-  const [roadmapSkills, setRoadmapSkills] = useState(['Docker', 'REST APIs']);
+  const [roadmapSkills, setRoadmapSkills] = useState(['Docker']);
 
-  // Analysis states
+  // Analysis state
   const [analysisResults, setAnalysisResults] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
+  // Initial load of roles & skill taxonomy from backend
   const loadRoles = async () => {
     try {
       setLoadingInitial(true);
@@ -48,18 +51,57 @@ export default function App() {
     loadRoles();
   }, []);
 
+  // Run analysis whenever role, skills, or experience mode changes
+  const runAnalysis = async (role = selectedRole, skills = selectedSkills, mode = experienceMode) => {
+    try {
+      setIsAnalyzing(true);
+      const res = await api.analyze({
+        role: role,
+        possessed_skills: skills,
+        experience_mode: mode,
+        top_k: 8,
+      });
+      setAnalysisResults(res);
+    } catch (err) {
+      console.error('Analysis failed:', err);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  // Run first analysis once roles are loaded
+  useEffect(() => {
+    if (roles.length > 0) {
+      runAnalysis(selectedRole, selectedSkills, experienceMode);
+    }
+  }, [roles]);
+
+  const handleSelectRole = (newRole) => {
+    setSelectedRole(newRole);
+    runAnalysis(newRole, selectedSkills, experienceMode);
+  };
+
+  const handleChangeExperienceMode = (newMode) => {
+    setExperienceMode(newMode);
+    runAnalysis(selectedRole, selectedSkills, newMode);
+  };
+
   const handleToggleSkill = (skill) => {
-    setSelectedSkills((prev) =>
-      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
-    );
+    const updated = selectedSkills.includes(skill)
+      ? selectedSkills.filter((s) => s !== skill)
+      : [...selectedSkills, skill];
+    setSelectedSkills(updated);
+    runAnalysis(selectedRole, updated, experienceMode);
   };
 
   const handleClearSkills = () => {
     setSelectedSkills([]);
+    runAnalysis(selectedRole, [], experienceMode);
   };
 
   const handleApplyPreset = (presetSkills) => {
     setSelectedSkills(presetSkills);
+    runAnalysis(selectedRole, presetSkills, experienceMode);
   };
 
   const handleToggleRoadmapSkill = (skill) => {
@@ -68,140 +110,97 @@ export default function App() {
     );
   };
 
-  const handleRunAnalysis = async () => {
-    try {
-      setIsAnalyzing(true);
-      const res = await api.analyze({
-        role: selectedRole,
-        possessed_skills: selectedSkills,
-        experience_mode: experienceMode,
-        top_k: 6,
-      });
-      setAnalysisResults(res);
-      // Smooth scroll down to results
-      setTimeout(() => {
-        const resultsEl = document.getElementById('results-view');
-        if (resultsEl) {
-          resultsEl.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } catch (err) {
-      alert(`Analysis failed: ${err.message}`);
-    } finally {
-      setIsAnalyzing(false);
-    }
+  const handleSelectTrackAndExplore = (trackName) => {
+    setSelectedRole(trackName);
+    runAnalysis(trackName, selectedSkills, experienceMode);
+    setActiveTab('explorer');
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-violet-500 selection:text-white">
-      {/* Top Navigation */}
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
+    <div className="min-h-screen bg-[#f8faf6] text-[#193224] flex flex-col selection:bg-[#d6e7d4] selection:text-[#142e20]">
+      {/* Top Navbar */}
+      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+      {/* Main Container */}
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
         {loadingInitial ? (
-          <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 text-center">
-            <div className="w-10 h-10 border-3 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
-            <h3 className="font-heading font-semibold text-white text-lg">Loading Career Intelligence...</h3>
-            <p className="text-xs text-slate-400">Connecting to cloud analytics engine &amp; job posting models</p>
+          <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3 text-center">
+            <div className="w-8 h-8 border-3 border-[#245e38] border-t-transparent rounded-full animate-spin"></div>
+            <h3 className="font-serif text-lg font-bold text-[#153422]">
+              Loading Skill Connections...
+            </h3>
+            <p className="text-xs text-[#52705d]">Connecting to live LinkedIn 2024 database</p>
           </div>
         ) : initError ? (
-          <div className="p-8 max-w-xl mx-auto rounded-3xl bg-slate-900 border border-rose-800/40 text-center space-y-4 my-12 shadow-2xl">
-            <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto">
-              <AlertTriangle className="w-6 h-6" />
+          <div className="p-8 max-w-lg mx-auto rounded-3xl tacti-card border border-rose-200 text-center space-y-4 my-12 shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto">
+              <AlertTriangle className="w-5 h-5" />
             </div>
-            <h3 className="font-heading font-bold text-lg text-white">Cloud API Reconnecting</h3>
-            <p className="text-xs text-slate-300 leading-relaxed font-mono">
+            <h3 className="font-serif font-bold text-lg text-[#163825]">Connection Notice</h3>
+            <p className="text-xs text-[#4b6654] leading-relaxed">
               {initError}
             </p>
-            <p className="text-xs text-slate-400">
-              The remote Render service might be spinning up from idle. Give it a few seconds and retry.
+            <p className="text-xs text-[#738e7d]">
+              The cloud analytics engine may be warming up. Please retry in a moment.
             </p>
             <button
               onClick={loadRoles}
-              className="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold flex items-center gap-2 mx-auto cursor-pointer transition-colors"
+              className="px-4 py-2 rounded-xl bg-[#1b3827] text-white text-xs font-semibold flex items-center gap-2 mx-auto cursor-pointer hover:bg-[#12281c] transition-colors"
             >
-              <RefreshCw className="w-3.5 h-3.5" /> Retry Connection
+              <RefreshCw className="w-3.5 h-3.5" /> Retry
             </button>
           </div>
-        ) : activeTab === 'technical' ? (
-          <TechnicalDeepDive onGoToAnalyzer={() => setActiveTab('analyzer')} />
-        ) : activeTab === 'roadmap' ? (
-          <LearningRoadmap
+        ) : activeTab === 'home' ? (
+          <HomeView onGoToExplorer={() => setActiveTab('explorer')} />
+        ) : activeTab === 'tracks' ? (
+          <CareerTracksView onSelectTrackAndExplore={handleSelectTrackAndExplore} />
+        ) : activeTab === 'how-to-use' ? (
+          <HowToUseView onGoToExplorer={() => setActiveTab('explorer')} />
+        ) : activeTab === 'about' ? (
+          <AboutView />
+        ) : (
+          <ExplorerView
+            roles={roles}
+            skillsByCategory={skillsByCategory}
             selectedRole={selectedRole}
-            userSkills={selectedSkills}
+            onSelectRole={handleSelectRole}
+            experienceMode={experienceMode}
+            onChangeExperienceMode={handleChangeExperienceMode}
+            selectedSkills={selectedSkills}
+            onToggleSkill={handleToggleSkill}
+            onClearSkills={handleClearSkills}
+            onApplyPreset={handleApplyPreset}
+            analysisResults={analysisResults}
+            isAnalyzing={isAnalyzing}
+            onRunAnalysis={() => runAnalysis(selectedRole, selectedSkills, experienceMode)}
             roadmapSkills={roadmapSkills}
             onToggleRoadmapSkill={handleToggleRoadmapSkill}
-            onGoToAnalyzer={() => setActiveTab('analyzer')}
           />
-        ) : (
-          <div className="space-y-10">
-            {/* Step 1: Target Role Selector */}
-            <section className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800">
-              <RoleSelector
-                roles={roles}
-                selectedRole={selectedRole}
-                onSelectRole={(r) => {
-                  setSelectedRole(r);
-                  setAnalysisResults(null);
-                }}
-                experienceMode={experienceMode}
-                onChangeExperienceMode={(m) => {
-                  setExperienceMode(m);
-                  setAnalysisResults(null);
-                }}
-              />
-            </section>
-
-            {/* Step 2: Skill Selector */}
-            <section className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800">
-              <SkillSelector
-                skillsByCategory={skillsByCategory}
-                selectedSkills={selectedSkills}
-                onToggleSkill={handleToggleSkill}
-                onClearSkills={handleClearSkills}
-                onApplyPreset={handleApplyPreset}
-                selectedRole={selectedRole}
-                onAnalyze={handleRunAnalysis}
-                isAnalyzing={isAnalyzing}
-              />
-            </section>
-
-            {/* Step 3: Analysis Results */}
-            {analysisResults && (
-              <section id="results-view" className="animate-fade-in">
-                <AnalysisResults
-                  results={analysisResults}
-                  roadmapSkills={roadmapSkills}
-                  onToggleRoadmapSkill={handleToggleRoadmapSkill}
-                  onGoToRoadmap={() => setActiveTab('roadmap')}
-                  onGoToTechnical={() => setActiveTab('technical')}
-                  onReset={() => {
-                    setAnalysisResults(null);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                />
-              </section>
-            )}
-          </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950/80 px-4 py-6 text-center text-xs text-slate-500">
+      <footer className="border-t border-[#e5ebe2] bg-[#f8faf6] px-4 py-6 text-center text-xs text-[#627e6d]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>© 2026 SkillGap — Intelligent Career Pathway Analysis</p>
-          <div className="flex items-center gap-4 text-[11px] text-slate-400">
-            <span>Trained on 123K Real Tech Postings</span>
+          <div className="flex items-center gap-2 font-serif font-semibold text-sm text-[#1b3a27]">
+            <span>SkillGap</span>
+            <span className="text-[10px] text-[#55735f] font-sans font-normal">
+              • Real LinkedIn 2024 Tech Skill Explorer
+            </span>
+          </div>
+          <div className="flex items-center gap-4 text-[11px] text-[#63806e]">
+            <button
+              onClick={() => setActiveTab('how-to-use')}
+              className="hover:text-[#183925] cursor-pointer"
+            >
+              How to use
+            </button>
             <span>•</span>
             <button
-              onClick={() => setActiveTab('technical')}
-              className="text-indigo-400 hover:text-indigo-300 underline cursor-pointer"
+              onClick={() => setActiveTab('about')}
+              className="hover:text-[#183925] cursor-pointer"
             >
-              View Algorithm &amp; Defense Q&amp;A
+              About &amp; Methodology
             </button>
           </div>
         </div>
