@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
-import HomeTab from './components/HomeTab';
-import ExplorerTab from './components/ExplorerTab';
-import RoadmapsTab from './components/RoadmapsTab';
-import HowToUseTab from './components/HowToUseTab';
-import AboutTab from './components/AboutTab';
+import HomeTab from './pages/HomeTab';
+import ExplorerTab from './pages/ExplorerTab';
+import RoadmapsTab from './pages/RoadmapsTab';
+import HowToUseTab from './pages/HowToUseTab';
+import AboutTab from './pages/AboutTab';
 import { api } from './api/client';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 

@@ -51,15 +51,26 @@ Eclatt-Skill-Gap-Analyzer/
 ├── 🎨 frontend/                     # THE FRONTEND (React / Vite UI Client)
 │   ├── src/
 │   │   ├── api/client.js            # API client connecting to FastAPI server
-│   │   ├── components/              # Interactive UI Widgets
+│   │   ├── pages/                   # Full-screen tab views (swapped by App.jsx)
+│   │   │   ├── HomeTab.jsx          # Landing page with CTAs
+│   │   │   ├── ExplorerTab.jsx      # Main skill gap analysis explorer
+│   │   │   ├── RoadmapsTab.jsx      # Learning roadmap builder
+│   │   │   ├── HowToUseTab.jsx      # Guide / walkthrough page
+│   │   │   └── AboutTab.jsx         # Project info & academic context
+│   │   ├── components/              # Reusable UI widgets (shared across pages)
 │   │   │   ├── Navbar.jsx           # App header & server status badge
 │   │   │   ├── RoleSelector.jsx     # Track switcher (Backend, Frontend, Data Analyst)
 │   │   │   ├── SkillSelector.jsx    # Category-grouped multi-select skill chips
-│   │   │   ├── AnalysisResults.jsx  # Recommendations, Lift/Confidence badges, explanations
+│   │   │   ├── AnalysisResults.jsx  # Recommendations, Lift/Confidence badges
 │   │   │   ├── EvaluationDashboard.jsx # Hit-Rate@K vs Naive Baseline visualizer
+│   │   │   ├── LearningRoadmap.jsx  # Skill roadmap timeline renderer
+│   │   │   ├── TechnicalDeepDive.jsx # Algorithm explainer panel
 │   │   │   └── DefenseModal.jsx     # Defense Q&A & 7 loopholes modal
-│   │   ├── App.jsx                  # Main view & state manager
-│   │   └── index.css                # Styling system
+│   │   ├── utils/                   # Shared utility functions & helpers
+│   │   ├── App.jsx                  # Root layout & reactive state orchestrator
+│   │   └── index.css                # Tailwind / custom CSS design system
+│   ├── .env                         # Local dev (VITE_API_BASE_URL=http://localhost:8000)
+│   ├── .env.production              # Production (Render cloud URL for Vercel builds)
 │   ├── package.json                 # Node dependencies
 │   └── README.md                    # Frontend setup & development guide
 │
