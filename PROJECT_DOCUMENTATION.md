@@ -199,7 +199,39 @@ Our actual inspection of the downloaded files yielded the following metrics:
 
 ## 7. Repository File Map
 
-```
+`
+Eclatt-Skill-Gap-Analyzer/
+├── 🖥️ server/                       # THE SERVER SIDE (FastAPI REST Service)
+│   ├── app/
+│   │   ├── main.py                  # Server entry point & CORS
+│   │   ├── config.py                # Server paths & settings
+│   │   ├── schemas/models.py        # Pydantic schemas
+│   │   └── routes/                  # /analyze, /roles, /metrics
+│   ├── requirements.txt             # Server dependencies
+│   └── README.md                    # Server guide
+├── 🧮 eclat_algorithm/              # THE ECLAT ALGORITHMS (ML Engine)
+│   ├── miner.py                     # Core ECLATMiner & vertical TID-lists
+│   ├── taxonomy.py                  # IT Skill taxonomy & alias normalizer
+│   ├── evaluation.py                # Masked Skill Recovery benchmark
+│   ├── builder.py                   # Role & seniority dataset preprocessor
+│   ├── runner.py                    # Precomputed rule generator
+│   ├── scripts/                     # Standalone CLI tools (mining, eval, checks)
+│   └── README.md                    # Algorithmic & mathematical guide
+├── 🎨 frontend/                     # THE FRONTEND (React / Vite UI)
+│   ├── src/components/              # UI widgets (AnalysisResults, Dashboard, etc.)
+│   ├── src/api/client.js            # Server API connector
+│   ├── package.json
+│   └── README.md
+├── 📊 data/                         # DATA LAYER
+│   ├── raw/                         # Raw LinkedIn 2024 Kaggle CSVs
+│   ├── processed/                   # clean_transactions.json, rules.json, metrics
+│   └── README.md
+├── 🧪 tests/                        # AUTOMATED TESTS (test_eclat.py, test_server.py)
+├── 📑 docs/                         # BLUEPRINT & RESEARCH (project-plan.md, research/)
+├── render.yaml                      # Render cloud deployment config
+├── pytest.ini                       # Pytest configuration
+└── README.md                        # Master repository navigation hub
+``
 Eclatt-Skill-Gap-Analyzer/
 ├── .gitignore                      # Excludes postings.csv (>100MB) and env files
 ├── project-plan.md                 # Complete defense plan and technical blueprint

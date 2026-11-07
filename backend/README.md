@@ -1,77 +1,24 @@
-# SkillGap Backend
+# ♻️ `backend/` — Compatibility Layer
 
-FastAPI REST API and ECLAT Association Rule Mining Engine for IT career skill pattern discovery and gap analysis.
+> **Note:** The `backend/` folder is a **backward-compatibility shim layer**.
+> It is preserved so that any external references (CI scripts, Render build history, old Postman docs) continue to resolve, but **all real code now lives in the canonical locations**:
 
----
-
-## Architecture Overview
-
-```
-backend/
-├── app/
-│   ├── main.py              # FastAPI application entrypoint with CORS & routes
-│   ├── core/
-│   │   ├── config.py        # Settings, file paths, support/confidence thresholds
-│   │   └── taxonomy.py      # 300+ technical skill whitelist, alias mapping & categories
-│   ├── data/
-│   │   └── eclat_miner.py   # Pure Python ECLAT engine (vertical TID-lists, rules & fallback)
-│   ├── models/
-│   │   └── schemas.py       # Pydantic request/response models
-│   └── routes/
-│       ├── analyze.py       # POST /api/v1/analyze (3-Tier gap analysis recommendation)
-│       ├── roles.py         # GET /api/v1/roles (Tracks, counts & taxonomy catalog)
-│       └── metrics.py       # GET /api/v1/metrics (Offline Leave-One-Out Hit-Rate@K)
-├── scripts/
-│   ├── build_clean_dataset.py  # Hybrid title+stack classifier & skill extractor
-│   ├── run_eclat_offline.py    # Precomputes rules & exports compact rules.json (Render-safe)
-│   ├── run_evaluation.py       # Leave-One-Out Hit-Rate@K vs Naive baseline evaluation
-│   ├── check_dataset.py        # Exploratory verification script
-│   ├── check_dataset2.py       # Title and co-occurrence distributions
-│   └── check_duplicates.py     # Dataset integrity auditor
-├── tests/
-│   ├── test_eclat.py        # Unit tests for ECLAT lattice intersections & rules
-│   └── test_api.py          # Integration tests for FastAPI endpoints
-└── README.md
-```
+| Old `backend/` path | Canonical new location |
+| :--- | :--- |
+| `backend/app/main.py` | [`server/app/main.py`](../server/app/main.py) |
+| `backend/app/core/config.py` | [`server/app/config.py`](../server/app/config.py) |
+| `backend/app/core/taxonomy.py` | [`eclat_algorithm/taxonomy.py`](../eclat_algorithm/taxonomy.py) |
+| `backend/app/data/eclat_miner.py` | [`eclat_algorithm/miner.py`](../eclat_algorithm/miner.py) |
+| `backend/app/models/schemas.py` | [`server/app/schemas/models.py`](../server/app/schemas/models.py) |
+| `backend/app/routes/analyze.py` | [`server/app/routes/analyze.py`](../server/app/routes/analyze.py) |
+| `backend/app/routes/roles.py` | [`server/app/routes/roles.py`](../server/app/routes/roles.py) |
+| `backend/app/routes/metrics.py` | [`server/app/routes/metrics.py`](../server/app/routes/metrics.py) |
+| `backend/scripts/build_clean_dataset.py` | [`eclat_algorithm/builder.py`](../eclat_algorithm/builder.py) |
+| `backend/scripts/run_eclat_offline.py` | [`eclat_algorithm/runner.py`](../eclat_algorithm/runner.py) |
+| `backend/scripts/run_evaluation.py` | [`eclat_algorithm/evaluation.py`](../eclat_algorithm/evaluation.py) |
+| `backend/tests/test_eclat.py` | [`tests/test_eclat.py`](../tests/test_eclat.py) |
+| `backend/tests/test_api.py` | [`tests/test_server.py`](../tests/test_server.py) |
 
 ---
 
-## Quickstart & Pipeline Execution
-
-### 1. Build Sanitized IT Transactions (Hybrid Classifier)
-Streams `data/raw/postings.csv` in memory-efficient chunks, extracts canonical technical skills, applies multi-signal junior filters, and saves clean transactions:
-```bash
-python backend/scripts/build_clean_dataset.py
-```
-
-### 2. Precompute ECLAT Association Rules
-Mines frequent itemsets via vertical TID-list intersections and exports a compact `data/processed/rules.json` (~2 MB), keeping memory usage under 40 MB:
-```bash
-python backend/scripts/run_eclat_offline.py
-```
-
-### 3. Run Academic Leave-One-Out Evaluation
-Evaluates ECLAT Hit-Rate@3 and Hit-Rate@5 against a Naive Popularity Baseline (`COUNT(*)`) across an 80/20 train/test split:
-```bash
-python backend/scripts/run_evaluation.py
-```
-
-### 4. Run Pytest Suite
-```bash
-python -m pytest backend/tests/
-```
-
-### 5. Launch FastAPI Development Server
-```bash
-uvicorn backend.app.main:app --reload --port 8000
-```
-Interactive Swagger API documentation: `http://localhost:8000/docs`
-
----
-
-## Core API Endpoints
-
-* **`POST /api/v1/analyze`**: Accepts target role, possessed skills, and experience mode (`entry` or `all`). Returns missing skill complements ranked by Lift and Confidence with 3-tier fallback.
-* **`GET /api/v1/roles`**: Returns available IT tracks, market sizes, and skills organized by functional category.
-* **`GET /api/v1/metrics`**: Serves offline Leave-One-Out Hit-Rate@K evaluation data comparing ECLAT against baseline.
-* **`GET /health`**: Monitoring healthcheck for cloud deployment.
+For all development, **go directly to the canonical locations above.** This folder contains only thin import-forwarding shims.
