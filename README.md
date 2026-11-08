@@ -78,7 +78,7 @@ Eclatt-Skill-Gap-Analyzer/
 │   ├── raw/                         # Automated via kagglehub ("asaniczka/1-3m-linkedin-jobs-and-skills-2024")
 │   │   └── README.md                # Ingestion instructions & dataset details
 │   ├── processed/                   # Preprocessed transactions & precomputed indexes
-│   │   ├── clean_transactions.json  # Sanitized role-segmented transactions (36,822 unique IT postings; 55,295 track assignments)
+│   │   ├── clean_transactions.json  # Sanitized role-segmented transactions (50,266 unique IT postings; 88,498 track assignments)
 │   │   ├── clean_summary.json       # Seniority & track distribution counts
 │   │   ├── rules.json               # Precomputed association rules (sub-millisecond lookups)
 │   │   └── evaluation_metrics.json  # Hit-Rate@3, Hit-Rate@5, Lift over baseline

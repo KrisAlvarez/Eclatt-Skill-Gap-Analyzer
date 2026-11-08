@@ -44,21 +44,27 @@ RE_SENIOR_TITLE = re.compile(
 # Stack markers for domain attribution
 BACKEND_STACK: Set[str] = {
     "Python", "Java", "Go", "C#", "C++", "PHP", "Ruby", "Rust", "Node.js", "Express.js",
-    "Django", "FastAPI", "Flask", "Spring Boot", "ASP.NET", "Laravel", "Ruby on Rails",
+    "NestJS", "Django", "FastAPI", "Flask", "Spring Boot", "ASP.NET", "Laravel", "Ruby on Rails",
     "PostgreSQL", "MySQL", "MongoDB", "Redis", "SQLite", "Oracle", "Cassandra", "DynamoDB",
+    "BigQuery", "NoSQL", "MariaDB", "Supabase", "Neo4j", "Firebase",
     "Docker", "Kubernetes", "AWS", "Azure", "GCP", "Microservices", "REST API", "GraphQL",
-    "Kafka", "RabbitMQ", "Linux", "CI/CD", "Terraform"
+    "Kafka", "RabbitMQ", "Celery", "Linux", "CI/CD", "Terraform", "Ansible", "Jenkins",
+    "Git", "GitHub Actions", "GitLab CI", "Nginx", "Apache", "Helm", "DevOps", "Cloud Computing",
+    "OpenShift", "Prometheus", "Grafana", "Swagger", "Postman", "Testing & QA", "Automation",
+    "Jira", "Agile", "Cybersecurity", "Networking", "Bash", "PowerShell"
 }
 
 FRONTEND_STACK: Set[str] = {
-    "JavaScript", "TypeScript", "React", "Vue.js", "Angular", "Next.js", "HTML", "CSS",
-    "Tailwind CSS", "Bootstrap", "Redux", "WebSockets"
+    "JavaScript", "TypeScript", "React", "Vue.js", "Angular", "Next.js", "Nuxt.js", "Svelte",
+    "HTML", "CSS", "Tailwind CSS", "Bootstrap", "Redux", "WebSockets", "jQuery",
+    "React Native", "Flutter", "Electron", "Testing & QA", "Automation", "Git", "Jira", "Agile"
 }
 
 DATA_STACK: Set[str] = {
     "SQL", "Python", "R", "Pandas", "NumPy", "Tableau", "Power BI", "Excel",
     "Snowflake", "Spark", "Airflow", "Hadoop", "Scikit-learn", "Microsoft SQL Server",
-    "Elasticsearch"
+    "Elasticsearch", "BigQuery", "NoSQL", "Machine Learning", "Data Visualization",
+    "PyTorch", "TensorFlow", "Keras"
 }
 
 
@@ -105,26 +111,30 @@ def classify_role_broad(title: str, skills_set: Set[str]) -> List[str]:
     matched_roles = []
     t_lower = title.lower()
 
-    # 1. Check explicit title markers
-    is_explicit_be = bool(re.search(r"\b(backend|back-end|api|python developer|java developer|c# developer|golang developer|node developer|spring developer)\b", t_lower))
-    is_explicit_fe = bool(re.search(r"\b(frontend|front-end|ui engineer|ui developer|react developer|vue developer|angular developer|web developer|javascript developer)\b", t_lower))
-    is_explicit_da = bool(re.search(r"\b(data analyst|business intelligence|bi analyst|sql analyst|analytics|data specialist|reporting analyst|data engineer)\b", t_lower))
+    # 1. Explicit title markers
+    is_explicit_be = bool(re.search(r"\b(backend|back-end|api|python developer|java developer|c# developer|golang developer|node developer|spring developer|cloud engineer|devops|software engineer|software developer|systems engineer)\b", t_lower))
+    is_explicit_fe = bool(re.search(r"\b(frontend|front-end|ui engineer|ui developer|react developer|vue developer|angular developer|web developer|javascript developer|mobile developer)\b", t_lower))
+    is_explicit_da = bool(re.search(r"\b(data analyst|business intelligence|bi analyst|sql analyst|analytics|data specialist|reporting analyst|data engineer|data scientist|machine learning)\b", t_lower))
 
-    # 2. Check stack intersections
+    # 2. Stack intersections
     be_overlap = len(skills_set & BACKEND_STACK)
     fe_overlap = len(skills_set & FRONTEND_STACK)
     da_overlap = len(skills_set & DATA_STACK)
 
+    # General tech keywords in title
+    is_general_tech = any(k in t_lower for k in ["software", "developer", "engineer", "fullstack", "full-stack", "programmer", "application", "systems", "tech", "cloud", "devops", "platform", "web"])
+    is_general_data = any(k in t_lower for k in ["data", "analyst", "analytics", "intelligence", "bi", "reporting", "scientist", "machine learning"])
+
     # Backend Attribution
-    if is_explicit_be or be_overlap >= 2 or (be_overlap >= 1 and ("software" in t_lower or "developer" in t_lower or "engineer" in t_lower or "fullstack" in t_lower)):
+    if is_explicit_be or be_overlap >= 2 or (be_overlap >= 1 and is_general_tech):
         matched_roles.append("Backend Developer")
 
     # Frontend Attribution
-    if is_explicit_fe or fe_overlap >= 2 or (fe_overlap >= 1 and ("software" in t_lower or "developer" in t_lower or "web" in t_lower or "fullstack" in t_lower)):
+    if is_explicit_fe or fe_overlap >= 2 or (fe_overlap >= 1 and is_general_tech):
         matched_roles.append("Frontend Developer")
 
     # Data Analyst Attribution
-    if is_explicit_da or da_overlap >= 2 or (da_overlap >= 1 and ("analyst" in t_lower or "analytics" in t_lower or "intelligence" in t_lower or "data" in t_lower)):
+    if is_explicit_da or da_overlap >= 2 or (da_overlap >= 1 and is_general_data):
         matched_roles.append("Data Analyst")
 
     return matched_roles

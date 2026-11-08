@@ -2,6 +2,7 @@
 
 Provides vetted technical skills across 5 core domains, alias mapping,
 and substitute vs complement category grouping to prevent taxonomy pollution.
+Aligned with ESCO/O*NET IT taxonomies and the asaniczka 1.3M LinkedIn dataset.
 """
 
 from typing import Dict, List, Set, Tuple
@@ -14,9 +15,9 @@ CAT_DATABASE = "Databases & Storage"
 CAT_CLOUD_DEVOPS = "Cloud & DevOps"
 CAT_DEV_TOOLS = "Architecture & Developer Tools"
 
-# Canonical Skills Taxonomy with Assigned Category
+# Canonical Skills Taxonomy with Assigned Category (~100+ vetted technical skills)
 SKILL_TAXONOMY: Dict[str, str] = {
-    # Programming Languages
+    # 1. Programming Languages
     "Python": CAT_LANGUAGE,
     "JavaScript": CAT_LANGUAGE,
     "TypeScript": CAT_LANGUAGE,
@@ -35,14 +36,21 @@ SKILL_TAXONOMY: Dict[str, str] = {
     "Scala": CAT_LANGUAGE,
     "R": CAT_LANGUAGE,
     "Bash": CAT_LANGUAGE,
+    "PowerShell": CAT_LANGUAGE,
+    "Dart": CAT_LANGUAGE,
+    "Perl": CAT_LANGUAGE,
+    "Lua": CAT_LANGUAGE,
 
-    # Frameworks & Libraries
+    # 2. Frameworks & Libraries
     "React": CAT_FRAMEWORK,
     "Angular": CAT_FRAMEWORK,
     "Vue.js": CAT_FRAMEWORK,
     "Next.js": CAT_FRAMEWORK,
+    "Nuxt.js": CAT_FRAMEWORK,
+    "Svelte": CAT_FRAMEWORK,
     "Node.js": CAT_FRAMEWORK,
     "Express.js": CAT_FRAMEWORK,
+    "NestJS": CAT_FRAMEWORK,
     "Django": CAT_FRAMEWORK,
     "FastAPI": CAT_FRAMEWORK,
     "Flask": CAT_FRAMEWORK,
@@ -53,13 +61,18 @@ SKILL_TAXONOMY: Dict[str, str] = {
     "Tailwind CSS": CAT_FRAMEWORK,
     "Bootstrap": CAT_FRAMEWORK,
     "Redux": CAT_FRAMEWORK,
+    "jQuery": CAT_FRAMEWORK,
+    "React Native": CAT_FRAMEWORK,
+    "Flutter": CAT_FRAMEWORK,
+    "Electron": CAT_FRAMEWORK,
     "Pandas": CAT_FRAMEWORK,
     "NumPy": CAT_FRAMEWORK,
     "Scikit-learn": CAT_FRAMEWORK,
     "PyTorch": CAT_FRAMEWORK,
     "TensorFlow": CAT_FRAMEWORK,
+    "Keras": CAT_FRAMEWORK,
 
-    # Databases & Storage
+    # 3. Databases & Storage
     "PostgreSQL": CAT_DATABASE,
     "MySQL": CAT_DATABASE,
     "MongoDB": CAT_DATABASE,
@@ -71,8 +84,14 @@ SKILL_TAXONOMY: Dict[str, str] = {
     "Elasticsearch": CAT_DATABASE,
     "DynamoDB": CAT_DATABASE,
     "Snowflake": CAT_DATABASE,
+    "BigQuery": CAT_DATABASE,
+    "NoSQL": CAT_DATABASE,
+    "Firebase": CAT_DATABASE,
+    "MariaDB": CAT_DATABASE,
+    "Neo4j": CAT_DATABASE,
+    "Supabase": CAT_DATABASE,
 
-    # Cloud & DevOps
+    # 4. Cloud & DevOps
     "Docker": CAT_CLOUD_DEVOPS,
     "Kubernetes": CAT_CLOUD_DEVOPS,
     "AWS": CAT_CLOUD_DEVOPS,
@@ -81,13 +100,21 @@ SKILL_TAXONOMY: Dict[str, str] = {
     "CI/CD": CAT_CLOUD_DEVOPS,
     "Git": CAT_CLOUD_DEVOPS,
     "GitHub Actions": CAT_CLOUD_DEVOPS,
+    "GitLab CI": CAT_CLOUD_DEVOPS,
     "Linux": CAT_CLOUD_DEVOPS,
     "Terraform": CAT_CLOUD_DEVOPS,
     "Ansible": CAT_CLOUD_DEVOPS,
     "Jenkins": CAT_CLOUD_DEVOPS,
     "Nginx": CAT_CLOUD_DEVOPS,
+    "Apache": CAT_CLOUD_DEVOPS,
+    "Helm": CAT_CLOUD_DEVOPS,
+    "DevOps": CAT_CLOUD_DEVOPS,
+    "Cloud Computing": CAT_CLOUD_DEVOPS,
+    "OpenShift": CAT_CLOUD_DEVOPS,
+    "Prometheus": CAT_CLOUD_DEVOPS,
+    "Grafana": CAT_CLOUD_DEVOPS,
 
-    # Architecture, BI & Developer Tooling
+    # 5. Architecture, BI & Developer Tooling
     "REST API": CAT_DEV_TOOLS,
     "GraphQL": CAT_DEV_TOOLS,
     "Microservices": CAT_DEV_TOOLS,
@@ -96,16 +123,26 @@ SKILL_TAXONOMY: Dict[str, str] = {
     "Celery": CAT_DEV_TOOLS,
     "WebSockets": CAT_DEV_TOOLS,
     "Postman": CAT_DEV_TOOLS,
+    "Swagger": CAT_DEV_TOOLS,
     "Power BI": CAT_DEV_TOOLS,
     "Tableau": CAT_DEV_TOOLS,
     "Excel": CAT_DEV_TOOLS,
     "Airflow": CAT_DEV_TOOLS,
     "Spark": CAT_DEV_TOOLS,
     "Hadoop": CAT_DEV_TOOLS,
+    "Machine Learning": CAT_DEV_TOOLS,
+    "Data Visualization": CAT_DEV_TOOLS,
+    "Testing & QA": CAT_DEV_TOOLS,
+    "Automation": CAT_DEV_TOOLS,
+    "Jira": CAT_DEV_TOOLS,
+    "Agile": CAT_DEV_TOOLS,
+    "Cybersecurity": CAT_DEV_TOOLS,
+    "Networking": CAT_DEV_TOOLS,
 }
 
 # Alias / Variant Mapping to Canonical Key
 ALIAS_MAP: Dict[str, str] = {
+    # Languages
     "python": "Python",
     "python3": "Python",
     "javascript": "JavaScript",
@@ -129,8 +166,16 @@ ALIAS_MAP: Dict[str, str] = {
     "css3": "CSS",
     "bash": "Bash",
     "shell": "Bash",
+    "powershell": "PowerShell",
+    "dart": "Dart",
+    "perl": "Perl",
+    "lua": "Lua",
+    "kotlin": "Kotlin",
+    "swift": "Swift",
+    "scala": "Scala",
+    "r": "R",
     
-    # Frameworks
+    # Frameworks & Libraries
     "react": "React",
     "react.js": "React",
     "reactjs": "React",
@@ -142,12 +187,16 @@ ALIAS_MAP: Dict[str, str] = {
     "next": "Next.js",
     "next.js": "Next.js",
     "nextjs": "Next.js",
+    "nuxt": "Nuxt.js",
+    "nuxt.js": "Nuxt.js",
+    "svelte": "Svelte",
     "node": "Node.js",
     "node.js": "Node.js",
     "nodejs": "Node.js",
     "express": "Express.js",
     "express.js": "Express.js",
     "expressjs": "Express.js",
+    "nestjs": "NestJS",
     "django": "Django",
     "fastapi": "FastAPI",
     "flask": "Flask",
@@ -164,12 +213,17 @@ ALIAS_MAP: Dict[str, str] = {
     "tailwindcss": "Tailwind CSS",
     "bootstrap": "Bootstrap",
     "redux": "Redux",
+    "jquery": "jQuery",
+    "react native": "React Native",
+    "flutter": "Flutter",
+    "electron": "Electron",
     "pandas": "Pandas",
     "numpy": "NumPy",
     "scikit-learn": "Scikit-learn",
     "sklearn": "Scikit-learn",
     "pytorch": "PyTorch",
     "tensorflow": "TensorFlow",
+    "keras": "Keras",
 
     # Databases
     "postgres": "PostgreSQL",
@@ -182,10 +236,18 @@ ALIAS_MAP: Dict[str, str] = {
     "oracle": "Oracle",
     "sql server": "Microsoft SQL Server",
     "mssql": "Microsoft SQL Server",
+    "microsoft sql server": "Microsoft SQL Server",
     "cassandra": "Cassandra",
     "elasticsearch": "Elasticsearch",
     "dynamodb": "DynamoDB",
     "snowflake": "Snowflake",
+    "bigquery": "BigQuery",
+    "google bigquery": "BigQuery",
+    "nosql": "NoSQL",
+    "firebase": "Firebase",
+    "mariadb": "MariaDB",
+    "neo4j": "Neo4j",
+    "supabase": "Supabase",
 
     # Cloud & DevOps
     "docker": "Docker",
@@ -194,39 +256,71 @@ ALIAS_MAP: Dict[str, str] = {
     "aws": "AWS",
     "amazon web services": "AWS",
     "azure": "Azure",
+    "microsoft azure": "Azure",
     "gcp": "GCP",
     "google cloud": "GCP",
     "google cloud platform": "GCP",
     "ci/cd": "CI/CD",
     "cicd": "CI/CD",
+    "continuous integration": "CI/CD",
     "git": "Git",
     "github actions": "GitHub Actions",
+    "gitlab": "GitLab CI",
+    "gitlab ci": "GitLab CI",
     "linux": "Linux",
     "terraform": "Terraform",
     "ansible": "Ansible",
     "jenkins": "Jenkins",
     "nginx": "Nginx",
+    "apache": "Apache",
+    "helm": "Helm",
+    "devops": "DevOps",
+    "cloud computing": "Cloud Computing",
+    "cloud": "Cloud Computing",
+    "openshift": "OpenShift",
+    "prometheus": "Prometheus",
+    "grafana": "Grafana",
 
-    # Architecture & Tools
+    # Architecture, BI & Developer Tools
     "rest": "REST API",
     "rest api": "REST API",
     "restful": "REST API",
     "graphql": "GraphQL",
     "microservices": "Microservices",
     "kafka": "Kafka",
+    "apache kafka": "Kafka",
     "rabbitmq": "RabbitMQ",
     "celery": "Celery",
     "websocket": "WebSockets",
     "websockets": "WebSockets",
     "postman": "Postman",
+    "swagger": "Swagger",
     "power bi": "Power BI",
     "powerbi": "Power BI",
     "tableau": "Tableau",
     "excel": "Excel",
+    "microsoft excel": "Excel",
     "airflow": "Airflow",
     "spark": "Spark",
     "apache spark": "Spark",
+    "pyspark": "Spark",
     "hadoop": "Hadoop",
+    "machine learning": "Machine Learning",
+    "ml": "Machine Learning",
+    "data visualization": "Data Visualization",
+    "data analysis": "Data Visualization",
+    "testing": "Testing & QA",
+    "software testing": "Testing & QA",
+    "quality assurance": "Testing & QA",
+    "qa": "Testing & QA",
+    "automation": "Automation",
+    "jira": "Jira",
+    "agile": "Agile",
+    "scrum": "Agile",
+    "cybersecurity": "Cybersecurity",
+    "security": "Cybersecurity",
+    "information security": "Cybersecurity",
+    "networking": "Networking",
 }
 
 # Compile regex patterns for word-boundary matching
@@ -255,4 +349,4 @@ def extract_skills(text: str) -> List[str]:
 
 def get_category(skill: str) -> str:
     """Return the functional category for a canonical skill."""
-    return SKILL_TAXONOMY.get(skill, "General Technology")
+    return SKILL_TAXONOMY.get(skill, "Architecture & Developer Tools")

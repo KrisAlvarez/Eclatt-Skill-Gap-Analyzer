@@ -28,11 +28,11 @@ The ECLAT models are aligned with the comprehensive **1.3M+ LinkedIn Jobs & Skil
 
 | IT Career Track | Total Transactions (`all`) | Entry-Level Segment (`entry`) |
 |-----------------|----------------------------|-------------------------------|
-| **Backend Developer** | 29,453 | 1,860 |
-| **Frontend Developer** | 9,417 | 671 |
-| **Data Analyst** | 16,425 | 1,427 |
-| **Total Role Assignments** | **55,295** | **3,958** |
-*(Representing **36,822** unique, verified IT transactions matching $\ge 2$ canonical skills from the 1.3M dataset).*
+| **Backend Developer** | 39,801 | 2,804 |
+| **Frontend Developer** | 23,617 | 1,705 |
+| **Data Analyst** | 25,080 | 2,321 |
+| **Total Role Assignments** | **88,498** | **6,830** |
+*(Representing **50,266** unique, verified IT transactions matching $\ge 2$ canonical skills from the 1.3M dataset).*
 
 ---
 

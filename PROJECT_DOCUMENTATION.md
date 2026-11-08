@@ -139,10 +139,10 @@ Our actual inspection and alignment yielded the following metrics:
 ### 1. Production Benchmark Dataset (1.3M+ asaniczka LinkedIn 2024 Dataset)
 - **Source:** Kaggle `asaniczka/1-3m-linkedin-jobs-and-skills-2024`
 - **Total Ingested Records:** 1,300,000+ job postings & skills
-- **Clean Filtered IT Transactions:** 36,822 validated unique transactions (>=2 technical skills, 55,295 track assignments)
-  - **Backend Developer:** 29,453 total (1,860 entry-level)
-  - **Frontend Developer:** 9,417 total (671 entry-level)
-  - **Data Analyst:** 16,425 total (1,427 entry-level)
+- **Clean Filtered IT Transactions:** 50,266 validated unique transactions (>=2 technical skills, 88,498 track assignments)
+  - **Backend Developer:** 39,801 total (2,804 entry-level)
+  - **Frontend Developer:** 23,617 total (1,705 entry-level)
+  - **Data Analyst:** 25,080 total (2,321 entry-level)
 - **Precomputed Artifacts:** `data/processed/clean_transactions.json`, `rules.json`, `clean_summary.json`, `evaluation_metrics.json`
 
 ### 2. Local Sample Dataset (`data/raw/`)
@@ -240,7 +240,7 @@ Eclatt-Skill-Gap-Analyzer/
 │   └── README.md
 ├── 📊 data/                         # DATA LAYER (1.3M asaniczka & local raw)
 │   ├── raw/                         # Raw LinkedIn CSVs (postings.csv, job_skills.csv)
-│   ├── processed/                   # clean_transactions.json (36,822 items), rules.json
+│   ├── processed/                   # clean_transactions.json (50,266 items), rules.json
 │   └── README.md
 ├── 🧪 tests/                        # AUTOMATED TESTS (test_eclat.py, test_server.py)
 ├── 📑 docs/                         # BLUEPRINT & RESEARCH (project-plan.md, research/)

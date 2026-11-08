@@ -131,11 +131,11 @@ Streamed and filtered through `eclat_algorithm/scripts/build_asaniczka.py`:
 
 | Role Track | Total Clean Transactions (`all`) | Entry-Level Segment (`entry`) |
 | :--- | :--- | :--- |
-| **Backend Developer** | 29,453 | 1,860 |
-| **Frontend Developer** | 9,417 | 671 |
-| **Data Analyst** | 16,425 | 1,427 |
-| **Total Role Assignments** | **55,295** | **3,958** |
-*(Unique clean IT transactions: **36,822**).*
+| **Backend Developer** | 39,801 | 2,804 |
+| **Frontend Developer** | 23,617 | 1,705 |
+| **Data Analyst** | 25,080 | 2,321 |
+| **Total Role Assignments** | **88,498** | **6,830** |
+*(Unique clean IT transactions: **50,266**).*
 
 ---
 
