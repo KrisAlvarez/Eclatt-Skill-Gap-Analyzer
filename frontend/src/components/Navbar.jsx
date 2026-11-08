@@ -80,8 +80,8 @@ export default function Navbar({ activeTab, setActiveTab }) {
                   : 'bg-amber-400'
               }`}
             ></span>
-            <span className="hidden sm:inline">123K Real Job Data</span>
-            <span className="sm:hidden">Real Data</span>
+            <span className="hidden sm:inline">1.3M Real Job Data</span>
+            <span className="sm:hidden">1.3M Data</span>
           </div>
 
           {/* Action Button */}

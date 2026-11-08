@@ -188,7 +188,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>© 2026 SkillGap — Career Skill Connection & Pathway Explorer</p>
           <div className="flex items-center gap-4 text-[11px] text-[#445548]">
-            <span>123,849 LinkedIn 2024 Postings</span>
+            <span>1.3M LinkedIn 2024 Postings (asaniczka)</span>
             <span>•</span>
             <button
               onClick={() => setActiveTab('about')}

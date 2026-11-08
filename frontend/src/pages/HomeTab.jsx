@@ -36,7 +36,7 @@ export default function HomeTab({ onSelectRoleAndExplore, onGoToRoadmaps }) {
         </h1>
 
         <p className="text-base text-[#526456] leading-relaxed">
-          See which tools appear together in 123,000 real job postings so you know what companion skills to learn next.
+          See which tools appear together in 1.3 million real job postings so you know what companion skills to learn next.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">

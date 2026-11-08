@@ -27,7 +27,7 @@ export default function AboutTab() {
         <div className="p-5 rounded-2xl bg-white border border-[#e1e6dd] space-y-2">
           <h3 className="font-bold text-sm text-[#1b2b20]">Where is the data from?</h3>
           <p className="text-xs text-[#526456] leading-relaxed">
-            We analyzed 123,849 real tech job postings from LinkedIn (2024). We extracted canonical technical skills and grouped them by career track (Backend, Frontend, and Data Analyst).
+            We analyzed 1.3 million real tech job postings from LinkedIn (2024 asaniczka dataset). We extracted canonical technical skills and grouped them by career track (Backend, Frontend, and Data Analyst).
           </p>
         </div>
 
