@@ -15,6 +15,7 @@ eclat_algorithm/
 ├── builder.py            # Preprocessing pipeline & hybrid role classifier
 ├── runner.py             # Precomputation & serialization of association rules
 ├── scripts/              # Standalone CLI tools:
+│   ├── build_asaniczka.py # Ingestion pipeline for 1.3M asaniczka LinkedIn dataset
 │   ├── build_dataset.py  # Filters raw postings into Entry vs All market transactions
 │   ├── run_mining.py     # Offline rule precomputation -> data/processed/rules.json
 │   ├── run_evaluation.py # Offline validation benchmark -> data/processed/evaluation_metrics.json
@@ -60,7 +61,7 @@ $\text{Lift} > 1.0$ indicates positive correlation (e.g., knowing Python & SQL m
 All commands can be executed directly from the project root:
 
 ```bash
-# 1. Build clean transaction dataset from raw postings.csv
+# 1. Build clean transaction dataset from asaniczka 1.3M dataset (via kagglehub)
 python -m eclat_algorithm.scripts.build_dataset
 
 # 2. Mine frequent itemsets & serialize rules to data/processed/rules.json
@@ -68,9 +69,6 @@ python -m eclat_algorithm.scripts.run_mining
 
 # 3. Run Leave-One-Out Masked Skill Recovery benchmark
 python -m eclat_algorithm.scripts.run_evaluation
-
-# 4. Audit dataset integrity and test TID-list intersections
-python -m eclat_algorithm.scripts.check_dataset
 ```
 
 ---

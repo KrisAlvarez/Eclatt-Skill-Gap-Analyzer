@@ -121,7 +121,7 @@ export default function App() {
               Loading Skill Connections...
             </h3>
             <p className="text-xs text-[#526456]">
-              Connecting to 123K verified LinkedIn job models
+              Connecting to 1.3M verified LinkedIn job models
             </p>
           </div>
         ) : initError ? (

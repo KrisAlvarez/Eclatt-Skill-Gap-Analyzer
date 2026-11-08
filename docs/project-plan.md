@@ -46,11 +46,10 @@ Traditional platforms offer only marginal skill frequencies ($P(\text{Docker})$)
 
 ## 3. Data Pipeline & Taxonomy Rectification (Resolving Flaw #0 & #4)
 
-### 3.1 The Dataset Problem & Immediate Remediation
-* **Discrepancy:** The initial repository files in `data/raw/` (`skills.csv`, `job_skills.csv`) were sourced from a job-postings schema containing only 35 top-level LinkedIn industry departments (`ART`, `DSGN`, `IT`, `SALE`, `MGMT`). The average transaction length was only 1.69 skills, making multi-item association rule mining mathematically impossible.
-* **Remediation Specification:**
-  1. **Primary Route:** Load the verified Kaggle dataset `asaniczka/1-3m-linkedin-jobs-and-skills-2024`, which contains `job_skills.csv` with granular skill lists (`job_skills` text containing `Python, Docker, SQL, PostgreSQL, AWS, Git, Linux`).
-  2. **Self-Contained Extraction Route (Fallback/Enrichment):** Run an automated skill extraction script over the existing `description` and `skills_desc` columns of `data/raw/postings.csv` utilizing an exact-match technical dictionary of 300+ canonical IT skills.
+### 3.1 Dataset Architecture
+* **Primary Source**: The verified Kaggle benchmark `asaniczka/1-3m-linkedin-jobs-and-skills-2024` (1,348,454 postings and 1,296,381 skill records).
+* **Automated Ingestion**: Managed automatically via `kagglehub.dataset_download("asaniczka/1-3m-linkedin-jobs-and-skills-2024")` with streaming relational joins over `job_link`.
+* **Zero Legacy Dependency**: The system operates 100% on this benchmark. All obsolete files have been removed from the repository.
 
 ### 3.2 Canonical Technical Skill Whitelist
 To prevent soft skills (`communication`, `leadership`, `problem solving`) and company perks (`401k`, `insurance`) from dominating the top equivalence classes, all transactions are filtered against an explicit 5-category whitelist:
@@ -92,7 +91,7 @@ To guarantee high itemset density and defensible support counts, the system isol
 
 ```mermaid
 flowchart TD
-    RawPostings["Raw Job Postings (~120K)"] --> RoleFilter{"Role Classifier (Regex)"}
+    RawPostings["Raw Job Postings (1.3M asaniczka Dataset)"] --> RoleFilter{"Role Classifier (Regex)"}
     RoleFilter -->|"Backend Patterns"| BE["Backend Developer Track"]
     RoleFilter -->|"Frontend Patterns"| FE["Frontend Developer Track"]
     RoleFilter -->|"Data Analyst Patterns"| DA["Data Analyst Track"]

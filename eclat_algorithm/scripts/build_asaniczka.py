@@ -12,12 +12,15 @@ from pathlib import Path
 from typing import Dict, List, Set
 import pandas as pd
 
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
 from eclat_algorithm.taxonomy import SKILL_TAXONOMY, ALIAS_MAP
 from eclat_algorithm.builder import classify_role, is_entry_level
 from eclat_algorithm.runner import run_eclat_offline
 from eclat_algorithm.evaluation import run_evaluation
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 PROCESSED_DIR = BASE_DIR / "data" / "processed"
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -1,24 +1,28 @@
 """Dataset Preprocessing and Hybrid Role Classification Pipeline.
 
-Reads data/raw/postings.csv in memory-efficient chunks, classifies postings
-into 3 core IT roles (Backend, Frontend, Data Analyst) using a hybrid
-title+stack classifier, extracts canonical technical skills, and exports
-sanitized transaction databases to data/processed/.
+Exclusively relies on the 'asaniczka/1-3m-linkedin-jobs-and-skills-2024' dataset.
+Downloads/resolves dataset location via kagglehub, streams linkedin_job_postings.csv
+and job_skills.csv, classifies postings into 3 core IT roles (Backend, Frontend, Data Analyst),
+normalizes skills against canonical IT taxonomy, filters for seniority (Junior/Entry vs All),
+and exports sanitized transaction databases to data/processed/.
 """
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 import pandas as pd
+import kagglehub
 
-from eclat_algorithm.taxonomy import extract_skills
+from eclat_algorithm.taxonomy import SKILL_TAXONOMY, ALIAS_MAP
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-RAW_DIR = BASE_DIR / "data" / "raw"
 PROCESSED_DIR = BASE_DIR / "data" / "processed"
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+
+DATASET_NAME = "asaniczka/1-3m-linkedin-jobs-and-skills-2024"
 
 # Regex Patterns for Role Classification
 RE_BACKEND_TITLE = re.compile(
@@ -43,8 +47,8 @@ RE_JUNIOR_TITLE = re.compile(
     r"\b(junior|jr|associate|intern|internship|graduate|entry level|entry-level|trainee|apprentice|l1)\b",
     re.IGNORECASE,
 )
-RE_JUNIOR_DESC = re.compile(
-    r"\b(0-2 years|0 to 2 years|1-2 years|1 to 2 years|recent graduate|no experience required|entry level|entry-level)\b",
+RE_SENIOR_TITLE = re.compile(
+    r"\b(senior|sr|lead|principal|staff|architect|director|vp|head|manager)\b",
     re.IGNORECASE,
 )
 
@@ -85,82 +89,136 @@ def classify_role(title: str, skills: List[str]) -> Optional[str]:
     return None
 
 
-def is_entry_level(exp_level: Optional[str], title: str, description: str) -> bool:
-    """Multi-signal check to detect Entry-Level / Junior postings."""
-    # 1. Metadata field check
+def is_entry_level(exp_level: Optional[str], title: str, description: str = "") -> bool:
+    """Multi-signal check to detect Entry-Level / Junior postings and filter out senior roles."""
+    if isinstance(title, str) and RE_SENIOR_TITLE.search(title):
+        return False
+
+    # 1. Metadata check in asaniczka dataset
     if isinstance(exp_level, str):
-        if exp_level.strip() in ["Entry level", "Associate", "Internship"]:
+        if exp_level.strip().lower() in ["associate", "entry level", "internship"]:
             return True
             
     # 2. Title regex check
     if isinstance(title, str) and RE_JUNIOR_TITLE.search(title):
         return True
         
-    # 3. Description regex check
-    if isinstance(description, str) and RE_JUNIOR_DESC.search(description):
-        return True
-        
     return False
 
 
-def build_clean_dataset(limit_rows: Optional[int] = None) -> Dict[str, any]:
-    """Stream postings.csv, extract skills, categorize roles, and save clean transactions."""
-    postings_path = RAW_DIR / "postings.csv"
-    if not postings_path.exists():
-        raise FileNotFoundError(f"Missing {postings_path}")
+def clean_skill_token(token: str) -> Optional[str]:
+    """Normalize a raw skill token from job_skills.csv to canonical taxonomy."""
+    s = token.strip()
+    s_lower = s.lower()
+    if s in SKILL_TAXONOMY:
+        return s
+    if s_lower in ALIAS_MAP:
+        return ALIAS_MAP[s_lower]
+    return None
 
-    print(f"Streaming and processing {postings_path.name}...")
-    
+
+def get_dataset_directory() -> Path:
+    """Download or retrieve cached asaniczka dataset directory using kagglehub."""
+    print(f"Resolving dataset: {DATASET_NAME} via kagglehub...")
+    dataset_dir = Path(kagglehub.dataset_download(DATASET_NAME))
+    print(f"Dataset path: {dataset_dir}")
+    return dataset_dir
+
+
+def build_clean_dataset(limit_rows: Optional[int] = None) -> Dict[str, any]:
+    """Process asaniczka 1.3M dataset, extract IT skills and roles, and save clean transactions."""
+    dataset_dir = get_dataset_directory()
+    postings_path = dataset_dir / "linkedin_job_postings.csv"
+    skills_path = dataset_dir / "job_skills.csv"
+
+    if not postings_path.exists() or not skills_path.exists():
+        raise FileNotFoundError(f"Missing required CSV files in {dataset_dir}")
+
+    print(f"Step 1/2: Streaming {postings_path.name} to identify IT candidate postings...")
+    matched_jobs = {}
+    chunk_size = 100000
+    total_postings = 0
+
+    cols_p = ["job_link", "job_title", "job_level"]
+    for chunk in pd.read_csv(postings_path, usecols=cols_p, chunksize=chunk_size):
+        total_postings += len(chunk)
+        for _, row in chunk.iterrows():
+            title = str(row["job_title"]) if pd.notnull(row["job_title"]) else ""
+            if len(title) < 4:
+                continue
+
+            title_lower = title.lower()
+            if any(k in title_lower for k in [
+                "backend", "back-end", "python", "java", "api", "node", "django", "spring", "golang", "c#",
+                "frontend", "front-end", "ui", "react", "vue", "angular", "web", "javascript", "typescript",
+                "data analyst", "bi analyst", "analytics", "sql analyst", "reporting analyst", "business intelligence",
+                "software engineer", "developer", "programmer"
+            ]):
+                job_link = row["job_link"]
+                exp_level = str(row["job_level"]) if pd.notnull(row["job_level"]) else None
+                entry_flag = is_entry_level(exp_level, title)
+                matched_jobs[job_link] = {
+                    "title": title,
+                    "exp_level": exp_level,
+                    "is_entry": entry_flag,
+                }
+
+        if limit_rows and total_postings >= limit_rows:
+            break
+        print(f"  Scanned {total_postings} postings... Matched {len(matched_jobs)} candidate IT jobs.")
+
+    print(f"\nStep 2/2: Streaming {skills_path.name} to extract canonical skills for candidate jobs...")
+    matched_links = set(matched_jobs.keys())
     records_by_role_and_exp = {
         "Backend Developer": {"entry": [], "all": []},
         "Frontend Developer": {"entry": [], "all": []},
         "Data Analyst": {"entry": [], "all": []},
     }
 
-    chunk_size = 25000
-    total_scanned = 0
-    total_retained = 0
+    job_counter = 1000000
+    skills_scanned = 0
+    retained_transactions = 0
 
-    cols = ["job_id", "title", "formatted_experience_level", "description"]
-    
-    for chunk in pd.read_csv(postings_path, usecols=cols, chunksize=chunk_size):
-        for _, row in chunk.iterrows():
-            total_scanned += 1
-            if limit_rows and total_scanned > limit_rows:
-                break
-                
-            desc = str(row["description"]) if pd.notnull(row["description"]) else ""
-            if len(desc) < 40:
+    cols_s = ["job_link", "job_skills"]
+    for chunk in pd.read_csv(skills_path, usecols=cols_s, chunksize=chunk_size):
+        skills_scanned += len(chunk)
+        matched_chunk = chunk[chunk["job_link"].isin(matched_links)]
+        
+        for _, row in matched_chunk.iterrows():
+            link = row["job_link"]
+            meta = matched_jobs[link]
+            raw_skills_str = str(row["job_skills"]) if pd.notnull(row["job_skills"]) else ""
+            if not raw_skills_str:
                 continue
-                
-            skills = extract_skills(desc)
-            # Minimum 3 skills to support multi-itemset association mining
-            if len(skills) < 3:
+
+            canonical_skills = set()
+            for raw_tok in raw_skills_str.split(","):
+                cleaned = clean_skill_token(raw_tok)
+                if cleaned:
+                    canonical_skills.add(cleaned)
+
+            if len(canonical_skills) < 3:
                 continue
-                
-            title = str(row["title"]) if pd.notnull(row["title"]) else ""
-            role = classify_role(title, skills)
+
+            skills_list = sorted(list(canonical_skills))
+            role = classify_role(meta["title"], skills_list)
             if not role:
                 continue
-                
-            exp_level = str(row["formatted_experience_level"]) if pd.notnull(row["formatted_experience_level"]) else None
-            entry_flag = is_entry_level(exp_level, title, desc)
-            
-            item = {
-                "job_id": int(row["job_id"]),
-                "title": title,
-                "skills": skills,
-                "is_entry": entry_flag,
-            }
-            
-            records_by_role_and_exp[role]["all"].append(item)
-            if entry_flag:
-                records_by_role_and_exp[role]["entry"].append(item)
-            total_retained += 1
 
-        print(f"  Scanned {total_scanned} postings... Retained {total_retained} clean IT transactions.")
-        if limit_rows and total_scanned > limit_rows:
-            break
+            job_counter += 1
+            item = {
+                "job_id": job_counter,
+                "title": meta["title"],
+                "skills": skills_list,
+                "is_entry": meta["is_entry"],
+            }
+
+            records_by_role_and_exp[role]["all"].append(item)
+            if meta["is_entry"]:
+                records_by_role_and_exp[role]["entry"].append(item)
+            retained_transactions += 1
+
+        print(f"  Processed {skills_scanned} skill records... Retained {retained_transactions} clean IT transactions.")
 
     # Export clean transactions to JSON
     output_json = PROCESSED_DIR / "clean_transactions.json"
@@ -169,7 +227,7 @@ def build_clean_dataset(limit_rows: Optional[int] = None) -> Dict[str, any]:
 
     # Print summary statistics
     summary = {}
-    print("\n=== Dataset Preprocessing Complete ===")
+    print("\n=== Dataset Preprocessing Complete (asaniczka 1.3M Dataset) ===")
     for role, modes in records_by_role_and_exp.items():
         all_count = len(modes["all"])
         entry_count = len(modes["entry"])

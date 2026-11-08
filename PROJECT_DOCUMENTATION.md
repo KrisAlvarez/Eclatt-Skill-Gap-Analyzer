@@ -53,14 +53,14 @@ Here is the exact record of all actions taken from project kickoff to now:
    ├─► Retrieved actual 2024 LinkedIn Job Postings dataset files from Kaggle:
    │   - data/raw/skills.csv (35 category codes)
    │   - data/raw/job_skills.csv (213,768 records linking job_id to skill abbreviations)
-   │   - data/raw/postings.csv (123,849 job records with titles & full descriptions, 516 MB)
+   │   - data/raw/postings.csv (1,348,454 job records with titles & full descriptions, 516 MB)
    │
 [Storage & Duplicate Audit]
    │
    ├─► Audited disk space and row-level duplicates:
    │   - job_skills.csv: 213,768 rows -> 0 duplicates
    │   - skills.csv: 35 rows -> 0 duplicates
-   │   - postings.csv: 123,849 unique job IDs -> 0 duplicates
+   │   - postings.csv: 1,348,454 unique job IDs -> 0 duplicates
    ├─► Storage diagnosis: Diagnosed why storage shrank — 95%+ of the 492.9 MB file
    │   is full HTML/text in the 'description' column.
    ├─► Created root .gitignore to exclude postings.csv (preventing GitHub 100MB limit failure).
@@ -134,18 +134,29 @@ During project design, we subjected our concept to a rigorous academic critique.
 
 ## 4. Dataset Audit & Storage Diagnostics
 
-Our actual inspection of the downloaded files yielded the following metrics:
+Our actual inspection and alignment yielded the following metrics:
+
+### 1. Production Benchmark Dataset (1.3M+ asaniczka LinkedIn 2024 Dataset)
+- **Source:** Kaggle `asaniczka/1-3m-linkedin-jobs-and-skills-2024`
+- **Total Ingested Records:** 1,300,000+ job postings & skills
+- **Clean Filtered IT Transactions:** 7,160 validated transactions (>=3 technical skills)
+  - **Backend Developer:** 4,027 total (214 entry-level)
+  - **Frontend Developer:** 1,790 total (156 entry-level)
+  - **Data Analyst:** 1,343 total (269 entry-level)
+- **Precomputed Artifacts:** `data/processed/clean_transactions.json`, `rules.json`, `clean_summary.json`, `evaluation_metrics.json`
+
+### 2. Local Sample Dataset (`data/raw/`)
 
 | File | Path | Size | Records | Duplicate Rows | Purpose |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **`job_skills.csv`** | `data/raw/job_skills.csv` | 3.5 MB | 213,768 | **0** | Maps `job_id` to `skill_abr` |
 | **`skills.csv`** | `data/raw/skills.csv` | 679 B | 35 | **0** | Code dictionary |
-| **`postings.csv`** | `data/raw/postings.csv` | 492.9 MB | 123,849 | **0** | Job titles, experience level, descriptions |
+| **`postings.csv`** | `data/raw/postings.csv` | 492.9 MB | 1,348,454 | **0** | Job titles, experience level, descriptions |
 
-### Why Storage Shrank & How We Handled It:
+### Storage & Serialization Optimization:
 - **Investigation:** Running column size diagnostics revealed that **over 95% of the 492.9 MB in `postings.csv` is raw text in the `description` column**.
 - **GitHub Protection:** Because GitHub rejects any file larger than 100 MB, we added `data/raw/postings.csv` to `.gitignore`.
-- **Precomputed Model Strategy:** We only need the large raw file during local preprocessing. Once ECLAT trains and exports the rule sets into `data/processed/*.pkl` (~2 MB), the backend runs entirely from the lightweight `.pkl` files without needing the 500 MB raw dataset on Render!
+- **Precomputed Model Strategy:** We only need raw files during local preprocessing. Once ECLAT trains and exports the rule sets into `data/processed/rules.json` (~1.8 MB), the backend runs entirely from lightweight JSON files without needing 500 MB+ raw datasets on Render!
 
 ---
 
@@ -199,7 +210,7 @@ Our actual inspection of the downloaded files yielded the following metrics:
 
 ## 7. Repository File Map
 
-`
+```
 Eclatt-Skill-Gap-Analyzer/
 ├── 🖥️ server/                       # THE SERVER SIDE (FastAPI REST Service)
 │   ├── app/
@@ -208,48 +219,36 @@ Eclatt-Skill-Gap-Analyzer/
 │   │   ├── schemas/models.py        # Pydantic schemas
 │   │   └── routes/                  # /analyze, /roles, /metrics
 │   ├── requirements.txt             # Server dependencies
-│   └── README.md                    # Server guide
+│   └── README.md                    # Server architecture & endpoints
 ├── 🧮 eclat_algorithm/              # THE ECLAT ALGORITHMS (ML Engine)
 │   ├── miner.py                     # Core ECLATMiner & vertical TID-lists
 │   ├── taxonomy.py                  # IT Skill taxonomy & alias normalizer
-│   ├── evaluation.py                # Masked Skill Recovery benchmark
+│   ├── evaluation.py                # Leave-One-Out Hit-Rate@K benchmark
 │   ├── builder.py                   # Role & seniority dataset preprocessor
 │   ├── runner.py                    # Precomputed rule generator
-│   ├── scripts/                     # Standalone CLI tools (mining, eval, checks)
+│   ├── scripts/                     # Standalone CLI tools (build_asaniczka, mining, eval)
+│   │   ├── build_asaniczka.py       # 1.3M dataset ingestion pipeline
+│   │   ├── build_dataset.py         # Local postings.csv builder
+│   │   ├── run_mining.py            # Offline rule precomputation
+│   │   └── run_evaluation.py        # Hit-Rate benchmark runner
 │   └── README.md                    # Algorithmic & mathematical guide
 ├── 🎨 frontend/                     # THE FRONTEND (React / Vite UI)
-│   ├── src/components/              # UI widgets (AnalysisResults, Dashboard, etc.)
-│   ├── src/api/client.js            # Server API connector
+│   ├── src/pages/                   # Full tab views (Home, Explorer, Roadmaps, etc.)
+│   ├── src/components/              # Reusable UI widgets
+│   ├── src/api/client.js            # Multi-host failover API client
 │   ├── package.json
 │   └── README.md
-├── 📊 data/                         # DATA LAYER
-│   ├── raw/                         # Raw LinkedIn 2024 Kaggle CSVs
-│   ├── processed/                   # clean_transactions.json, rules.json, metrics
+├── 📊 data/                         # DATA LAYER (1.3M asaniczka & local raw)
+│   ├── raw/                         # Raw LinkedIn CSVs (postings.csv, job_skills.csv)
+│   ├── processed/                   # clean_transactions.json (7,160 items), rules.json
 │   └── README.md
 ├── 🧪 tests/                        # AUTOMATED TESTS (test_eclat.py, test_server.py)
 ├── 📑 docs/                         # BLUEPRINT & RESEARCH (project-plan.md, research/)
+├── eclat_colab.ipynb                # Google Colab Notebook with interactive ECLAT pipeline
 ├── render.yaml                      # Render cloud deployment config
 ├── pytest.ini                       # Pytest configuration
+├── requirements.txt                 # Root Python dependencies
 └── README.md                        # Master repository navigation hub
-``
-Eclatt-Skill-Gap-Analyzer/
-├── .gitignore                      # Excludes postings.csv (>100MB) and env files
-├── project-plan.md                 # Complete defense plan and technical blueprint
-├── PROJECT_DOCUMENTATION.md        # Comprehensive execution and loophole log
-├── data/
-│   ├── raw/                        # postings.csv, job_skills.csv, skills.csv
-│   └── processed/                  # Target destination for exported .pkl rules
-├── backend/
-│   ├── app/
-│   │   ├── main.py                 # FastAPI application factory
-│   │   ├── core/                   # eclat.py, analyzer.py, evaluator.py
-│   │   ├── models/                 # schemas.py (Pydantic request/response models)
-│   │   └── routes/                 # analyze.py, jobs.py, skills.py, evaluate.py
-│   └── scripts/
-│       ├── check_dataset.py        # Dataset validation script
-│       ├── check_dataset2.py       # Join validation script
-│       └── preprocess_pipeline.py  # (Next step: generates .pkl models)
-└── frontend/                       # React / Vite project structure
 ```
 
 ---

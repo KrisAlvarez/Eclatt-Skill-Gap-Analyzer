@@ -28,7 +28,7 @@ export default function HowToUseTab({ onGoToExplorer }) {
   const faqs = [
     {
       q: 'How does this work?',
-      a: 'We parsed 123,000 real LinkedIn job postings to find co-occurrence patterns. If a job asks for Python and SQL, the data shows whether it also asks for Docker or REST APIs.',
+      a: 'We parsed 1.3 million real LinkedIn job postings to find co-occurrence patterns. If a job asks for Python and SQL, the data shows whether it also asks for Docker or REST APIs.',
     },
     {
       q: 'What is the entry-level filter?',

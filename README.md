@@ -40,7 +40,7 @@ Eclatt-Skill-Gap-Analyzer/
 │   ├── builder.py                   # Data preprocessing & hybrid title+stack classifier
 │   ├── runner.py                    # Precomputes & serializes rules to rules.json
 │   ├── scripts/                     # Standalone CLI tools to run and test ECLAT:
-│   │   ├── build_dataset.py         # Builds clean transactions from raw postings
+│   │   ├── build_dataset.py         # Builds clean transactions from asaniczka 1.3M dataset (via kagglehub)
 │   │   ├── run_mining.py            # Executes ECLAT offline & saves rules.json
 │   │   ├── run_evaluation.py        # Computes Hit-Rate@K benchmark & saves metrics
 │   │   ├── check_dataset.py         # TID-list demonstration & pair intersection test
@@ -75,12 +75,11 @@ Eclatt-Skill-Gap-Analyzer/
 │   └── README.md                    # Frontend setup & development guide
 │
 ├── 📊 data/                         # DATA LAYER (Raw & Processed Data)
-│   ├── raw/                         # Raw LinkedIn 2024 Kaggle CSV files
-│   │   ├── job_skills.csv           # Job-to-skill junction table (213K+ links)
-│   │   ├── postings.csv             # Full job postings with seniority tags (516 MB)
-│   │   └── skills.csv               # Skill abbreviation dictionary
+│   ├── raw/                         # Automated via kagglehub ("asaniczka/1-3m-linkedin-jobs-and-skills-2024")
+│   │   └── README.md                # Ingestion instructions & dataset details
 │   ├── processed/                   # Preprocessed transactions & precomputed indexes
-│   │   ├── clean_transactions.json  # Sanitized role-segmented transactions
+│   │   ├── clean_transactions.json  # Sanitized role-segmented transactions (7,160 IT postings)
+│   │   ├── clean_summary.json       # Seniority & track distribution counts
 │   │   ├── rules.json               # Precomputed association rules (sub-millisecond lookups)
 │   │   └── evaluation_metrics.json  # Hit-Rate@3, Hit-Rate@5, Lift over baseline
 │   └── README.md                    # Dataset dictionary, schema & storage notes
@@ -99,6 +98,7 @@ Eclatt-Skill-Gap-Analyzer/
 │   │   └── raw/                     # Archived web scrapes & raw data logs
 │   └── README.md                    # Documentation index
 │
+├── eclat_colab.ipynb                # Google Colab Notebook (standalone interactive ECLAT pipeline)
 ├── render.yaml                      # Render cloud deployment blueprint
 ├── pytest.ini                       # Pytest test configuration
 ├── requirements.txt                 # Root Python dependencies

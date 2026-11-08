@@ -114,7 +114,7 @@ export default function HomeTab({ onSelectRoleAndExplore, onGoToRoadmaps }) {
       {/* 3 Simple Notes */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
         <div className="p-4 rounded-xl bg-white border border-[#e1e6dd] space-y-1">
-          <span className="font-bold text-xs text-[#1b2b20] block">123K Real Postings</span>
+          <span className="font-bold text-xs text-[#1b2b20] block">1.3M Real Postings</span>
           <p className="text-xs text-[#526456]">Data mined from LinkedIn postings in 2024.</p>
         </div>
         <div className="p-4 rounded-xl bg-white border border-[#e1e6dd] space-y-1">
