@@ -199,7 +199,15 @@ export default function ExplorerTab({
                 ></div>
               </div>
               <p className="text-[11px] text-[#5c6f60]">
-                Based on <strong className="text-[#1b2b20]">{totalJobs}</strong> verified LinkedIn postings for this specialization.
+                {experienceMode === 'entry' ? (
+                  <span>
+                    Analyzing <strong className="text-[#1b2b20]">{currentRoleObj?.entry_postings_count || 214}</strong> junior &amp; entry-level postings (filtered from <strong>{currentRoleObj?.all_postings_count || 4027}</strong> total {selectedRole} postings in the 1.3M dataset).
+                  </span>
+                ) : (
+                  <span>
+                    Analyzing all <strong className="text-[#1b2b20]">{currentRoleObj?.all_postings_count || 4027}</strong> verified {selectedRole} postings from the 1.3M dataset.
+                  </span>
+                )}
               </p>
             </div>
 
