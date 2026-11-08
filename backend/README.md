@@ -1,7 +1,7 @@
 # ♻️ `backend/` — Compatibility Layer
 
 > **Note:** The `backend/` folder is a **backward-compatibility shim layer**.
-> It is preserved so that any external references (CI scripts, Render build history, old Postman docs) continue to resolve, but **all real code now lives in the canonical locations**:
+> It is preserved so that any external references (CI scripts, Render build history, legacy imports) continue to resolve, but **all real code lives in the canonical locations**:
 
 | Old `backend/` path | Canonical new location |
 | :--- | :--- |
@@ -14,11 +14,13 @@
 | `backend/app/routes/roles.py` | [`server/app/routes/roles.py`](../server/app/routes/roles.py) |
 | `backend/app/routes/metrics.py` | [`server/app/routes/metrics.py`](../server/app/routes/metrics.py) |
 | `backend/scripts/build_clean_dataset.py` | [`eclat_algorithm/builder.py`](../eclat_algorithm/builder.py) |
+| `backend/scripts/build_asaniczka.py` | [`eclat_algorithm/scripts/build_asaniczka.py`](../eclat_algorithm/scripts/build_asaniczka.py) |
 | `backend/scripts/run_eclat_offline.py` | [`eclat_algorithm/runner.py`](../eclat_algorithm/runner.py) |
 | `backend/scripts/run_evaluation.py` | [`eclat_algorithm/evaluation.py`](../eclat_algorithm/evaluation.py) |
-| `backend/tests/test_eclat.py` | [`tests/test_eclat.py`](../tests/test_eclat.py) |
-| `backend/tests/test_api.py` | [`tests/test_server.py`](../tests/test_server.py) |
+| `backend/scripts/check_dataset.py` | [`eclat_algorithm/scripts/check_dataset.py`](../eclat_algorithm/scripts/check_dataset.py) |
+| `backend/scripts/check_dataset2.py` | [`eclat_algorithm/scripts/check_dataset2.py`](../eclat_algorithm/scripts/check_dataset2.py) |
+| `backend/scripts/check_duplicates.py` | [`eclat_algorithm/scripts/check_duplicates.py`](../eclat_algorithm/scripts/check_duplicates.py) |
 
 ---
 
-For all development, **go directly to the canonical locations above.** This folder contains only thin import-forwarding shims.
+For all active development, **use the canonical domain locations above (`server/`, `eclat_algorithm/`, `tests/`).**

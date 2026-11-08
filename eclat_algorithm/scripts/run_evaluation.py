@@ -1,4 +1,4 @@
-"""CLI script to run Masked Skill Recovery (Leave-One-Out) evaluation."""
+"""CLI script to run leakage-safe masked-skill evaluation."""
 
 import sys
 from pathlib import Path

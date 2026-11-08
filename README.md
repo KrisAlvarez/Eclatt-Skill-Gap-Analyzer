@@ -36,7 +36,7 @@ Eclatt-Skill-Gap-Analyzer/
 ├── 🧮 eclat_algorithm/              # THE ECLAT ALGORITHMS (Machine Learning Engine)
 │   ├── miner.py                     # Core ECLATMiner: Vertical TID-lists & Lattice Intersections
 │   ├── taxonomy.py                  # Canonical IT Skills Taxonomy & alias regex normalizer
-│   ├── evaluation.py                # Leave-One-Out Masked Skill Recovery & Naive Baseline
+│   ├── evaluation.py # Leakage-safe train/validation/test masked recovery
 │   ├── builder.py                   # Data preprocessing & hybrid title+stack classifier
 │   ├── runner.py                    # Precomputes & serializes rules to rules.json
 │   ├── scripts/                     # Standalone CLI tools to run and test ECLAT:
@@ -78,7 +78,7 @@ Eclatt-Skill-Gap-Analyzer/
 │   ├── raw/                         # Automated via kagglehub ("asaniczka/1-3m-linkedin-jobs-and-skills-2024")
 │   │   └── README.md                # Ingestion instructions & dataset details
 │   ├── processed/                   # Preprocessed transactions & precomputed indexes
-│   │   ├── clean_transactions.json  # Sanitized role-segmented transactions (50,266 unique IT postings; 88,498 track assignments)
+│   │   ├── clean_transactions.json  # Sanitized role-segmented transactions (44,441 unique primary-assigned IT postings; 0 overlap)
 │   │   ├── clean_summary.json       # Seniority & track distribution counts
 │   │   ├── rules.json               # Precomputed association rules (sub-millisecond lookups)
 │   │   └── evaluation_metrics.json  # Hit-Rate@3, Hit-Rate@5, Lift over baseline
@@ -153,5 +153,5 @@ npm run dev
 | **3. ECLAT vs Count(*)** | Popular skills alone don't justify machine learning | Generates **conditional dependencies** ($P(B \mid A)$) vs marginal frequency ($P(B)$) | [`docs/project-plan.md`](./docs/project-plan.md#13-refined-objective) |
 | **4. Unvetted Skills** | Soft skills and generic perks pollute transactions | Strict IT skill taxonomy whitelist with canonical normalization | [`eclat_algorithm/taxonomy.py`](./eclat_algorithm/taxonomy.py) |
 | **5. Excessive Scope** | 15+ job roles lead to sparse mapping and noise | Scoped strictly to **3 core tracks**: Backend, Frontend, and Data Analyst | [`docs/project-plan.md`](./docs/project-plan.md#33-focused-scope-3-core-it-tracks-loophole-5) |
-| **6. Lack of Evaluation** | Subjective recommendations cannot be defended | **Masked Skill Recovery (Leave-One-Out Hit-Rate@K)** on a 20% held-out test split | [`eclat_algorithm/evaluation.py`](./eclat_algorithm/evaluation.py) |
+| **6. Lack of Evaluation** | Subjective recommendations cannot be defended | **Train/validation/test masked-skill recovery** with popularity baseline and confidence intervals | [`eclat_algorithm/evaluation.py`](./eclat_algorithm/evaluation.py) |
 | **7. Cold-Start Failure** | Zero input skills or unseen combinations yield empty rules | 3-tier cascade: Exact Match &rarr; Sub-Lattice Step-Down &rarr; Unconditional Prior | [`server/app/routes/analyze.py`](./server/app/routes/analyze.py) |

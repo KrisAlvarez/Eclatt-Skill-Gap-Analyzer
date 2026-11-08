@@ -25,7 +25,7 @@ Traditional platforms offer only marginal skill frequencies ($P(\text{Docker})$)
 2. **ECLAT Pattern Discovery:** Execute equivalence-class lattice traversal to mine frequent itemsets and derive directional association rules governed by strict **Support**, **Confidence**, and **Lift** thresholds.
 3. **Dual-Market Segmentation:** Model two distinct hiring ecosystems—**Entry-Level Market** (`experience_level='entry'`) versus **General Industry Benchmark** (`'all'`)—to isolate junior-accessible technologies from senior architectural expectations.
 4. **Conditional Gap Analysis Engine:** Given a candidate's self-reported skill vector $A$, navigate the itemset lattice to identify missing complements $B$ where $A \Rightarrow B$ exhibits strong statistical affinity ($\text{Lift} > 1.2$), backed by an algorithmic sub-lattice fallback for cold-start inputs.
-5. **Rigorous Empirical Evaluation:** Quantify recommendation validity on a 20% held-out test split via **Masked Skill Recovery (Leave-One-Out Hit-Rate@K and Recall@K)**, proving statistically significant lift over a naive frequency baseline (`COUNT(*)`).
+5. **Rigorous Empirical Evaluation:** Quantify recommendation validity with a leakage-safe **train/validation/test masked-skill recovery** protocol, reporting Hit-Rate@K, long-tail performance, and uncertainty against a naive frequency baseline (`COUNT(*)`).
 
 ---
 
@@ -36,7 +36,7 @@ Traditional platforms offer only marginal skill frequencies ($P(\text{Docker})$)
 | **0** | **Dataset Identity Mismatch** *(Discovered in Audit)* | Raw data contains 35 high-level LinkedIn industry codes (`Sales`, `Manufacturing`), not granular technical skills | **Data Rectification Protocol:** Migrate to technical skill extraction (`asaniczka/1-3m-linkedin-jobs-and-skills-2024` or regex taxonomy extraction over `postings.csv`). Whitelist ~300 verified IT technical competencies. |
 | **1** | **Seniority Bias & Junior Scarcity** | ~89% of postings target Mid-Senior roles; filtering strictly on `formatted_experience_level == 'Entry level'` creates data scarcity | Multi-signal junior segmentation (`formatted_experience_level IN ('Entry level', 'Associate')` + title keywords `Junior`, `Associate`, `Intern`, `L1`). Dual-Market view in UI. |
 | **2** | **Predictive Overreach (Co-occurrence $\neq$ Curriculum)** | ECLAT cannot establish learning sequences, prerequisite dependencies, or guarantee hiring | Framed strictly as **empirical co-occurrence patterns**. The UI displays *“Frequently paired technologies in 2024 postings”*, explicitly disclaiming pedagogical hierarchy. |
-| **3** | **Algorithmic Justification (ECLAT vs `COUNT(*)`)** | If the system only recommends popular skills, an ML algorithm is unjustified over basic SQL | ECLAT uncovers **conditional probabilities** ($P(B \mid A)$) for combinations of size $\ge 2$. Defended via offline comparison showing ECLAT outperforming naive popularity on held-out tests. |
+| **3** | **Algorithmic Justification (ECLAT vs `COUNT(*)`)** | If the system only recommends popular skills, an ML algorithm is unjustified over basic SQL | ECLAT uncovers **conditional probabilities** ($P(B \mid A)$) for combinations of size $\ge 2$. The comparison reports measured gains or losses honestly for overall and long-tail skills. |
 | **4** | **Taxonomy Pollution & Soft-Skill Noise** | Unvetted terms (`Communication`, `Agile`, `Healthcare`) distort support counts and generate trivial rules | Curated whitelist taxonomy across 5 technical categories (Languages, Frameworks, Databases, Cloud/DevOps, Developer Tools). Strict stop-word stripping. |
 | **5** | **Excessive Domain Scope** | Mining 15+ job roles introduces severe sparsity, noisy role overlaps, and sub-threshold support | Strictly scoped to **3 core tracks**: Backend, Frontend, and Data Analyst. Explicit regex role assignment with full-stack role exclusion to prevent stack bleed. |
 | **6** | **Evaluation Leakage & Triviality Bias** | Masked recovery on ubiquitous skills (`Git`, `SQL`) produces artificially inflated hit rates for both models | Stratified evaluation: report **Overall Hit-Rate@K** alongside **Long-Tail / Non-Trivial Hit-Rate@K** (skills with marginal frequency $< 30\%$, e.g., `Redis`, `Kafka`, `Docker`). |
@@ -188,10 +188,11 @@ flowchart TD
 
 ## 7. Rigorous Evaluation Methodology (Loophole #3 & #6)
 
-### 7.1 Masked Skill Recovery (Leave-One-Out)
-To provide undeniable quantitative proof of model effectiveness, the dataset for each role is partitioned into:
-* **80% Training Set:** Transformed into TID-lists and mined via ECLAT.
-* **20% Held-Out Test Set:** Evaluated without exposing test transactions to the miner.
+### 7.1 Masked Skill Recovery
+To measure generalization without tuning on the final result, the dataset for each role is partitioned into:
+* **60% Training Set:** Transformed into TID-lists and mined via ECLAT.
+* **20% Validation Set:** Used only to select support, confidence, and lift thresholds.
+* **20% Held-Out Test Set:** Evaluated once without exposing test transactions to the miner.
 
 #### Procedure:
 1. For each test transaction $T_{\text{test}} = \{s_1, s_2, \dots, s_k\}$ where $k \ge 3$:
@@ -213,23 +214,23 @@ To refute the criticism that ECLAT only succeeds by guessing ubiquitous skills l
 ### 7.4 Baseline Comparison (Hypothesis Testing)
 Every evaluation run benchmarks ECLAT against a **Naive Popularity Baseline (`COUNT(*)`)**:
 * **Baseline Predictor:** For any input $X$, always output the most frequent skills in the training set that are not in $X$.
-* **Academic Threshold:** ECLAT must demonstrate a statistically significant gain on specialized long-tail technical competencies over the popularity baseline.
+* **Academic Threshold:** Report confidence intervals and effect sizes for specialized long-tail competencies; do not claim a gain when the measured interval does not support it.
 
-### 7.5 Empirical Evaluation Results (Leave-One-Out on Held-Out Test Set)
+### 7.5 Empirical Evaluation Results
 
-The offline evaluation pipeline was executed across all tracks on held-out test splits. The results definitively prove the value of association rule mining over naive counting:
+The offline evaluation pipeline reports measured gains and losses against naive counting; ECLAT is not assumed to win every segment:
 
 | IT Track | Market Mode | Test Size | ECLAT HR@5 | Naive HR@5 | Non-Trivial ECLAT HR@5 | Non-Trivial Naive HR@5 | Empirical Interpretation |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Backend Developer** | **Entry-Level** | 34 | 32.4% | 38.2% | **13.6%** | **4.5%** | **3x (300%) higher recovery** on specialized backend tools (`Docker`, `Redis`, `Celery`) |
-| **Backend Developer** | **Benchmark (`all`)** | 160 | 34.4% | 50.6% | **21.7%** | **9.6%** | **2.3x higher recovery** on stack-specific cloud & database tooling |
-| **Frontend Developer** | **Entry-Level** | 19 | 42.1% | 68.4% | **40.0%** | **0.0%** | Naive baseline collapsed to **0.0%** on specialized tooling; ECLAT recovered **40.0%** |
-| **Frontend Developer** | **Benchmark (`all`)** | 95 | 48.4% | 59.0% | **21.4%** | **14.3%** | Consistent +50% relative lift on frontend ecosystems (`Next.js`, `Redux`, `Tailwind`) |
-| **Data Analyst** | **Benchmark (`all`)** | 54 | 42.6% | 75.9% | **36.8%** | **31.6%** | ECLAT out-predicts baseline on niche BI tooling (`Airflow`, `Snowflake`) |
+| **Backend Developer** | **Entry-Level** | 275 | 30.2% | 28.4% | 5.0% | 0.0% | ECLAT shows a modest overall and long-tail gain |
+| **Backend Developer** | **Benchmark (`all`)** | 4,760 | 31.4% | 28.8% | 7.7% | 0.0% | ECLAT improves conditional recovery |
+| **Frontend Developer** | **Entry-Level** | 50 | 58.0% | 54.0% | 0.0% | 0.0% | Small test set; overall gain is uncertain |
+| **Frontend Developer** | **Benchmark (`all`)** | 466 | 54.7% | 60.9% | 2.0% | 0.0% | Popularity remains stronger overall |
+| **Data Analyst** | **Entry-Level** | 172 | 49.4% | 77.3% | 0.0% | 0.0% | Popularity wins overall; long-tail sample is limited |
+| **Data Analyst** | **Benchmark (`all`)** | 1,839 | 59.0% | 67.7% | 9.3% | 1.2% | Popularity wins overall; ECLAT improves long-tail recovery |
 
 > [!IMPORTANT]
-> **Defense Insight (The Head vs. Tail Distribution):**  
-> While the naive popularity baseline achieves a higher *overall* hit-rate on general postings, it achieves this by **always blindly guessing ubiquitous head skills** (`Git`, `SQL`, `Python`), which appear in almost every job ad. When tested on **Non-Trivial technical complements** (marginal frequency $< 30\%$, such as `Docker`, `Redis`, `Next.js`, `Kubernetes`), the naive baseline collapses to **0.0% in Entry-Level Frontend and 4.5% in Entry-Level Backend**. In contrast, ECLAT achieves **40.0% and 13.6%**, proving that it successfully models latent contextual co-occurrences.
+> **Defense Insight:** Overall popularity can outperform conditional rules when the target skill distribution is highly concentrated. ECLAT's defensible contribution is transparent, role-specific conditional co-occurrence evidence and improved long-tail recovery in several segments—not a guarantee of higher HR@K everywhere.
 
 ---
 
@@ -254,7 +255,7 @@ Eclatt-Skill-Gap-Analyzer/
 │   ├── scripts/
 │   │   ├── build_clean_dataset.py   # Hybrid classifier: extracted 1,536 IT transactions
 │   │   ├── run_eclat_offline.py     # Precomputes rules -> rules.json (2.6 MB Render-safe)
-│   │   ├── run_evaluation.py        # Masked Leave-One-Out validation pipeline
+│   │   ├── run_evaluation.py        # Train/validation/test masked evaluation pipeline
 │   │   ├── check_dataset.py         # Exploratory verification script
 │   │   ├── check_dataset2.py        # Title and co-occurrence distributions
 │   │   └── check_duplicates.py      # Dataset integrity auditor
@@ -281,7 +282,7 @@ Eclatt-Skill-Gap-Analyzer/
 
 ### Q1: "ECLAT is just an unsupervised data mining algorithm from 1997. How does this qualify as Machine Learning?"
 > **Defensible Response:**  
-> *"Machine Learning encompasses supervised, unsupervised, and reinforcement paradigms. Frequent itemset mining and association rule discovery represent foundational unsupervised learning for latent pattern discovery. Furthermore, our project avoids treating ECLAT purely as a descriptive summary; we formalize it within a predictive framework by operationalizing it as a conditional recommendation engine, introducing an inductive train/test split (80/20), and validating generalization via Leave-One-Out Hit-Rate@K against a naive baseline."*
+> *"Machine Learning encompasses supervised, unsupervised, and reinforcement paradigms. Frequent itemset mining and association rule discovery represent foundational unsupervised learning for latent pattern discovery. Our project operationalizes ECLAT as a conditional recommendation engine and evaluates generalization with a train/validation/test masked-skill protocol against a naive baseline."*
 
 ### Q2: "Why didn't you just use SQL `GROUP BY` or simple counting? Isn't ECLAT overkill?"
 > **Defensible Response:**  
@@ -297,7 +298,7 @@ Eclatt-Skill-Gap-Analyzer/
 
 ### Q5: "How do you prove that your model didn't just memorize the test data?"
 > **Defensible Response:**  
-> *"We strictly enforced an 80/20 train/test partition. All TID-lists and association rules are mined exclusively on the 80% training set. During Leave-One-Out evaluation, test transactions are completely unseen. When a skill is masked from a test transaction, the model must recover it using only the mined rules from the training set. Furthermore, we evaluate both Overall Hit-Rate and Long-Tail Hit-Rate (skills with $<30\%$ frequency) to guarantee that our accuracy is not an artifact of predicting ubiquitous skills."*
+> *"We use a 60/20/20 train/validation/test partition. Rules are mined from training data, thresholds are selected on validation data, and final masked-skill results are measured once on unseen test transactions. We report both overall and long-tail Hit-Rate without claiming that ECLAT wins every segment."*
 
 ---
 
@@ -316,8 +317,8 @@ gantt
     ECLAT recursive lattice traversal engine            :p5, 2026-11-12, 2d
     Rule generator (Support, Confidence, Lift)          :p6, 2026-11-14, 1d
     section Phase 3: Evaluation & Baseline
-    80/20 Train/Test partition script                   :p7, 2026-11-15, 1d
-    Leave-One-Out Hit-Rate@K validation                 :p8, 2026-11-16, 2d
+    Train/Validation/Test partition script              :p7, 2026-11-15, 1d
+    Masked Skill Hit-Rate@K validation                  :p8, 2026-11-16, 2d
     Naive Popularity baseline comparison & charts       :p9, 2026-11-18, 1d
     section Phase 4: API & Frontend
     FastAPI endpoints with sub-lattice fallback         :p10, 2026-11-19, 2d

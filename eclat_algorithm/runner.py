@@ -26,6 +26,7 @@ ENTRY_MIN_CONFIDENCE = 0.35
 ENTRY_MIN_LIFT = 1.15
 MIN_SUPPORT_ABSOLUTE_COUNT = 3
 MAX_RULES_STORED_PER_MODE = 2000
+MAX_RULES_PER_ANTECEDENT = 25
 
 
 def run_eclat_offline() -> Dict[str, any]:
@@ -66,6 +67,21 @@ def run_eclat_offline() -> Dict[str, any]:
             )
             miner.mine()
             rules = miner.generate_rules(min_confidence=minconf, min_lift=minlift)
+            # A global top-N cutoff can remove every useful rule for a
+            # lower-frequency antecedent. Preserve coverage first, then cap
+            # the serialized artifact for deployment.
+            rules_by_antecedent = {}
+            for rule in rules:
+                key = tuple(rule["antecedent"])
+                bucket = rules_by_antecedent.setdefault(key, [])
+                if len(bucket) < MAX_RULES_PER_ANTECEDENT:
+                    bucket.append(rule)
+            rules = [
+                rule
+                for bucket in rules_by_antecedent.values()
+                for rule in bucket
+            ]
+            rules.sort(key=lambda r: -(r["lift"] * r["confidence"] * max(r["support"], 1e-9)))
             rules = rules[:MAX_RULES_STORED_PER_MODE]
 
             # Top 1-itemsets for baseline priors

@@ -11,7 +11,7 @@ from server.app.schemas import (
     GapRecommendation,
     AssociationRule,
 )
-from eclat_algorithm.taxonomy import get_category
+from eclat_algorithm.taxonomy import get_category, normalize_skill
 
 router = APIRouter(prefix="/api/v1", tags=["Analysis"])
 
@@ -50,7 +50,24 @@ def analyze_skill_gap(payload: GapAnalysisRequest):
     all_rules = mode_data.get("rules", [])
     top_1_itemsets = mode_data.get("top_1_itemsets", [])
 
-    user_skills = sorted(list(set(payload.possessed_skills)))
+    user_skills = sorted({
+        normalized
+        for raw_skill in payload.possessed_skills
+        if (normalized := normalize_skill(raw_skill))
+    })
+    unknown_skills = sorted({
+        raw_skill.strip()
+        for raw_skill in payload.possessed_skills
+        if raw_skill.strip() and not normalize_skill(raw_skill)
+    })
+    if unknown_skills:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": "One or more skills are not in the supported taxonomy.",
+                "unknown_skills": unknown_skills,
+            },
+        )
     user_set = set(user_skills)
     top_k = payload.top_k
 

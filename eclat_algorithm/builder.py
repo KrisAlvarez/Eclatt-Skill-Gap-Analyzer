@@ -103,41 +103,43 @@ def get_dataset_directory() -> Path:
 
 
 def classify_role_broad(title: str, skills_set: Set[str]) -> List[str]:
-    """Broadened Multi-Domain Classifier for IT and Software Engineering postings.
-    
-    A posting can contribute to Backend, Frontend, or Data Analyst depending on
-    both explicit title markers and technology stack requirements.
-    """
-    matched_roles = []
+    """Assign one defensible primary track instead of duplicating a posting."""
     t_lower = title.lower()
+    scores = {
+        "Backend Developer": len(skills_set & BACKEND_STACK),
+        "Frontend Developer": len(skills_set & FRONTEND_STACK),
+        "Data Analyst": len(skills_set & DATA_STACK),
+    }
 
-    # 1. Explicit title markers
-    is_explicit_be = bool(re.search(r"\b(backend|back-end|api|python developer|java developer|c# developer|golang developer|node developer|spring developer|cloud engineer|devops|software engineer|software developer|systems engineer)\b", t_lower))
-    is_explicit_fe = bool(re.search(r"\b(frontend|front-end|ui engineer|ui developer|react developer|vue developer|angular developer|web developer|javascript developer|mobile developer)\b", t_lower))
-    is_explicit_da = bool(re.search(r"\b(data analyst|business intelligence|bi analyst|sql analyst|analytics|data specialist|reporting analyst|data engineer|data scientist|machine learning)\b", t_lower))
+    explicit = {
+        "Backend Developer": bool(re.search(
+            r"\b(backend|back-end|api|cloud engineer|devops|software engineer|"
+            r"software developer|systems engineer|platform engineer)\b", t_lower
+        )),
+        "Frontend Developer": bool(re.search(
+            r"\b(frontend|front-end|ui engineer|ui developer|react developer|"
+            r"vue developer|angular developer|web developer|javascript developer|"
+            r"mobile developer)\b", t_lower
+        )),
+        "Data Analyst": bool(re.search(
+            r"\b(data analyst|business intelligence|bi analyst|sql analyst|"
+            r"analytics|data specialist|reporting analyst|data engineer|"
+            r"data scientist|machine learning)\b", t_lower
+        )),
+    }
 
-    # 2. Stack intersections
-    be_overlap = len(skills_set & BACKEND_STACK)
-    fe_overlap = len(skills_set & FRONTEND_STACK)
-    da_overlap = len(skills_set & DATA_STACK)
+    for role, matched in explicit.items():
+        if matched:
+            scores[role] += 4
 
-    # General tech keywords in title
-    is_general_tech = any(k in t_lower for k in ["software", "developer", "engineer", "fullstack", "full-stack", "programmer", "application", "systems", "tech", "cloud", "devops", "platform", "web"])
-    is_general_data = any(k in t_lower for k in ["data", "analyst", "analytics", "intelligence", "bi", "reporting", "scientist", "machine learning"])
-
-    # Backend Attribution
-    if is_explicit_be or be_overlap >= 2 or (be_overlap >= 1 and is_general_tech):
-        matched_roles.append("Backend Developer")
-
-    # Frontend Attribution
-    if is_explicit_fe or fe_overlap >= 2 or (fe_overlap >= 1 and is_general_tech):
-        matched_roles.append("Frontend Developer")
-
-    # Data Analyst Attribution
-    if is_explicit_da or da_overlap >= 2 or (da_overlap >= 1 and is_general_data):
-        matched_roles.append("Data Analyst")
-
-    return matched_roles
+    # Generic software titles need a stack signal, otherwise they are not
+    # assigned to a specialized track merely because they mention "software".
+    ranked = sorted(scores.items(), key=lambda item: (-item[1], item[0]))
+    best_role, best_score = ranked[0]
+    second_score = ranked[1][1]
+    if best_score < 2 or best_score == second_score:
+        return []
+    return [best_role]
 
 
 def build_clean_dataset(limit_rows: Optional[int] = None) -> Dict[str, any]:

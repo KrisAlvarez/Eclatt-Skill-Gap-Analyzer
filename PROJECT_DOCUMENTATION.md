@@ -116,11 +116,11 @@ During project design, we subjected our concept to a rigorous academic critique.
 
 ### Loophole 6: Formal Machine Learning Evaluation
 * **The Vulnerability:** Most student association mining projects provide no quantitative evaluation to prove the model actually works.
-* **Our Engineering Solution:** We implement **Masked Skill Recovery (Leave-One-Out Hit Rate@K)**:
+* **Our Engineering Solution:** We implement **leakage-safe masked skill recovery**:
   - We hold out a 20% test set of real job postings.
   - We mask one skill from each posting and feed the remaining skills into our ECLAT rule engine.
   - We calculate **Hit-Rate@3** and **Hit-Rate@5** to verify whether the masked skill appears in the top recommendations.
-  - We benchmark this against a Naive Frequency Baseline (`COUNT(*)`), proving ECLAT's superior predictive recall.
+  - We benchmark this against a Naive Frequency Baseline (`COUNT(*)`) without assuming ECLAT will win every segment.
 
 ---
 
@@ -139,10 +139,10 @@ Our actual inspection and alignment yielded the following metrics:
 ### 1. Production Benchmark Dataset (1.3M+ asaniczka LinkedIn 2024 Dataset)
 - **Source:** Kaggle `asaniczka/1-3m-linkedin-jobs-and-skills-2024`
 - **Total Ingested Records:** 1,300,000+ job postings & skills
-- **Clean Filtered IT Transactions:** 50,266 validated unique transactions (>=2 technical skills, 88,498 track assignments)
-  - **Backend Developer:** 39,801 total (2,804 entry-level)
-  - **Frontend Developer:** 23,617 total (1,705 entry-level)
-  - **Data Analyst:** 25,080 total (2,321 entry-level)
+- **Clean Filtered IT Transactions:** 44,441 validated primary-assigned transactions (>=2 technical skills, 0 cross-track overlap)
+  - **Backend Developer:** 28,388 total (1,724 entry-level)
+  - **Frontend Developer:** 2,520 total (292 entry-level)
+  - **Data Analyst:** 13,533 total (1,438 entry-level)
 - **Precomputed Artifacts:** `data/processed/clean_transactions.json`, `rules.json`, `clean_summary.json`, `evaluation_metrics.json`
 
 ### 2. Local Sample Dataset (`data/raw/`)
@@ -223,7 +223,7 @@ Eclatt-Skill-Gap-Analyzer/
 ├── 🧮 eclat_algorithm/              # THE ECLAT ALGORITHMS (ML Engine)
 │   ├── miner.py                     # Core ECLATMiner & vertical TID-lists
 │   ├── taxonomy.py                  # IT Skill taxonomy & alias normalizer
-│   ├── evaluation.py                # Leave-One-Out Hit-Rate@K benchmark
+│   ├── evaluation.py                # Leakage-safe masked-skill benchmark
 │   ├── builder.py                   # Role & seniority dataset preprocessor
 │   ├── runner.py                    # Precomputed rule generator
 │   ├── scripts/                     # Standalone CLI tools (build_asaniczka, mining, eval)
@@ -240,7 +240,7 @@ Eclatt-Skill-Gap-Analyzer/
 │   └── README.md
 ├── 📊 data/                         # DATA LAYER (1.3M asaniczka & local raw)
 │   ├── raw/                         # Raw LinkedIn CSVs (postings.csv, job_skills.csv)
-│   ├── processed/                   # clean_transactions.json (50,266 items), rules.json
+│   ├── processed/                   # clean_transactions.json (44,441 items), rules.json
 │   └── README.md
 ├── 🧪 tests/                        # AUTOMATED TESTS (test_eclat.py, test_server.py)
 ├── 📑 docs/                         # BLUEPRINT & RESEARCH (project-plan.md, research/)

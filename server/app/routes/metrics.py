@@ -11,7 +11,7 @@ router = APIRouter(prefix="/api/v1", tags=["Evaluation Metrics"])
 
 @router.get("/metrics", response_model=List[EvaluationMetricsItem])
 def get_evaluation_metrics():
-    """Returns offline Leave-One-Out Hit-Rate@K and Baseline comparison metrics."""
+    """Return leakage-safe masked-skill metrics and baseline comparisons."""
     if not METRICS_FILE.exists():
         raise HTTPException(
             status_code=503,

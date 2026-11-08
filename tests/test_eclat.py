@@ -2,6 +2,8 @@
 
 import pytest
 from eclat_algorithm.miner import ECLATMiner
+from eclat_algorithm.taxonomy import normalize_skill
+from eclat_algorithm.builder import classify_role_broad
 
 
 @pytest.fixture
@@ -91,3 +93,20 @@ def test_recommendation_tier3_cold_start(sample_transactions):
     assert res["tier_used"] == "Tier 3: Foundational Prior"
     # Most frequent skills in sample is Python (7)
     assert res["recommendations"][0]["skill"] == "Python"
+
+
+def test_skill_normalization():
+    assert normalize_skill(" react.js ") == "React"
+    assert normalize_skill("REST APIs") == "REST API"
+    assert normalize_skill("not-a-taxonomy-skill") == ""
+
+
+def test_role_assignment_is_primary_and_ambiguous_jobs_are_excluded():
+    assert classify_role_broad(
+        "Senior Backend Engineer",
+        {"Python", "PostgreSQL", "Docker"},
+    ) == ["Backend Developer"]
+    assert classify_role_broad(
+        "Technical Specialist",
+        {"Python", "JavaScript"},
+    ) == []

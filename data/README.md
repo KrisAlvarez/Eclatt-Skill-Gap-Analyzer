@@ -14,7 +14,7 @@ data/
 │   ├── clean_transactions.json   # Validated IT transactions with canonical skills (>= 3 skills)
 │   ├── clean_summary.json        # Role & seniority segment counts
 │   ├── rules.json                # Precomputed ECLAT association rules (Render production cache)
-│   └── evaluation_metrics.json   # Offline Leave-One-Out Hit-Rate@K validation benchmarks
+│   └── evaluation_metrics.json   # Leakage-safe masked-skill validation benchmarks
 └── README.md                     # This document
 ```
 
@@ -28,11 +28,11 @@ The ECLAT models are aligned with the comprehensive **1.3M+ LinkedIn Jobs & Skil
 
 | IT Career Track | Total Transactions (`all`) | Entry-Level Segment (`entry`) |
 |-----------------|----------------------------|-------------------------------|
-| **Backend Developer** | 39,801 | 2,804 |
-| **Frontend Developer** | 23,617 | 1,705 |
-| **Data Analyst** | 25,080 | 2,321 |
-| **Total Role Assignments** | **88,498** | **6,830** |
-*(Representing **50,266** unique, verified IT transactions matching $\ge 2$ canonical skills from the 1.3M dataset).*
+| **Backend Developer** | 28,388 | 1,724 |
+| **Frontend Developer** | 2,520 | 292 |
+| **Data Analyst** | 13,533 | 1,438 |
+| **Total Verified Transactions** | **44,441** | **3,454** |
+*(Representing **44,441** unique, primary-assigned IT transactions matching $\ge 2$ canonical skills from the 1.3M dataset, with 0 multi-track contamination).*
 
 ---
 
@@ -41,6 +41,6 @@ The ECLAT models are aligned with the comprehensive **1.3M+ LinkedIn Jobs & Skil
 1. **Ingestion Pipeline**:
    - `python -m eclat_algorithm.builder`: Automatically resolves and streams `linkedin_job_postings.csv` and `job_skills.csv` directly from `kagglehub` cache, extracting canonical skills, categorizing into IT roles, and generating `data/processed/clean_transactions.json`.
 2. **Canonical Skill Normalization**: Raw skill strings are mapped to canonical technical entities using `eclat_algorithm.taxonomy.SKILL_TAXONOMY` and `ALIAS_MAP`.
-3. **Hybrid Role Classification**: Positions are mapped into **Backend Developer**, **Frontend Developer**, and **Data Analyst** using a hybrid title regex + technology stack disambiguation algorithm (`eclat_algorithm.builder.classify_role`).
+3. **Primary Role Classification**: Each posting is assigned to at most one of **Backend Developer**, **Frontend Developer**, and **Data Analyst** using explicit title signals plus a stack score. Ambiguous ties are excluded rather than counted in multiple tracks.
 4. **Multi-Signal Seniority Filtering**: Positions are tagged as `entry` using both explicit `job_level` metadata and title junior keyword matching (`is_entry_level`).
 5. **Density Constraint**: Transactions with fewer than 2 verified skills are pruned to ensure valid multi-item rule antecedents and consequents ($A \rightarrow B$).

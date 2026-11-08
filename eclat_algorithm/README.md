@@ -11,7 +11,7 @@ eclat_algorithm/
 ├── __init__.py           # Package interface (exports ECLATMiner, taxonomy constants)
 ├── miner.py              # Core ECLATMiner: Vertical TID-lists, DFS lattice intersection, rule generation
 ├── taxonomy.py           # 10 IT Skill Categories, alias normalization, canonical regex mapping
-├── evaluation.py         # Masked Skill Recovery (Leave-One-Out Hit-Rate@K) & Naive Baseline
+├── evaluation.py         # Train/validation/test masked recovery & baseline
 ├── builder.py            # Preprocessing pipeline & hybrid role classifier
 ├── runner.py             # Precomputation & serialization of association rules
 ├── scripts/              # Standalone CLI tools:
@@ -67,7 +67,7 @@ python -m eclat_algorithm.scripts.build_dataset
 # 2. Mine frequent itemsets & serialize rules to data/processed/rules.json
 python -m eclat_algorithm.scripts.run_mining
 
-# 3. Run Leave-One-Out Masked Skill Recovery benchmark
+# 3. Run leakage-safe masked-skill benchmark
 python -m eclat_algorithm.scripts.run_evaluation
 ```
 

@@ -34,17 +34,17 @@ export default function EvaluationDashboard() {
           Model Evaluation: Masked Skill Recovery
         </h2>
         <p className="text-sm text-slate-300 leading-relaxed max-w-3xl">
-          To prove that ECLAT provides meaningful intelligence rather than arbitrary suggestions, we executed an offline 
-          <strong> Leave-One-Out (Masked Skill Recovery)</strong> experiment on held-out test postings across each career track.
+          To measure whether conditional associations add value beyond popularity, we execute a leakage-safe
+          <strong> masked-skill recovery</strong> experiment on unseen test postings across each career track.
         </p>
 
         {/* 3 Metric Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
             <span className="text-xs font-mono text-slate-400 block mb-1">Experiment Protocol</span>
-            <span className="text-base font-bold text-white block">80/20 Train-Test Split</span>
+            <span className="text-base font-bold text-white block">60/20/20 Train-Validation-Test</span>
             <p className="text-xs text-slate-400 mt-1">
-              One skill masked at random from held-out postings; testing whether rule consequents recover it.
+              Thresholds are selected on validation postings; one skill is masked from unseen test postings.
             </p>
           </div>
 
@@ -60,7 +60,7 @@ export default function EvaluationDashboard() {
             <span className="text-xs font-mono text-slate-400 block mb-1">ECLAT's Core Strength</span>
             <span className="text-base font-bold text-violet-400 block">Non-Trivial Recovery</span>
             <p className="text-xs text-slate-400 mt-1">
-              On specialized/niche tools, ECLAT conditional rules outperform naive popularity counting by over <strong>2x to 4x</strong>.
+              The dashboard reports measured ECLAT and popularity-baseline results separately, including long-tail recovery.
             </p>
           </div>
         </div>

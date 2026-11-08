@@ -51,7 +51,7 @@ During research and defense preparation, the system was subjected to rigorous ac
 * **The Vulnerability:** If 70% of backend jobs require Python and 60% require SQL, a simple SQL `SELECT skill, COUNT(*) GROUP BY skill` could suggest the most popular technologies without any data mining algorithm.
 * **The Solution:**
   1. **Lift-Driven Dependency:** ECLAT computes $\text{Lift}(A \rightarrow B) = \frac{P(B|A)}{P(B)}$. While COUNT(*) only identifies globally popular tools, Lift surfaces **context-dependent companions**. For example, if a user selects `Pandas`, ECLAT recommends `NumPy` and `Tableau` (high Lift within Data Analyst), whereas a global count would naively suggest `Git` or `Docker` regardless of relevance.
-  2. **Empirical Benchmark:** In `eclat_algorithm/evaluation.py`, we implemented a Leave-One-Out validation comparing ECLAT against a Naive Popularity Baseline, demonstrating substantial performance differentials on non-trivial skills.
+  2. **Empirical Benchmark:** In `eclat_algorithm/evaluation.py`, we implemented leakage-safe train/validation/test masked-skill evaluation comparing ECLAT against a Naive Popularity Baseline.
 
 ### Loophole 4: Taxonomy Pollution & Wishlist Extraction Errors
 * **The Vulnerability:** Job descriptions contain corporate boilerplate, soft skills, benefits, and third-party tools that pollute itemsets (e.g., "communication", "health insurance", "office 365").
@@ -68,9 +68,9 @@ During research and defense preparation, the system was subjected to rigorous ac
   3. **Data Analyst**
 * A hybrid classifier (`eclat_algorithm.builder.classify_role`) disambiguates generic titles (like "Software Engineer") using the technical stack signature (e.g., React/Vue &rarr; Frontend; Django/Spring/SQL &rarr; Backend; Pandas/Tableau/Power BI &rarr; Data Analyst).
 
-### Loophole 6: Evaluation Rigor (Leave-One-Out Cross-Validation)
+### Loophole 6: Evaluation Rigor (Leakage-Safe Masked Recovery)
 * **The Vulnerability:** How do we prove the model actually works without real human users?
-* **The Solution:** We designed an automated **Leave-One-Out Masked Skill Recovery** benchmark in `eclat_algorithm/evaluation.py`:
+* **The Solution:** We designed an automated **train/validation/test masked-skill recovery** benchmark in `eclat_algorithm/evaluation.py`:
   - 80% of transactions form the training set; 20% are held out as an unseen test set.
   - For each test transaction, exactly one skill is masked at random ($S_{\text{masked}}$).
   - The remaining skills are fed to the model to generate Top-3 and Top-5 recommendations.
@@ -131,11 +131,11 @@ Streamed and filtered through `eclat_algorithm/scripts/build_asaniczka.py`:
 
 | Role Track | Total Clean Transactions (`all`) | Entry-Level Segment (`entry`) |
 | :--- | :--- | :--- |
-| **Backend Developer** | 39,801 | 2,804 |
-| **Frontend Developer** | 23,617 | 1,705 |
-| **Data Analyst** | 25,080 | 2,321 |
-| **Total Role Assignments** | **88,498** | **6,830** |
-*(Unique clean IT transactions: **50,266**).*
+| **Backend Developer** | 28,388 | 1,724 |
+| **Frontend Developer** | 2,520 | 292 |
+| **Data Analyst** | 13,533 | 1,438 |
+| **Total Verified Transactions** | **44,441** | **3,454** |
+*(Unique clean IT transactions: **44,441**, 0 cross-track overlap).*
 
 ---
 
@@ -160,7 +160,7 @@ Eclatt-Skill-Gap-Analyzer/
 │   ├── taxonomy.py                    # Canonical IT skills (100+ entities), alias regex normalizer
 │   ├── builder.py                     # Role classification & multi-signal seniority filtering
 │   ├── runner.py                      # Precomputes & serializes rules to rules.json
-│   ├── evaluation.py                  # Leave-One-Out Hit-Rate@K vs Naive baseline benchmark
+│   ├── evaluation.py                  # Train/validation/test Hit-Rate@K benchmark
 │   ├── scripts/                       # CLI commands:
 │   │   ├── build_asaniczka.py         # 1.3M dataset streaming ingestion pipeline
 │   │   ├── build_dataset.py           # Local postings.csv ingestion pipeline
@@ -197,9 +197,10 @@ Eclatt-Skill-Gap-Analyzer/
 │   └── README.md
 │
 ├── 📊 data/                           # DATA LAYER
-│   ├── raw/                           # Raw CSV files (postings.csv, job_skills.csv, skills.csv)
+│   ├── raw/                           # Automated via kagglehub ('asaniczka/1-3m-linkedin-jobs-and-skills-2024')
+│   │   └── README.md                  # Ingestion instructions & dataset details
 │   ├── processed/                     # Sanitized artifacts:
-│   │   ├── clean_transactions.json    # 7,160 vetted IT transactions
+│   │   ├── clean_transactions.json    # 44,441 vetted IT transactions (0 cross-track overlap)
 │   │   ├── clean_summary.json         # Segment distribution breakdown
 │   │   ├── rules.json                 # Precomputed association rules (~1.8 MB)
 │   │   └── evaluation_metrics.json    # Hit-Rate@3, Hit-Rate@5, Lift metrics
@@ -245,5 +246,5 @@ A critical real-world constraint was deploying the FastAPI backend to **Render's
 | **Build Frontend** | `cd frontend && npm run build` | Builds production bundle to `frontend/dist/`. |
 | **Ingest 1.3M Dataset** | `python -m eclat_algorithm.scripts.build_asaniczka` | Streams Kaggle cache, builds `clean_transactions.json`, re-mines rules & evaluation. |
 | **Mine Rules Offline** | `python -m eclat_algorithm.scripts.run_mining` | Reads `clean_transactions.json` and writes `rules.json`. |
-| **Run Evaluation** | `python -m eclat_algorithm.scripts.run_evaluation` | Generates `evaluation_metrics.json` via Leave-One-Out validation. |
+| **Run Evaluation** | `python -m eclat_algorithm.scripts.run_evaluation` | Generates `evaluation_metrics.json` via leakage-safe masked validation. |
 | **Run Colab Notebook** | Open [`eclat_colab.ipynb`](file:///c:/Users/peopl/Documents/Eclatt-Skill-Gap-Analyzer/eclat_colab.ipynb) in Google Colab | 34 cells, completely self-contained with synthetic demo data and live API links. |

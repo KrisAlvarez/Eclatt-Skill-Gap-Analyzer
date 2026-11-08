@@ -284,6 +284,7 @@ ALIAS_MAP: Dict[str, str] = {
     # Architecture, BI & Developer Tools
     "rest": "REST API",
     "rest api": "REST API",
+    "rest apis": "REST API",
     "restful": "REST API",
     "graphql": "GraphQL",
     "microservices": "Microservices",
@@ -322,6 +323,19 @@ ALIAS_MAP: Dict[str, str] = {
     "information security": "Cybersecurity",
     "networking": "Networking",
 }
+
+
+def normalize_skill(value: str) -> str:
+    """Return the canonical taxonomy label for a user or dataset skill."""
+    if not isinstance(value, str):
+        return ""
+    normalized = re.sub(r"\s+", " ", value.strip().lower())
+    if normalized in ALIAS_MAP:
+        return ALIAS_MAP[normalized]
+    for skill in SKILL_TAXONOMY:
+        if skill.lower() == normalized:
+            return skill
+    return ""
 
 # Compile regex patterns for word-boundary matching
 _COMPILED_PATTERNS: List[Tuple[re.Pattern, str]] = []

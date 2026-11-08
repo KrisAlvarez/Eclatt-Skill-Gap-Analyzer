@@ -42,6 +42,20 @@ def test_analyze_endpoint():
     assert len(data["recommendations"]) <= 3
 
 
+def test_analyze_rejects_unknown_skill():
+    response = client.post(
+        "/api/v1/analyze",
+        json={
+            "role": "Backend Developer",
+            "possessed_skills": ["Python", "DefinitelyNotASkill"],
+            "experience_mode": "entry",
+            "top_k": 3,
+        },
+    )
+    assert response.status_code == 400
+    assert "unknown_skills" in response.json()["detail"]
+
+
 def test_metrics_endpoint():
     response = client.get("/api/v1/metrics")
     assert response.status_code == 200

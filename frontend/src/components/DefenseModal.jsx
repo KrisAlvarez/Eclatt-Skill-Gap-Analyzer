@@ -16,7 +16,7 @@ const DEFENSE_QA = [
   },
   {
     q: 'How did you evaluate the machine learning model?',
-    a: 'We implemented an offline Masked Skill Recovery benchmark (Leave-One-Out) on a 20% held-out test split across each role. We masked one skill from real job postings and tested whether ECLAT recovered it in Hit-Rate@3 and Hit-Rate@5. On specialized non-trivial skills, ECLAT outperformed naive popularity baselines by 2x to 4x.',
+    a: 'We implemented leakage-safe masked-skill recovery with separate train, validation, and test partitions. Thresholds are selected on validation data, then one skill is masked from unseen postings and evaluated with Hit-Rate@3, Hit-Rate@5, long-tail recovery, and confidence intervals. Results are reported against popularity without assuming ECLAT wins every segment.',
   },
 ];
 

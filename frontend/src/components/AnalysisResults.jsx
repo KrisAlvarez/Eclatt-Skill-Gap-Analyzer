@@ -232,7 +232,7 @@ export default function AnalysisResults({
             <span>Curious about how the ECLAT algorithm discovered these?</span>
           </h4>
           <p className="text-xs text-slate-400 mt-0.5">
-            View the mathematical TID-list set intersections, Leave-One-Out validation tables, and panel defense notes.
+            View the mathematical TID-list set intersections, masked-skill evaluation tables, and panel defense notes.
           </p>
         </div>
 

@@ -2,73 +2,163 @@
   {
     "role": "Backend Developer",
     "experience_mode": "entry",
-    "test_transactions_count": 419,
-    "eclat_hr_at_3": 0.2816,
-    "baseline_hr_at_3": 0.2506,
-    "eclat_hr_at_5": 0.284,
-    "baseline_hr_at_5": 0.2936,
-    "non_trivial_eclat_hr_at_5": 0.1364,
-    "non_trivial_baseline_hr_at_5": 0.103,
-    "lift_over_baseline_pct": -3.3
+    "evaluation_protocol": "train_validation_test_masked_skill",
+    "train_transactions_count": 824,
+    "validation_transactions_count": 275,
+    "test_transactions_count": 275,
+    "selected_min_support": 0.03,
+    "selected_min_confidence": 0.25,
+    "selected_min_lift": 1.05,
+    "eclat_hr_at_3": 0.2509,
+    "baseline_hr_at_3": 0.2182,
+    "eclat_hr_at_5": 0.3018,
+    "baseline_hr_at_5": 0.2836,
+    "non_trivial_eclat_hr_at_5": 0.05,
+    "non_trivial_baseline_hr_at_5": 0.0,
+    "non_trivial_test_transactions_count": 100,
+    "lift_over_baseline_pct": 6.4,
+    "eclat_hr_at_5_ci95": [
+      0.2506,
+      0.3585
+    ],
+    "baseline_hr_at_5_ci95": [
+      0.2336,
+      0.3396
+    ]
   },
   {
     "role": "Backend Developer",
     "experience_mode": "all",
-    "test_transactions_count": 6438,
-    "eclat_hr_at_3": 0.2484,
-    "baseline_hr_at_3": 0.2243,
-    "eclat_hr_at_5": 0.2673,
-    "baseline_hr_at_5": 0.3001,
-    "non_trivial_eclat_hr_at_5": 0.1037,
-    "non_trivial_baseline_hr_at_5": 0.113,
-    "lift_over_baseline_pct": -10.9
+    "evaluation_protocol": "train_validation_test_masked_skill",
+    "train_transactions_count": 14279,
+    "validation_transactions_count": 4760,
+    "test_transactions_count": 4760,
+    "selected_min_support": 0.03,
+    "selected_min_confidence": 0.25,
+    "selected_min_lift": 1.05,
+    "eclat_hr_at_3": 0.2586,
+    "baseline_hr_at_3": 0.22,
+    "eclat_hr_at_5": 0.3145,
+    "baseline_hr_at_5": 0.2884,
+    "non_trivial_eclat_hr_at_5": 0.0774,
+    "non_trivial_baseline_hr_at_5": 0.0,
+    "non_trivial_test_transactions_count": 1447,
+    "lift_over_baseline_pct": 9.0,
+    "eclat_hr_at_5_ci95": [
+      0.3015,
+      0.3278
+    ],
+    "baseline_hr_at_5_ci95": [
+      0.2757,
+      0.3015
+    ]
   },
   {
     "role": "Frontend Developer",
     "experience_mode": "entry",
-    "test_transactions_count": 265,
-    "eclat_hr_at_3": 0.3057,
-    "baseline_hr_at_3": 0.317,
-    "eclat_hr_at_5": 0.3094,
-    "baseline_hr_at_5": 0.3774,
-    "non_trivial_eclat_hr_at_5": 0.1276,
-    "non_trivial_baseline_hr_at_5": 0.1582,
-    "lift_over_baseline_pct": -18.0
+    "evaluation_protocol": "train_validation_test_masked_skill",
+    "train_transactions_count": 149,
+    "validation_transactions_count": 50,
+    "test_transactions_count": 50,
+    "selected_min_support": 0.03,
+    "selected_min_confidence": 0.25,
+    "selected_min_lift": 1.05,
+    "eclat_hr_at_3": 0.5,
+    "baseline_hr_at_3": 0.54,
+    "eclat_hr_at_5": 0.58,
+    "baseline_hr_at_5": 0.54,
+    "non_trivial_eclat_hr_at_5": 0.0,
+    "non_trivial_baseline_hr_at_5": 0.0,
+    "non_trivial_test_transactions_count": 6,
+    "lift_over_baseline_pct": 7.4,
+    "eclat_hr_at_5_ci95": [
+      0.4423,
+      0.7063
+    ],
+    "baseline_hr_at_5_ci95": [
+      0.404,
+      0.6703
+    ]
   },
   {
     "role": "Frontend Developer",
     "experience_mode": "all",
-    "test_transactions_count": 4062,
-    "eclat_hr_at_3": 0.2504,
-    "baseline_hr_at_3": 0.2029,
-    "eclat_hr_at_5": 0.2856,
-    "baseline_hr_at_5": 0.2912,
-    "non_trivial_eclat_hr_at_5": 0.1458,
-    "non_trivial_baseline_hr_at_5": 0.0526,
-    "lift_over_baseline_pct": -1.9
+    "evaluation_protocol": "train_validation_test_masked_skill",
+    "train_transactions_count": 1398,
+    "validation_transactions_count": 466,
+    "test_transactions_count": 466,
+    "selected_min_support": 0.03,
+    "selected_min_confidence": 0.25,
+    "selected_min_lift": 1.05,
+    "eclat_hr_at_3": 0.5086,
+    "baseline_hr_at_3": 0.5172,
+    "eclat_hr_at_5": 0.5472,
+    "baseline_hr_at_5": 0.6094,
+    "non_trivial_eclat_hr_at_5": 0.0204,
+    "non_trivial_baseline_hr_at_5": 0.0,
+    "non_trivial_test_transactions_count": 98,
+    "lift_over_baseline_pct": -10.2,
+    "eclat_hr_at_5_ci95": [
+      0.5018,
+      0.5918
+    ],
+    "baseline_hr_at_5_ci95": [
+      0.5644,
+      0.6527
+    ]
   },
   {
     "role": "Data Analyst",
     "experience_mode": "entry",
-    "test_transactions_count": 312,
-    "eclat_hr_at_3": 0.3654,
-    "baseline_hr_at_3": 0.4263,
-    "eclat_hr_at_5": 0.3686,
-    "baseline_hr_at_5": 0.5288,
-    "non_trivial_eclat_hr_at_5": 0.2475,
-    "non_trivial_baseline_hr_at_5": 0.2723,
-    "lift_over_baseline_pct": -30.3
+    "evaluation_protocol": "train_validation_test_masked_skill",
+    "train_transactions_count": 514,
+    "validation_transactions_count": 171,
+    "test_transactions_count": 172,
+    "selected_min_support": 0.03,
+    "selected_min_confidence": 0.25,
+    "selected_min_lift": 1.05,
+    "eclat_hr_at_3": 0.4709,
+    "baseline_hr_at_3": 0.6628,
+    "eclat_hr_at_5": 0.4942,
+    "baseline_hr_at_5": 0.7733,
+    "non_trivial_eclat_hr_at_5": 0.0,
+    "non_trivial_baseline_hr_at_5": 0.0,
+    "non_trivial_test_transactions_count": 30,
+    "lift_over_baseline_pct": -36.1,
+    "eclat_hr_at_5_ci95": [
+      0.4204,
+      0.5682
+    ],
+    "baseline_hr_at_5_ci95": [
+      0.7051,
+      0.8295
+    ]
   },
   {
     "role": "Data Analyst",
     "experience_mode": "all",
-    "test_transactions_count": 3810,
-    "eclat_hr_at_3": 0.3262,
-    "baseline_hr_at_3": 0.3651,
-    "eclat_hr_at_5": 0.3638,
-    "baseline_hr_at_5": 0.4312,
-    "non_trivial_eclat_hr_at_5": 0.2202,
-    "non_trivial_baseline_hr_at_5": 0.1555,
-    "lift_over_baseline_pct": -15.6
+    "evaluation_protocol": "train_validation_test_masked_skill",
+    "train_transactions_count": 5517,
+    "validation_transactions_count": 1839,
+    "test_transactions_count": 1839,
+    "selected_min_support": 0.03,
+    "selected_min_confidence": 0.25,
+    "selected_min_lift": 1.05,
+    "eclat_hr_at_3": 0.5454,
+    "baseline_hr_at_3": 0.5438,
+    "eclat_hr_at_5": 0.5895,
+    "baseline_hr_at_5": 0.677,
+    "non_trivial_eclat_hr_at_5": 0.0928,
+    "non_trivial_baseline_hr_at_5": 0.0124,
+    "non_trivial_test_transactions_count": 485,
+    "lift_over_baseline_pct": -12.9,
+    "eclat_hr_at_5_ci95": [
+      0.5668,
+      0.6117
+    ],
+    "baseline_hr_at_5_ci95": [
+      0.6553,
+      0.698
+    ]
   }
 ]

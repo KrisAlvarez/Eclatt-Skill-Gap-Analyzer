@@ -33,7 +33,7 @@ const DEFENSE_QA = [
   },
   {
     q: 'How did you evaluate the machine learning model without human labelers?',
-    a: 'We implemented an offline Masked Skill Recovery benchmark (Leave-One-Out) on a 20% held-out test split across each role. We masked one skill from real job postings and tested whether ECLAT recovered it in Hit-Rate@3 and Hit-Rate@5 compared to a naive popularity baseline. On specialized non-trivial skills, ECLAT outperformed naive popularity baselines by 2x to 4x.',
+    a: 'We use leakage-safe masked-skill recovery with separate train, validation, and test partitions. Thresholds are selected on validation data, then one skill is masked from unseen postings and evaluated with Hit-Rate@3, Hit-Rate@5, long-tail recovery, and confidence intervals against popularity.',
     tag: 'Model Evaluation',
   },
 ];
@@ -67,7 +67,7 @@ const LOOPHOLES = [
   {
     title: 'Loophole 6: Evaluation Protocol',
     problem: 'Association rule mining is unsupervised and lacks traditional accuracy/loss metrics.',
-    solution: 'Executed Leave-One-Out Masked Skill Recovery with Hit-Rate@3 and Hit-Rate@5 benchmarks on held-out test data.',
+    solution: 'Executed train/validation/test masked-skill recovery with Hit-Rate@3, Hit-Rate@5, long-tail metrics, and confidence intervals.',
   },
 ];
 
@@ -107,7 +107,7 @@ export default function TechnicalDeepDive({ onGoToAnalyzer }) {
             </h1>
             <p className="text-sm text-slate-300 mt-2 max-w-2xl leading-relaxed">
               Complete technical transparency: mathematical formulation of vertical TID-list intersections, 
-              Leave-One-Out empirical benchmarks, and defensible answers to academic defense questions.
+              Leakage-safe masked-skill benchmarks, and defensible answers to academic defense questions.
             </p>
           </div>
 
@@ -184,9 +184,9 @@ export default function TechnicalDeepDive({ onGoToAnalyzer }) {
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-2xl font-heading font-bold text-white">Leave-One-Out Hit-Rate@K Benchmark</h2>
+            <h2 className="text-2xl font-heading font-bold text-white">Masked Skill Hit-Rate@K Benchmark</h2>
             <p className="text-xs text-slate-400">
-              Offline experiment on held-out 20% test postings across all IT roles
+              Thresholds selected on validation data; final results use unseen test postings
             </p>
           </div>
           <span className="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 self-start sm:self-auto">
@@ -264,8 +264,8 @@ export default function TechnicalDeepDive({ onGoToAnalyzer }) {
             </div>
           )}
           <div className="p-4 border-t border-slate-800/80 bg-slate-950/40 flex items-center justify-between text-[11px] text-slate-400 font-mono">
-            <span>* Non-Trivial Recovery excludes top-3 ubiquitous skills to prove conditional specialization.</span>
-            <span className="text-emerald-400 font-semibold">ECLAT outperforms naive baselines by 2x-4x</span>
+            <span>* Long-tail recovery uses skills below 30% training-set marginal frequency.</span>
+            <span className="text-slate-300 font-semibold">Compare measured ECLAT and popularity results</span>
           </div>
         </div>
       </section>

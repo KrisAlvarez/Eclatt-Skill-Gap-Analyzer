@@ -1,48 +1,34 @@
-import os
-import pandas as pd
+"""Audit title distributions and skill co-occurrence counts from clean transactions."""
+
+import json
 from collections import Counter
-from itertools import combinations
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-raw = BASE_DIR / "data" / "raw"
+PROCESSED = BASE_DIR / "data" / "processed" / "clean_transactions.json"
 
-# Read samples
-postings = pd.read_csv(
-    raw / "postings.csv",
-    nrows=50000,
-    usecols=['job_id', 'title', 'formatted_experience_level', 'formatted_work_type']
-)
-job_skills = pd.read_csv(raw / "job_skills.csv")
-skills = pd.read_csv(raw / "skills.csv")
+if not PROCESSED.exists():
+    print(f"Error: {PROCESSED} not found. Run builder.py first.")
+    exit(1)
 
-# Merge all three
-merged = job_skills.merge(postings, on='job_id', how='inner').merge(skills, on='skill_abr', how='left')
-print(f"Merged rows (job_skills JOIN postings JOIN skills): {len(merged)}")
-print(f"Unique job_ids after merge: {merged['job_id'].nunique()}")
-print()
+print("=== Clean Transactions Title & Skill Distribution Audit ===")
+with open(PROCESSED, "r", encoding="utf-8") as f:
+    data = json.load(f)
 
-print("=== Top 15 job titles in dataset ===")
-top_titles = postings['title'].value_counts().head(15)
-for t, c in top_titles.items():
-    print(f"  {c:6d}  {t}")
-print()
+for role, modes in data.items():
+    print(f"\n--- {role} ---")
+    all_txs = modes["all"]
+    titles = [t["title"] for t in all_txs]
+    skills_counts = [len(t["skills"]) for t in all_txs]
+    avg_skills = sum(skills_counts) / len(skills_counts) if skills_counts else 0
+    print(f"Total Transactions: {len(all_txs)} | Avg Skills per Job: {avg_skills:.1f}")
 
-# Group by job_id and get skills per job
-skill_by_job = merged.groupby('job_id').agg({
-    'skill_name': list,
-    'title': 'first'
-}).reset_index()
+    print("Top 5 Job Titles:")
+    for title, cnt in Counter(titles).most_common(5):
+        print(f"  {cnt:5d}  {title}")
 
-print("=== Sample skill transactions by job title ===")
-print(skill_by_job[['title', 'skill_name']].head(10).to_string(index=False))
-print()
-
-print("=== Top 10 skill pairs by co-occurrence ===")
-cooccur = Counter()
-for skills_list in skill_by_job['skill_name']:
-    for pair in combinations(sorted(skills_list), 2):
-        cooccur[pair] += 1
-n_jobs = len(skill_by_job)
-for pair, count in cooccur.most_common(10):
-    print(f"  {pair[0]:30s} + {pair[1]:30s}  count={count}  support={count/n_jobs:.3f}")
+    print("Top 5 Most Frequent Skills:")
+    all_skills = [s for t in all_txs for s in t["skills"]]
+    for skill, cnt in Counter(all_skills).most_common(5):
+        freq = cnt / len(all_txs) if all_txs else 0
+        print(f"  {cnt:5d}  {skill:20s} ({freq:.1%})")
