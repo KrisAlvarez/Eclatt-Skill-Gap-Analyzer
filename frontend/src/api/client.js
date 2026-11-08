@@ -1,39 +1,67 @@
 /**
  * API Client for SkillGap Backend Service.
- * Connects to live Render API or local override.
+ * Automatic failover between local FastAPI server and live Render cloud API.
  */
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://eclatt-skill-gap-analyzer.onrender.com';
+const CANDIDATE_HOSTS = [
+  import.meta.env.VITE_API_BASE_URL,
+  'http://127.0.0.1:8000',
+  'http://localhost:8000',
+  'https://eclatt-skill-gap-analyzer.onrender.com',
+].filter(Boolean);
+
+// Deduplicate hosts
+const HOSTS = [...new Set(CANDIDATE_HOSTS)];
+let activeHost = HOSTS[0];
 
 async function request(endpoint, options = {}) {
-  const url = `${BASE_URL}${endpoint}`;
-  try {
-    const res = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options.headers || {}),
-      },
-      ...options,
-    });
+  let lastError = null;
+  const tryHosts = [activeHost, ...HOSTS.filter((h) => h !== activeHost)];
 
-    if (!res.ok) {
-      let errorMsg = `Server error ${res.status}`;
-      try {
-        const errorData = await res.json();
-        errorMsg = errorData.detail || errorMsg;
-      } catch (_) {}
-      throw new Error(errorMsg);
+  for (const host of tryHosts) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const url = `${host}${endpoint}`;
+
+      const res = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(options.headers || {}),
+        },
+        signal: controller.signal,
+        ...options,
+      });
+      clearTimeout(timeoutId);
+
+      if (!res.ok) {
+        let errorMsg = `Server error ${res.status}`;
+        try {
+          const errorData = await res.json();
+          errorMsg = errorData.detail || errorMsg;
+        } catch (_) {}
+        throw new Error(errorMsg);
+      }
+
+      // Cache the responsive host
+      activeHost = host;
+      return await res.json();
+    } catch (err) {
+      lastError = err;
+      console.warn(`Host ${host} failed for ${endpoint}:`, err.message);
     }
-
-    return await res.json();
-  } catch (err) {
-    console.error(`API Error [${endpoint}]:`, err);
-    throw err;
   }
+
+  throw lastError || new Error('All backend API endpoints are unreachable.');
 }
 
 export const api = {
-  /** Health check endpoint (used to detect Render cold-start wake-up) */
+  /** Active host getter */
+  getActiveHost() {
+    return activeHost;
+  },
+
+  /** Health check endpoint */
   async checkHealth() {
     return request('/health');
   },
@@ -44,7 +72,7 @@ export const api = {
   },
 
   /** Runs ECLAT skill gap analysis for given role and possessed skills */
-  async analyze({ role, possessed_skills, experience_mode = 'entry', top_k = 5 }) {
+  async analyze({ role, possessed_skills, experience_mode = 'entry', top_k = 6 }) {
     return request('/api/v1/analyze', {
       method: 'POST',
       body: JSON.stringify({
