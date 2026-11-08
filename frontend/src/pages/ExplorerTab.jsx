@@ -1,457 +1,96 @@
-import React, { useState, useMemo } from 'react';
-import {
-  ChevronDown,
-  ChevronUp,
-  Plus,
-  Check,
-  Search,
-  Sparkles,
-  ArrowRight,
-  BookmarkPlus,
-  BookmarkCheck,
-  RotateCcw,
-  SlidersHorizontal,
-} from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowLeft, ArrowRight, Check, Plus, Search, Server, Layout, BarChart3 } from 'lucide-react';
+import { getSkillPurpose } from '../utils/skillDescriptions';
 
-const ROLE_DESCRIPTIONS = {
-  'Backend Developer':
-    'Design APIs, database schemas, microservices, and server-side deployment architectures.',
-  'Frontend Developer':
-    'Build responsive, interactive user interfaces, web applications, and modern frontend states.',
-  'Data Analyst':
-    'Process datasets, construct SQL metrics, and build visual dashboards for business stakeholders.',
+const ROLE_INFO = {
+  'Backend Developer': { icon: Server, description: 'Build the servers and databases behind an app.' },
+  'Frontend Developer': { icon: Layout, description: 'Create the interfaces people see and interact with.' },
+  'Data Analyst': { icon: BarChart3, description: 'Turn data into insights that help people make decisions.' },
 };
-
-const PRESETS = {
-  'Backend Developer': [
-    { label: '🐍 Python & SQL Starter', skills: ['Python', 'SQL'] },
-    { label: '☕ Java Developer', skills: ['Java', 'SQL', 'Git'] },
-    { label: '🌱 Complete Beginner', skills: [] },
-  ],
-  'Frontend Developer': [
-    { label: '⚛️ React Junior', skills: ['JavaScript', 'React', 'HTML/CSS'] },
-    { label: '📘 TypeScript Dev', skills: ['TypeScript', 'React', 'Git'] },
-    { label: '🌱 Complete Beginner', skills: [] },
-  ],
-  'Data Analyst': [
-    { label: '📊 SQL & Tableau', skills: ['SQL', 'Tableau'] },
-    { label: '🐍 Python Analytics', skills: ['Python', 'SQL', 'Pandas'] },
-    { label: '🌱 Complete Beginner', skills: [] },
-  ],
-};
-
-export default function ExplorerTab({
-  roles,
-  skillsByCategory,
-  selectedRole,
-  onSelectRole,
-  experienceMode,
-  onChangeExperienceMode,
-  selectedSkills,
-  onToggleSkill,
-  onClearSkills,
-  onApplyPreset,
-  analysisResults,
-  isAnalyzing,
-  onAnalyze,
-  roadmapSkills,
-  onToggleRoadmapSkill,
-  onGoToRoadmaps,
-}) {
-  const [skillSearch, setSkillSearch] = useState('');
-  const [openExplanation, setOpenExplanation] = useState({});
-
-  const toggleExplanation = (skill) => {
-    setOpenExplanation((prev) => ({
-      ...prev,
-      [skill]: !prev[skill],
-    }));
-  };
-
-  // Flattened skills for easy selection
-  const allSkills = useMemo(() => {
-    const list = [];
-    Object.entries(skillsByCategory).forEach(([category, skills]) => {
-      skills.forEach((skill) => {
-        if (!skillSearch || skill.toLowerCase().includes(skillSearch.toLowerCase())) {
-          list.push({ skill, category });
-        }
-      });
-    });
-    return list;
-  }, [skillsByCategory, skillSearch]);
-
-  const currentRoleObj = roles.find((r) => r.role_name === selectedRole) || roles[0];
-  const rolePresets = PRESETS[selectedRole] || [];
-
+function FriendlyEvidence({ rec, results }) {
+  const rule = results?.active_rules?.find(item => item.consequent.includes(rec.skill));
+  const paired = rule?.antecedent?.join(' and ');
+  const percent = Math.round(rec.confidence * 100);
+  const change = Math.round(Math.abs(rec.lift - 1) * 100);
+  const foundational = rec.tier?.startsWith('Tier 3');
+  return <details className="evidence"><summary>Why this suggestion?</summary>
+    {foundational ? <p>{rec.skill} appears in about {percent}% of postings for this role. This suggestion is based on its overall popularity.</p> : <>
+      {paired && <p><strong>{rec.skill} is {change === 0 ? 'about as common' : `${change}% ${rec.lift > 1 ? 'more' : 'less'} common`} in postings mentioning {paired}</strong>, compared with all postings in this role and experience group.</p>}
+      {paired && <p>About {percent} out of every 100 postings mentioning {paired} also mention {rec.skill}.</p>}
+      {results?.sub_lattice_fallback_used && <p>This pattern matches some of your selected skills, rather than the full combination.</p>}
+    </>}
+    <p>Based on {rec.evidence_jobs_count.toLocaleString()} supporting job postings{rec.evidence_jobs_count < 10 ? ' — a small sample, so use this as a starting point to explore' : ''}.</p>
+    <p>These patterns don’t predict your chances of getting hired.</p>
+    <details><summary>Technical details</summary><p>Confidence: {percent}% · Lift: {rec.lift.toFixed(2)}</p><p>{foundational ? 'Lift is set to 1.00 for this popularity-based suggestion; it is not a measured association.' : 'Lift compares how often this skill appears with the matched skills against how often it appears overall. Above 1 means more common; 1 means no difference.'}</p></details>
+  </details>;
+}
+export default function ExplorerTab({ roles, skillsByCategory, selectedRole, onSelectRole,
+  experienceMode, onChangeExperienceMode, selectedSkills, onToggleSkill, onClearSkills,
+  analysisResults, analysisError, isAnalyzing, onAnalyze, roadmapSkills, onToggleRoadmapSkill, onGoToRoadmaps }) {
+  const [step, setStep] = useState(analysisResults ? 3 : 1);
+  const [search, setSearch] = useState('');
+  const [showAll, setShowAll] = useState(false);
+  const heading = useRef(null);
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) { firstRender.current = false; return; }
+    heading.current?.focus();
+  }, [step]);
+  const skills = [...new Set(Object.values(skillsByCategory).flat())];
+  const matches = skills.filter(s => s.toLowerCase().includes(search.trim().toLowerCase()));
   const recommendations = analysisResults?.recommendations || [];
-  const totalJobs =
-    experienceMode === 'entry'
-      ? currentRoleObj?.entry_postings_count || 170
-      : currentRoleObj?.all_postings_count || 800;
-
-  // Career match percentage
-  const totalSkillsConsidered = Math.max(5, selectedSkills.length + recommendations.length);
-  const readinessPercent = Math.min(
-    95,
-    Math.max(15, Math.round((selectedSkills.length / totalSkillsConsidered) * 100))
-  );
-
-  return (
-    <div className="space-y-8 py-4 max-w-7xl mx-auto">
-      {/* Page Header (TactiChess Style) */}
-      <div>
-        <span className="text-[11px] font-semibold text-[#2d6a4f] uppercase tracking-wider block mb-1">
-          THE EXPLORER
-        </span>
-        <h1 className="font-editorial text-3xl sm:text-4xl font-bold text-[#1b2b20] tracking-tight">
-          Discover skill connections
-        </h1>
-        <p className="text-sm text-[#4d5e51] mt-1 max-w-3xl leading-relaxed">
-          Choose a target career track, select the skills you already know, and discover which
-          companion tools appear most frequently in real job postings.
-        </p>
-      </div>
-
-      {/* 2-Column TactiChess Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Recommendations & Skill Connections (Main View) */}
-        <div className="lg:col-span-7 space-y-6">
-          <div className="p-6 sm:p-7 rounded-2xl bg-white border border-[#e1e6dd] shadow-xs space-y-6">
-            {/* Header with Role & Action */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#edf1ea] gap-3">
-              <div>
-                <h2 className="font-editorial text-2xl font-bold text-[#1b2b20]">
-                  Career recommendations
-                </h2>
-                <p className="text-xs text-[#526456] mt-0.5">
-                  Target: <span className="font-semibold text-[#1b2b20]">{selectedRole}</span> •{' '}
-                  {selectedSkills.length > 0 ? (
-                    <span>Known: {selectedSkills.join(', ')}</span>
-                  ) : (
-                    <span className="italic">Starting fresh</span>
-                  )}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  const el = document.getElementById('control-sidebar');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="px-3.5 py-1.5 rounded-xl bg-[#f2f6f0] hover:bg-[#e4ece1] text-[#1b3729] text-xs font-semibold border border-[#d2ded0] transition-colors cursor-pointer self-start sm:self-auto"
-              >
-                Change role / skills
-              </button>
-            </div>
-
-            {/* Seniority Filter Buttons (Like TactiChess Puzzle Difficulty) */}
-            <div className="space-y-2">
-              <span className="text-[11px] font-semibold text-[#1b2b20] uppercase tracking-wider block">
-                Job Seniority Filter
-              </span>
-              <div className="flex items-center gap-2 bg-[#f4f6f1] p-1 rounded-xl border border-[#dfe5dc] w-fit">
-                <button
-                  type="button"
-                  onClick={() => onChangeExperienceMode('entry')}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                    experienceMode === 'entry'
-                      ? 'bg-white text-[#1b3729] font-bold shadow-xs'
-                      : 'text-[#586c5e] hover:text-[#1b2b20]'
-                  }`}
-                >
-                  Entry-Level & Junior
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onChangeExperienceMode('all')}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                    experienceMode === 'all'
-                      ? 'bg-white text-[#1b3729] font-bold shadow-xs'
-                      : 'text-[#586c5e] hover:text-[#1b2b20]'
-                  }`}
-                >
-                  All Industry Roles
-                </button>
-              </div>
-              <p className="text-[11px] text-[#637667]">
-                {experienceMode === 'entry'
-                  ? 'Filtering specifically for junior positions to eliminate senior architecture tool requirements.'
-                  : 'Analyzing all seniorities across the full market sample.'}
-              </p>
-            </div>
-
-            {/* Posting Count & Career Match Gauge */}
-            <div className="p-4 rounded-xl bg-[#f8faf7] border border-[#e4ebe0] space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-[#1b2b20]">
-                  Career Readiness Score
-                </span>
-                <span className="font-bold text-[#2d6a4f]">
-                  {readinessPercent}% Match
-                </span>
-              </div>
-              <div className="w-full h-2 rounded-full bg-[#e3eae0] overflow-hidden">
-                <div
-                  className="h-full bg-[#2d6a4f] rounded-full transition-all duration-700"
-                  style={{ width: `${readinessPercent}%` }}
-                ></div>
-              </div>
-              <p className="text-[11px] text-[#5c6f60]">
-                Based on <strong className="text-[#1b2b20]">{totalJobs}</strong> verified LinkedIn postings for this specialization.
-              </p>
-            </div>
-
-            {/* Recommendations List (TactiChess Style Cards) */}
-            <div className="space-y-4 pt-2">
-              <div className="flex items-center justify-between">
-                <h3 className="font-editorial text-lg font-bold text-[#1b2b20]">
-                  Companion skills to learn
-                </h3>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#e6f1e8] text-[#2d6a4f] font-semibold border border-[#cce2d2]">
-                  {recommendations.length} recommended
-                </span>
-              </div>
-
-              {recommendations.length === 0 ? (
-                <div className="p-8 text-center bg-[#f9faf7] rounded-xl border border-dashed border-[#d2ded0] space-y-3">
-                  <Sparkles className="w-6 h-6 text-[#2d6a4f] mx-auto" />
-                  <p className="text-xs text-[#526456]">
-                    Click <strong className="text-[#1b2b20]">"Analyze Skill Connections"</strong> in the sidebar to view personalized companion tools.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {recommendations.map((rec) => {
-                    const isSaved = roadmapSkills.includes(rec.skill);
-                    const isExpanded = openExplanation[rec.skill];
-
-                    return (
-                      <div
-                        key={rec.skill}
-                        className={`p-4 sm:p-5 rounded-xl border transition-all ${
-                          isSaved
-                            ? 'bg-[#f4f9f4] border-[#b4dbb9]'
-                            : 'bg-white border-[#e1e6dd] hover:border-[#b8ccb6]'
-                        }`}
-                      >
-                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-bold text-base text-[#1b2b20]">
-                                {rec.skill}
-                              </h4>
-                              <span className="px-2 py-0.5 rounded-md bg-[#edf2ea] text-[#3b5542] text-[10px] font-semibold">
-                                {rec.category}
-                              </span>
-                              {rec.priority && (
-                                <span className="px-2 py-0.5 rounded-md bg-[#eef7ee] text-[#215332] text-[10px] font-medium border border-[#cde0cb]">
-                                  {rec.priority}
-                                </span>
-                              )}
-                            </div>
-
-                            <p className="text-xs text-[#526456] leading-relaxed">
-                              {rec.plain_english || rec.learning_reason}
-                            </p>
-                          </div>
-
-                          {/* Save Button */}
-                          <button
-                            type="button"
-                            onClick={() => onToggleRoadmapSkill(rec.skill)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 ${
-                              isSaved
-                                ? 'bg-[#2d6a4f] text-white'
-                                : 'bg-[#f0f4ee] hover:bg-[#e4ece1] text-[#1b3729] border border-[#d2ded0]'
-                            }`}
-                          >
-                            {isSaved ? (
-                              <>
-                                <Check className="w-3.5 h-3.5" />
-                                <span>Saved</span>
-                              </>
-                            ) : (
-                              <>
-                                <Plus className="w-3.5 h-3.5" />
-                                <span>Add to Roadmap</span>
-                              </>
-                            )}
-                          </button>
-                        </div>
-
-                        {/* Accordion: Why are these paired? (Just like TactiChess!) */}
-                        <div className="mt-3 pt-3 border-t border-[#edf1ea]">
-                          <button
-                            type="button"
-                            onClick={() => toggleExplanation(rec.skill)}
-                            className="text-[11px] font-medium text-[#2d6a4f] hover:text-[#1b3729] flex items-center gap-1 cursor-pointer"
-                          >
-                            <span>▶ Why is {rec.skill} paired with your skills?</span>
-                            {isExpanded ? (
-                              <ChevronUp className="w-3.5 h-3.5" />
-                            ) : (
-                              <ChevronDown className="w-3.5 h-3.5" />
-                            )}
-                          </button>
-
-                          {isExpanded && (
-                            <div className="mt-2 p-3 rounded-lg bg-[#f9faf7] text-xs text-[#445548] leading-relaxed border border-[#e4ede1]">
-                              Found in <strong>{Math.round((rec.confidence || 0.8) * 100)}%</strong> of job postings requiring your existing toolkit. In production tech stacks, employers require this companion skill to complete end-to-end development workflows.
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* Bottom Roadmap Navigation Callout */}
-            {recommendations.length > 0 && (
-              <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#edf1ea]">
-                <span className="text-xs text-[#526456]">
-                  {roadmapSkills.length} skills saved to your personal study checklist
-                </span>
-                <button
-                  type="button"
-                  onClick={onGoToRoadmaps}
-                  className="px-4 py-2 rounded-xl bg-[#1b3729] hover:bg-[#13271d] text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
-                >
-                  <span>Open Learning Roadmap</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right Column: Controls & Skill Picker (TactiChess Sidebar Style) */}
-        <div id="control-sidebar" className="lg:col-span-5 space-y-6">
-          {/* Card 1: Choose a Target Role */}
-          <div className="p-6 rounded-2xl bg-white border border-[#e1e6dd] shadow-xs space-y-4">
-            <div>
-              <span className="text-[11px] font-semibold text-[#1b2b20] uppercase tracking-wider block">
-                Target Role
-              </span>
-              <label htmlFor="role-select" className="font-editorial text-xl font-bold text-[#1b2b20] block mt-0.5">
-                Choose a career track
-              </label>
-            </div>
-
-            <div className="relative">
-              <select
-                id="role-select"
-                value={selectedRole}
-                onChange={(e) => onSelectRole(e.target.value)}
-                className="w-full p-3 rounded-xl bg-[#f8faf7] border border-[#d2ded0] text-sm font-semibold text-[#1b2b20] focus:outline-hidden focus:border-[#2d6a4f] cursor-pointer appearance-none pr-10"
-              >
-                {roles.map((r) => (
-                  <option key={r.role_name} value={r.role_name}>
-                    {r.role_name}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-4 h-4 text-[#586c5e] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
-
-            <p className="text-xs text-[#526456] leading-relaxed">
-              {ROLE_DESCRIPTIONS[selectedRole] || 'Explore market co-occurrences.'}
-            </p>
-          </div>
-
-          {/* Card 2: Select Skills You Already Know */}
-          <div className="p-6 rounded-2xl bg-white border border-[#e1e6dd] shadow-xs space-y-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-[11px] font-semibold text-[#1b2b20] uppercase tracking-wider block">
-                  Your Current Toolkit
-                </span>
-                <h3 className="font-editorial text-xl font-bold text-[#1b2b20]">
-                  Skills you already know
-                </h3>
-              </div>
-
-              {selectedSkills.length > 0 && (
-                <button
-                  type="button"
-                  onClick={onClearSkills}
-                  className="text-xs text-[#637667] hover:text-[#b91c1c] font-medium cursor-pointer"
-                >
-                  Clear all
-                </button>
-              )}
-            </div>
-
-            {/* Quick Starter Presets */}
-            <div>
-              <span className="text-[11px] font-semibold text-[#526456] block mb-2">
-                Quick Presets:
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {rolePresets.map((p) => (
-                  <button
-                    key={p.label}
-                    type="button"
-                    onClick={() => onApplyPreset(p.skills)}
-                    className="px-2.5 py-1 rounded-lg bg-[#f0f4ee] hover:bg-[#e4ece1] text-[#2c4434] text-[11px] font-medium border border-[#d2ded0] transition-colors cursor-pointer"
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Skill Search Input */}
-            <div className="relative">
-              <Search className="w-4 h-4 text-[#728576] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Search skills (e.g. Python, React, SQL)..."
-                value={skillSearch}
-                onChange={(e) => setSkillSearch(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#f8faf7] border border-[#d2ded0] text-xs text-[#1b2b20] placeholder-[#819284] focus:outline-hidden focus:border-[#2d6a4f]"
-              />
-            </div>
-
-            {/* Skill Tag Cloud */}
-            <div className="max-h-56 overflow-y-auto pr-1">
-              <div className="flex flex-wrap gap-1.5">
-                {allSkills.map(({ skill }) => {
-                  const isSelected = selectedSkills.includes(skill);
-                  return (
-                    <button
-                      key={skill}
-                      type="button"
-                      onClick={() => onToggleSkill(skill)}
-                      className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                        isSelected
-                          ? 'bg-[#1b3729] text-white shadow-2xs font-semibold'
-                          : 'bg-[#f4f7f2] hover:bg-[#e6eee3] text-[#34483a] border border-[#d8e2d6]'
-                      }`}
-                    >
-                      {skill} {isSelected && '✓'}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Live Reactive Update Badge */}
-            <div className="pt-2 flex items-center justify-between text-[11px] text-[#5c6f60] border-t border-[#edf1ea]">
-              <span className="flex items-center gap-1.5 font-medium">
-                <span className="w-2 h-2 rounded-full bg-[#2d6a4f] animate-pulse"></span>
-                <span>Live Co-Occurrence Analysis</span>
-              </span>
-              <span className="italic text-[#7b8f7f]">
-                Updates instantly as you select
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+  const analyze = async () => {
+    if (await onAnalyze()) { setShowAll(false); setStep(3); }
+  };
+  return <div className="guided-flow">
+    <ol className="flow-steps" aria-label="Your progress">{['Your direction', 'Your skills', 'Next steps'].map((label, i) => <li key={label} aria-current={step === i + 1 ? 'step' : undefined} className={step > i + 1 ? 'complete' : ''}><span>{step > i + 1 ? <Check size={14} aria-hidden="true" /> : i + 1}</span>{label}</li>)}</ol>
+    <div className="flow-heading">
+      <p className="eyebrow">Step {step} of 3</p>
+      <h1 ref={heading} tabIndex={-1} className="font-editorial">{step === 1 ? 'Where would you like to go?' : step === 2 ? 'What do you already know?' : 'A few skills to explore next.'}</h1>
+      <p>{step === 1 ? 'Choose a direction that interests you. You can change it later.' : step === 2 ? 'Select skills you’ve studied or used. Starting fresh? It’s okay to skip this.' : `Suggestions for your path toward ${selectedRole}.`}</p>
     </div>
-  );
+    {step === 1 && <section className="flow-panel" aria-label="Choose your direction">
+      <fieldset className="role-options"><legend className="sr-only">Career role</legend>{roles.map(({ role_name }) => {
+        const info = ROLE_INFO[role_name] || { icon: Server, description: 'Explore skills for this career.' };
+        const Icon = info.icon;
+        return <label className={`role-option ${selectedRole === role_name ? 'selected' : ''}`} key={role_name}>
+          <input type="radio" name="career-role" value={role_name} checked={selectedRole === role_name} onChange={() => onSelectRole(role_name)} />
+          <Icon size={23} strokeWidth={1.5} aria-hidden="true" /><span><strong>{role_name}</strong><small>{info.description}</small></span>
+        </label>;
+      })}</fieldset>
+      <div className="flow-actions"><span>You don’t need to have it all figured out.</span><button className="primary-button" disabled={!selectedRole} onClick={() => setStep(2)}>Continue <ArrowRight size={17} aria-hidden="true" /></button></div>
+    </section>}
+    {step === 2 && <section className="flow-panel" aria-label="Choose your skills" aria-busy={isAnalyzing}>
+      <fieldset disabled={isAnalyzing} className="skill-fieldset"><legend className="sr-only">Skills and experience</legend>
+        <label htmlFor="skill-search" className="field-label">Search for a skill</label>
+        <div className="skill-search"><Search size={18} aria-hidden="true" /><input id="skill-search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Try Python, SQL or React" /></div>
+        <div className="selection-summary"><span aria-live="polite">{selectedSkills.length} selected</span>{selectedSkills.length > 0 && <button className="text-button" onClick={onClearSkills}>Clear all</button>}</div>
+        {selectedSkills.length > 0 && <div className="selected-skills" aria-label="Selected skills">{selectedSkills.map(skill => <button key={skill} className="skill-chip selected" aria-label={`Remove ${skill}`} onClick={() => onToggleSkill(skill)}>{skill}<Check size={14} aria-hidden="true" /></button>)}</div>}
+        <div className="skill-categories">
+          {search.trim() ? <div className="skill-list">{matches.length ? matches.map(skill => <button key={skill} className={`skill-chip ${selectedSkills.includes(skill) ? 'selected' : ''}`} aria-pressed={selectedSkills.includes(skill)} onClick={() => onToggleSkill(skill)}>{skill}</button>) : <p className="muted">No matching skills. Try another name or browse the categories below.</p>}</div> : <p className="muted mb-3">Or browse by category</p>}
+          {Object.entries(skillsByCategory).map(([category, items]) => <details key={category} hidden={Boolean(search.trim() && matches.length)}><summary>{category}<span>{items.filter(s => selectedSkills.includes(s)).length || items.length}</span></summary><div className="skill-list">{items.map(skill => <button key={skill} className={`skill-chip ${selectedSkills.includes(skill) ? 'selected' : ''}`} aria-pressed={selectedSkills.includes(skill)} onClick={() => onToggleSkill(skill)}>{skill}{selectedSkills.includes(skill) && <Check size={14} aria-hidden="true" />}</button>)}</div></details>)}
+        </div>
+        <details className="experience-options"><summary>Job experience: {experienceMode === 'entry' ? 'Entry level' : 'All levels'}</summary><p className="muted">Choose the job postings used for your suggestions.</p><label htmlFor="experience-mode" className="sr-only">Job experience</label><select id="experience-mode" value={experienceMode} onChange={e => onChangeExperienceMode(e.target.value)}><option value="entry">Entry level — a good place to start</option><option value="all">All experience levels</option></select></details>
+      </fieldset>
+      {analysisError && <p role="alert" className="flow-error">{analysisError} Please try again.</p>}
+      <div className="flow-actions"><button className="text-button" disabled={isAnalyzing} onClick={() => setStep(1)}><ArrowLeft size={16} aria-hidden="true" /> Back</button><button className="primary-button" disabled={isAnalyzing} onClick={analyze}>{isAnalyzing ? 'Finding suggestions…' : selectedSkills.length ? 'Show my suggestions' : 'Find beginner skills'}<ArrowRight size={17} aria-hidden="true" /></button></div>
+      <p className="quiet-note" role="status">{isAnalyzing ? 'This may take a moment. Your selections are safe here.' : 'Your suggestions appear when you’re ready.'}</p>
+    </section>}
+    {step === 3 && <section aria-label="Your suggestions" className="results-section">
+      <div className="results-context"><p>{selectedSkills.length ? `Based on ${selectedSkills.length} selected skill${selectedSkills.length === 1 ? '' : 's'}` : 'A starting point for beginners'} · {experienceMode === 'entry' ? 'Entry-level jobs' : 'All experience levels'}</p><button className="text-button" onClick={() => setStep(2)}>Edit my choices</button></div>
+      <p className="muted">These skills appear in related job postings. Pick one you’d like to learn; this isn’t a test or a measure of job readiness.</p>
+      {recommendations.length === 0 && <div className="flow-panel"><h2 className="font-editorial text-2xl">No suggestions for these choices yet.</h2><p className="muted mt-3">Try a different role or fewer skills to explore other patterns.</p><button className="text-button mt-4" onClick={() => setStep(1)}>Change my choices <ArrowRight size={16} /></button></div>}
+      {(showAll ? recommendations : recommendations.slice(0, 3)).map(rec => {
+        const saved = roadmapSkills.includes(rec.skill);
+        return <article className="recommendation" key={rec.skill}>
+          <div className="recommendation-top"><div><p className="eyebrow">{rec.category}</p><h2 className="font-editorial">{rec.skill}</h2></div><button className={`save-button ${saved ? 'saved' : ''}`} aria-pressed={saved} aria-label={`${saved ? 'Remove' : 'Save'} ${rec.skill} ${saved ? 'from' : 'to'} roadmap`} onClick={() => onToggleRoadmapSkill(rec.skill)}>{saved ? <Check size={16} /> : <Plus size={16} />}{saved ? 'Saved' : 'Save skill'}</button></div>
+          <p className="skill-description">{getSkillPurpose(rec.skill)}</p>
+          <FriendlyEvidence rec={rec} results={analysisResults} />
+        </article>;
+      })}
+      {recommendations.length > 3 && <button className="text-button more-suggestions" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show fewer suggestions' : `See ${recommendations.length - 3} more suggestions`}</button>}
+      {analysisResults?.note && <details className="muted result-note"><summary>About these results</summary><p>{analysisResults.note}</p></details>}
+      <div className="flow-actions"><span role="status">{roadmapSkills.length ? `${roadmapSkills.length} skill${roadmapSkills.length === 1 ? '' : 's'} in your roadmap` : 'Save a skill to start your learning roadmap.'}</span>{roadmapSkills.length > 0 && <button className="primary-button" onClick={onGoToRoadmaps}>View my roadmap <ArrowRight size={17} /></button>}</div>
+    </section>}
+  </div>;
 }

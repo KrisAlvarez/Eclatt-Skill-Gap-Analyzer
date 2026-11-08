@@ -6,22 +6,22 @@ export default function HowToUseTab({ onGoToExplorer }) {
     {
       num: '1',
       title: 'Pick a career track',
-      desc: 'Choose Backend Developer, Frontend Developer, or Data Analyst in the Explorer dropdown.',
+      desc: 'Choose Backend Developer, Frontend Developer, or Data Analyst, then select Continue.',
     },
     {
       num: '2',
       title: 'Select what you know',
-      desc: 'Click on the skills you have already studied or used (e.g. Python, SQL, or React).',
+      desc: 'Search for skills you have studied or used, or browse a category. You can also start with no skills selected.',
     },
     {
       num: '3',
       title: 'See what goes with them',
-      desc: 'SkillGap scans real job postings to show you what companion skills employers usually look for alongside your toolkit.',
+      desc: 'Select Show my suggestions (or Find beginner skills). Start with three suggestions and open the evidence only when you want more detail.',
     },
     {
       num: '4',
       title: 'Save to your roadmap',
-      desc: 'Add recommendations to your study roadmap and check them off as you practice.',
+      desc: 'Select Save skill on any suggestion, then open My roadmap to track your practice. Your checklist stays available while this page is open; refreshing clears it.',
     },
   ];
 
@@ -32,7 +32,7 @@ export default function HowToUseTab({ onGoToExplorer }) {
     },
     {
       q: 'What is the entry-level filter?',
-      a: 'Most tech postings online are for senior engineers. The entry-level filter removes senior-only tools so the recommendations are realistic for students and junior candidates.',
+      a: 'Most tech postings online are for senior engineers. Entry level uses postings labeled for early-career candidates. You can switch to all experience levels under Job experience in the skills step.',
     },
   ];
 
