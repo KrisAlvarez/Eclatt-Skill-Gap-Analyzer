@@ -19,7 +19,7 @@ export default function App() {
 
   // User input states
   const [selectedRole, setSelectedRole] = useState('Backend Developer');
-  const [experienceMode, setExperienceMode] = useState('all'); // 'all' | 'entry'
+  const [experienceMode, setExperienceMode] = useState('entry'); // 'entry' | 'all'
   const [selectedSkills, setSelectedSkills] = useState(['Python', 'SQL']);
   const [roadmapSkills, setRoadmapSkills] = useState(['Docker', 'REST APIs', 'Git']);
 
@@ -54,8 +54,8 @@ export default function App() {
       setSkillsByCategory(data.skills_by_category || {});
       const initialRole = data.roles && data.roles.length > 0 ? data.roles[0].role_name : 'Backend Developer';
       setSelectedRole(initialRole);
-      // Run initial default analysis with 'all'
-      await runAnalysis(initialRole, ['Python', 'SQL'], 'all');
+      // Run initial default analysis with entry
+      await runAnalysis(initialRole, ['Python', 'SQL'], 'entry');
     } catch (err) {
       setInitError(err.message || 'Could not connect to SkillGap cloud backend.');
     } finally {
