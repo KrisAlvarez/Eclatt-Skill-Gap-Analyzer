@@ -78,7 +78,7 @@ Eclatt-Skill-Gap-Analyzer/
 │   ├── raw/                         # Automated via kagglehub ("asaniczka/1-3m-linkedin-jobs-and-skills-2024")
 │   │   └── README.md                # Ingestion instructions & dataset details
 │   ├── processed/                   # Preprocessed transactions & precomputed indexes
-│   │   ├── clean_transactions.json  # Sanitized role-segmented transactions (7,160 IT postings)
+│   │   ├── clean_transactions.json  # Sanitized role-segmented transactions (36,822 unique IT postings; 55,295 track assignments)
 │   │   ├── clean_summary.json       # Seniority & track distribution counts
 │   │   ├── rules.json               # Precomputed association rules (sub-millisecond lookups)
 │   │   └── evaluation_metrics.json  # Hit-Rate@3, Hit-Rate@5, Lift over baseline
@@ -89,7 +89,8 @@ Eclatt-Skill-Gap-Analyzer/
 │   └── test_server.py               # Integration tests: FastAPI endpoints (/health, /analyze, etc.)
 │
 ├── 📑 docs/                         # DEFENSE SPECIFICATIONS & RESEARCH
-│   ├── project-plan.md              # 🌟 Master Academic Blueprint & Defense Plan
+│   ├── SYSTEM_COMPREHENSIVE_GUIDE.md # 🌟 Exhaustive Master AI & Architecture Compendium
+│   ├── project-plan.md              # Master Academic Blueprint & Defense Plan
 │   ├── research/                    # Critical evaluation notes & loophole resolutions
 │   │   ├── clean_loopholes.md       # In-depth resolution of 7 academic loopholes
 │   │   ├── clean_recommendations.md # Scope, role segmentation & model guidelines

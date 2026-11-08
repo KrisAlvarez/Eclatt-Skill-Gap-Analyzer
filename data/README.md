@@ -28,10 +28,11 @@ The ECLAT models are aligned with the comprehensive **1.3M+ LinkedIn Jobs & Skil
 
 | IT Career Track | Total Transactions (`all`) | Entry-Level Segment (`entry`) |
 |-----------------|----------------------------|-------------------------------|
-| **Backend Developer** | 4,027 | 214 |
-| **Frontend Developer** | 1,790 | 156 |
-| **Data Analyst** | 1,343 | 269 |
-| **Total** | **7,160** | **639** |
+| **Backend Developer** | 29,453 | 1,860 |
+| **Frontend Developer** | 9,417 | 671 |
+| **Data Analyst** | 16,425 | 1,427 |
+| **Total Role Assignments** | **55,295** | **3,958** |
+*(Representing **36,822** unique, verified IT transactions matching $\ge 2$ canonical skills from the 1.3M dataset).*
 
 ---
 
@@ -42,4 +43,4 @@ The ECLAT models are aligned with the comprehensive **1.3M+ LinkedIn Jobs & Skil
 2. **Canonical Skill Normalization**: Raw skill strings are mapped to canonical technical entities using `eclat_algorithm.taxonomy.SKILL_TAXONOMY` and `ALIAS_MAP`.
 3. **Hybrid Role Classification**: Positions are mapped into **Backend Developer**, **Frontend Developer**, and **Data Analyst** using a hybrid title regex + technology stack disambiguation algorithm (`eclat_algorithm.builder.classify_role`).
 4. **Multi-Signal Seniority Filtering**: Positions are tagged as `entry` using both explicit `job_level` metadata and title junior keyword matching (`is_entry_level`).
-5. **Density Constraint**: Transactions with fewer than 3 verified skills are pruned to ensure valid multi-item rule antecedents and consequents.
+5. **Density Constraint**: Transactions with fewer than 2 verified skills are pruned to ensure valid multi-item rule antecedents and consequents ($A \rightarrow B$).
