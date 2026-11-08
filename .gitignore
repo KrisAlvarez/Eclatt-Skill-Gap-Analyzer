@@ -27,6 +27,8 @@ Thumbs.db
 # pytest cache
 .pytest_cache/
 
+# Documentation
+FINAL_PROJECT_DOCUMENTATION.md
 # IDE
 .vscode/
 .idea/
