@@ -39,10 +39,11 @@ export default function ExplorerTab({ roles, skillsByCategory, selectedRole, onS
   const skills = [...new Set(Object.values(skillsByCategory).flat())];
   const matches = skills.filter(s => s.toLowerCase().includes(search.trim().toLowerCase()));
   const recommendations = analysisResults?.recommendations || [];
-  const resultNote = analysisResults?.note?.startsWith('Cold-start fallback:')
+  const usedPopularityFallback = recommendations.some(rec => rec.tier?.startsWith('Tier 3'));
+  const resultNote = usedPopularityFallback
     ? analysisResults.user_skills.length
-      ? `We couldn't find a close match for those skills in ${analysisResults.role} job ads. These suggestions show skills that often appear for this role. Try selecting fewer skills to see closer connections.`
-      : `You haven't added any skills yet, so these suggestions show skills that often appear in ${analysisResults.role} job ads. Use them as ideas for where to begin, not as a required checklist.`
+      ? `We couldn't find a close pattern for the skills you selected in this dataset. These suggestions are skills often mentioned in ${analysisResults.role} postings. Try fewer selected skills to explore different combinations.`
+      : `You haven't added any skills yet, so these suggestions show skills often mentioned in ${analysisResults.role} postings in this dataset. Treat them as ideas to explore, not a required checklist.`
     : analysisResults?.note;
   const analyze = async () => {
     if (await onAnalyze()) { setShowAll(false); setStep(3); }
@@ -83,7 +84,7 @@ export default function ExplorerTab({ roles, skillsByCategory, selectedRole, onS
     </section>}
     {step === 3 && <section aria-label="Your suggestions" className="results-section">
       <div className="results-context"><p>{selectedSkills.length ? `Based on ${selectedSkills.length} selected skill${selectedSkills.length === 1 ? '' : 's'}` : 'A starting point for beginners'} · {experienceMode === 'entry' ? 'Entry-level jobs' : 'All experience levels'}</p><button className="text-button" onClick={() => setStep(2)}>Edit my choices</button></div>
-      <p className="muted">These skills appear in related job postings. Pick one you’d like to learn; this isn’t a test or a measure of job readiness.</p>
+      <p className="muted">These suggestions summarize patterns in the selected postings. Choose any that interest you; they are not a checklist of requirements or a measure of job readiness.</p>
       {recommendations.length === 0 && <div className="flow-panel"><h2 className="font-editorial text-2xl">No suggestions for these choices yet.</h2><p className="muted mt-3">Try a different role or fewer skills to explore other patterns.</p><button className="text-button mt-4" onClick={() => setStep(1)}>Change my choices <ArrowRight size={16} /></button></div>}
       {(showAll ? recommendations : recommendations.slice(0, 3)).map(rec => {
         const saved = roadmapSkills.includes(rec.skill);

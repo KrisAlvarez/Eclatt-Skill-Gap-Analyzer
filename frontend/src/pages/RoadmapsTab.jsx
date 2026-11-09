@@ -69,7 +69,7 @@ export default function RoadmapsTab({
             {selectedRole} checklist
           </h1>
           <p className="text-xs text-[#526456] mt-0.5">
-            A simple checklist to track what you know and what to study next.
+            A personal checklist for skills you mark as known and skills you choose to explore. Suggestions reflect patterns in the selected postings, not required steps.
           </p>
         </div>
 
@@ -146,7 +146,7 @@ export default function RoadmapsTab({
         <div className="p-5 rounded-2xl bg-white border border-[#e1e6dd] space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-sm text-[#1b2b20]">
-              2. Skills to study next ({roadmapSkills.length})
+              2. Skills you chose to explore ({roadmapSkills.length})
             </h3>
             {roadmapSkills.length > 0 && (
               <span className="text-xs text-[#526456]">
@@ -157,7 +157,7 @@ export default function RoadmapsTab({
 
           {roadmapSkills.length === 0 ? (
             <p className="text-xs text-[#708474] italic">
-              No skills added yet. Go to the Explorer and click "+ Add to roadmap" on any recommendation.
+              No skills added yet. Go to the Explorer and save any suggestion you would like to explore.
             </p>
           ) : (
             <div className="space-y-2 pt-1">
@@ -214,10 +214,10 @@ export default function RoadmapsTab({
           )}
         </div>
 
-        {/* Section 3: Suggested Practice Project */}
+        {/* Section 3: Optional practice idea */}
         <div className="p-5 rounded-2xl bg-white border border-[#e1e6dd] space-y-3">
           <h3 className="font-bold text-sm text-[#1b2b20]">
-            3. Practice project: {project.title}
+            Optional practice idea: {project.title}
           </h3>
           <p className="text-xs text-[#526456] leading-relaxed">
             {project.summary}

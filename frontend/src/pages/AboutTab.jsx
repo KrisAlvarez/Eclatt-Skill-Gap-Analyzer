@@ -35,9 +35,9 @@ export default function AboutTab() {
         </div>
 
         <div className="p-5 rounded-2xl bg-white border border-[#e1e6dd] space-y-2">
-          <h3 className="font-bold text-sm text-[#1b2b20]">Seniority filter</h3>
+          <h3 className="font-bold text-sm text-[#1b2b20]">What the experience-level filter means</h3>
           <p className="text-xs text-[#526456] leading-relaxed">
-            Over 85% of tech postings online ask for mid to senior engineers with advanced architecture tools. We separated entry-level postings so beginners get advice that fits their actual starting level.
+            The entry-level view uses postings classified as entry-level in this dataset. It is a way to explore a smaller, labeled subset—not a guarantee that every suggestion is suitable for beginners or that the postings represent the wider job market.
           </p>
         </div>
       </div>

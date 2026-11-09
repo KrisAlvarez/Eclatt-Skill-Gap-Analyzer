@@ -97,7 +97,7 @@ def analyze_skill_gap(payload: GapAnalysisRequest):
                     support=r["support"],
                     evidence_jobs_count=r.get("joint_count", int(r["support"] * total_jobs)),
                     tier="Tier 1: Exact Match",
-                    explanation=f"Direct conditional rule: Postings requiring {r['antecedent']} also require {skill} {int(r['confidence']*100)}% of the time (Lift: {r['lift']}x).",
+                    explanation=f"In this dataset, postings mentioning {r['antecedent']} also mention {skill} {int(r['confidence']*100)}% of the time (Lift: {r['lift']}x). This is an observed pattern, not a requirement.",
                 )
             )
 
@@ -135,7 +135,7 @@ def analyze_skill_gap(payload: GapAnalysisRequest):
                             support=r["support"],
                             evidence_jobs_count=r.get("joint_count", int(r["support"] * total_jobs)),
                             tier="Tier 2: Sub-Lattice Complement",
-                            explanation=f"Associated with subset {matched_subset} ({int(r['confidence']*100)}% confidence, {r['lift']}x Lift).",
+                            explanation=f"In this dataset, {skill} appeared with the selected skills {matched_subset} in {int(r['confidence']*100)}% of matching postings ({r['lift']}x Lift). This is an observed pattern, not a requirement.",
                         )
                     )
                 break
@@ -143,7 +143,7 @@ def analyze_skill_gap(payload: GapAnalysisRequest):
     # Tier 3: Unconditional 1-Itemset Prior (Cold-Start)
     if not recommendations:
         sub_lattice_used = False
-        tier_note = "Cold-start fallback: Recommending foundational technical competencies for this role."
+        tier_note = "No close skill-combination pattern was found. These are skills frequently mentioned in the selected role and experience-level postings, offered as ideas to explore."
         for item in top_1_itemsets:
             skill = item["skill"]
             if skill not in user_set:
@@ -158,7 +158,7 @@ def analyze_skill_gap(payload: GapAnalysisRequest):
                         support=supp,
                         evidence_jobs_count=count,
                         tier="Tier 3: Foundational Prior",
-                        explanation=f"Core industry requirement: mentioned in {int(supp * 100)}% of postings for {role} ({mode.upper()}).",
+                        explanation=f"Mentioned in {int(supp * 100)}% of the {role} postings in this dataset for the selected experience level. This frequency describes the sample; it does not establish a requirement.",
                     )
                 )
             if len(recommendations) >= top_k:

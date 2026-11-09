@@ -36,7 +36,7 @@ export default function HowToUseTab({ onGoToExplorer }) {
     },
     {
       q: 'What is the entry-level filter?',
-      a: 'Most tech postings online are for senior engineers. Entry level uses postings labeled for early-career candidates. You can switch to all experience levels under Job experience in the skills step.',
+      a: 'Entry level uses the postings classified as early-career in this dataset. The label is based on available posting information and may not describe every role perfectly. You can switch to all experience levels under Job experience in the skills step.',
     },
   ];
 
