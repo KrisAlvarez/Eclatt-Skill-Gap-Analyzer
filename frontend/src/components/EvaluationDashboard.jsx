@@ -7,6 +7,13 @@ export default function EvaluationDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const hr5Comparison = metrics.reduce((summary, row) => {
+    if (row.eclat_hr_at_5 > row.baseline_hr_at_5) summary.eclatAhead += 1;
+    else if (row.baseline_hr_at_5 > row.eclat_hr_at_5) summary.baselineAhead += 1;
+    else summary.tied += 1;
+    return summary;
+  }, { eclatAhead: 0, baselineAhead: 0, tied: 0 });
+
   useEffect(() => {
     async function fetchMetrics() {
       try {
@@ -96,8 +103,10 @@ export default function EvaluationDashboard() {
                   <th className="py-3 px-4">ECLAT HR@3</th>
                   <th className="py-3 px-4">Naive Prior HR@3</th>
                   <th className="py-3 px-4">ECLAT HR@5</th>
-                  <th className="py-3 px-4">Non-Trivial ECLAT</th>
-                  <th className="py-3 px-4">Non-Trivial Prior</th>
+                  <th className="py-3 px-4">Popularity Prior HR@5</th>
+                  <th className="py-3 px-4">Non-Trivial Test Set</th>
+                  <th className="py-3 px-4">Non-Trivial ECLAT HR@5</th>
+                  <th className="py-3 px-4">Non-Trivial Prior HR@5</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
@@ -117,6 +126,8 @@ export default function EvaluationDashboard() {
                     <td className="py-3.5 px-4 font-bold text-white">{(row.eclat_hr_at_3 * 100).toFixed(1)}%</td>
                     <td className="py-3.5 px-4 text-slate-400">{(row.baseline_hr_at_3 * 100).toFixed(1)}%</td>
                     <td className="py-3.5 px-4 font-bold text-emerald-400">{(row.eclat_hr_at_5 * 100).toFixed(1)}%</td>
+                    <td className="py-3.5 px-4 text-slate-400">{(row.baseline_hr_at_5 * 100).toFixed(1)}%</td>
+                    <td className="py-3.5 px-4 text-slate-400">{row.non_trivial_test_transactions_count} jobs</td>
                     <td className="py-3.5 px-4 font-bold text-violet-400">
                       {(row.non_trivial_eclat_hr_at_5 * 100).toFixed(1)}%
                     </td>
@@ -137,21 +148,21 @@ export default function EvaluationDashboard() {
           <Info className="w-4 h-4" />
           <span>How to Interpret These Results in Your Project Defense:</span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-indigo-200/90 leading-relaxed">
+        {!loading && !error && metrics.length > 0 && <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-indigo-200/90 leading-relaxed">
           <div className="space-y-1.5 p-3 rounded-xl bg-slate-900/60 border border-indigo-900/40">
-            <strong className="text-white block font-medium">1. Why Naive Priors Match Overall HR@K:</strong>
+            <strong className="text-white block font-medium">HR@5 comparison</strong>
             <p>
-              In unconstrained test cases, the most frequent skills (like Git or SQL) appear in almost half of all postings, so recommending them blindly achieves a high baseline. This is normal in transaction mining.
+              Results vary by role and experience segment. ECLAT is higher in {hr5Comparison.eclatAhead} of {metrics.length} groups; the popularity prior is higher in {hr5Comparison.baselineAhead}{hr5Comparison.tied > 0 ? `, with ${hr5Comparison.tied} tied` : ''}. Compare the results for each group above.
             </p>
           </div>
 
           <div className="space-y-1.5 p-3 rounded-xl bg-slate-900/60 border border-indigo-900/40">
-            <strong className="text-white block font-medium">2. The Non-Trivial ECLAT Victory:</strong>
+            <strong className="text-white block font-medium">Non-trivial recovery</strong>
             <p>
-              When the candidate needs a non-obvious skill (e.g., Docker, REST APIs, GraphQL, Pandas), naive frequency counting collapses to near 0%, while ECLAT conditional itemsets correctly recover the skill up to <strong>40% of the time</strong>.
+              These rates use only the non-trivial test cases shown in the table. The smaller denominator can make the results less stable, so consider it alongside the overall Hit-Rate@5 values.
             </p>
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   );
