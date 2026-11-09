@@ -12,7 +12,7 @@ export default function AboutTab() {
           About SkillGap
         </h1>
         <p className="text-xs text-[#526456] mt-0.5">
-          A tool to help learners see what companion skills employers look for.
+          A tool to help learners explore technical skills that appear together in job postings.
         </p>
       </div>
 
@@ -20,14 +20,17 @@ export default function AboutTab() {
         <div className="p-5 rounded-2xl bg-white border border-[#e1e6dd] space-y-2">
           <h3 className="font-bold text-sm text-[#1b2b20]">Why did we build this?</h3>
           <p className="text-xs text-[#526456] leading-relaxed">
-            When learning to code, it's easy to pick up a single language (like Python or JavaScript) without realizing that companies hire for full workflows. A Python backend job almost always expects a database (SQL), API patterns (REST), and deployment tools (Docker). SkillGap analyzes co-occurrences in real job postings to help learners connect the dots.
+            Job postings can mention several related technologies. SkillGap compares which canonical technical skills appear together in historical postings, then offers those patterns for learners to explore. A co-occurrence does not establish that an employer requires a skill or that it is a learning prerequisite.
           </p>
         </div>
 
         <div className="p-5 rounded-2xl bg-white border border-[#e1e6dd] space-y-2">
           <h3 className="font-bold text-sm text-[#1b2b20]">Where is the data from?</h3>
           <p className="text-xs text-[#526456] leading-relaxed">
-            We analyzed 1.3 million real tech job postings from LinkedIn (2024 asaniczka dataset). We extracted canonical technical skills and grouped them by career track (Backend, Frontend, and Data Analyst).
+            SkillGap uses asaniczka's LinkedIn Jobs &amp; Skills (2024) dataset, which contains 1,348,454 source postings. After filtering for IT roles and canonical technical skills, the analysis covers 44,441 postings across Backend Developer, Frontend Developer, and Data Analyst. Of those retained postings, 3,454 are classified as entry-level.
+          </p>
+          <p className="text-xs text-[#526456] leading-relaxed">
+            Geographic coverage is not established: SkillGap's processed records do not retain posting locations.
           </p>
         </div>
 

@@ -39,6 +39,11 @@ export default function ExplorerTab({ roles, skillsByCategory, selectedRole, onS
   const skills = [...new Set(Object.values(skillsByCategory).flat())];
   const matches = skills.filter(s => s.toLowerCase().includes(search.trim().toLowerCase()));
   const recommendations = analysisResults?.recommendations || [];
+  const resultNote = analysisResults?.note?.startsWith('Cold-start fallback:')
+    ? analysisResults.user_skills.length
+      ? `We couldn't find a close match for those skills in ${analysisResults.role} job ads. These suggestions show skills that often appear for this role. Try selecting fewer skills to see closer connections.`
+      : `You haven't added any skills yet, so these suggestions show skills that often appear in ${analysisResults.role} job ads. Use them as ideas for where to begin, not as a required checklist.`
+    : analysisResults?.note;
   const analyze = async () => {
     if (await onAnalyze()) { setShowAll(false); setStep(3); }
   };
@@ -89,7 +94,7 @@ export default function ExplorerTab({ roles, skillsByCategory, selectedRole, onS
         </article>;
       })}
       {recommendations.length > 3 && <button className="text-button more-suggestions" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show fewer suggestions' : `See ${recommendations.length - 3} more suggestions`}</button>}
-      {analysisResults?.note && <details className="muted result-note"><summary>About these results</summary><p>{analysisResults.note}</p></details>}
+      {resultNote && <details className="muted result-note"><summary>About these results</summary><p>{resultNote}</p></details>}
       <div className="flow-actions"><span role="status">{roadmapSkills.length ? `${roadmapSkills.length} skill${roadmapSkills.length === 1 ? '' : 's'} in your roadmap` : 'Save a skill to start your learning roadmap.'}</span>{roadmapSkills.length > 0 && <button className="primary-button" onClick={onGoToRoadmaps}>View my roadmap <ArrowRight size={17} /></button>}</div>
     </section>}
   </div>;

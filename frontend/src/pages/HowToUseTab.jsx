@@ -28,7 +28,11 @@ export default function HowToUseTab({ onGoToExplorer }) {
   const faqs = [
     {
       q: 'How does this work?',
-      a: 'We parsed 1.3 million real LinkedIn job postings to find co-occurrence patterns. If a job asks for Python and SQL, the data shows whether it also asks for Docker or REST APIs.',
+      a: 'SkillGap looks for skills that appear together in job postings. The 2024 source dataset contains 1,348,454 postings; after filtering for IT roles and canonical technical skills, 44,441 postings are included across the three career tracks. For example, it can show whether postings with Python and SQL also mention Docker or REST APIs. A mention does not prove that a skill is required.',
+    },
+    {
+      q: 'What do the benchmark results tell me?',
+      a: 'The benchmark measures whether the system can recover a hidden skill from held-out job postings. It does not test whether a suggestion is useful for learning, assess your skill level, or predict hiring outcomes.',
     },
     {
       q: 'What is the entry-level filter?',
