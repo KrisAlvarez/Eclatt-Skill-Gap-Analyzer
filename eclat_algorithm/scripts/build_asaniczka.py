@@ -19,7 +19,7 @@ from eclat_algorithm.evaluation import run_evaluation
 def process_asaniczka():
     print("=== Processing asaniczka 1.3M dataset ===")
     build_clean_dataset()
-    print("\n=== Re-mining ECLAT rules & train/validation/test evaluation ===")
+    print("\n=== Re-mining ECLAT rules & train/test evaluation ===")
     run_eclat_offline()
     run_evaluation()
     print("\nAll ECLAT models and evaluation benchmarks successfully updated and aligned!")

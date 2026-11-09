@@ -33,7 +33,7 @@ const DEFENSE_QA = [
   },
   {
     q: 'How did you evaluate the machine learning model without human labelers?',
-    a: 'We use leakage-safe masked-skill recovery with separate train, validation, and test partitions. Thresholds are selected on validation data, then one skill is masked from unseen postings and evaluated with Hit-Rate@3, Hit-Rate@5, long-tail recovery, and confidence intervals against popularity.',
+    a: 'We use an 80/20 train/test split. Production thresholds are fixed before evaluation; one skill is masked from each held-out posting with at least three skills. This tests recovery from partial posting information, not learner usefulness or hiring outcomes.',
     tag: 'Model Evaluation',
   },
 ];
@@ -67,7 +67,7 @@ const LOOPHOLES = [
   {
     title: 'Loophole 6: Evaluation Protocol',
     problem: 'Association rule mining is unsupervised and lacks traditional accuracy/loss metrics.',
-    solution: 'Executed train/validation/test masked-skill recovery with Hit-Rate@3, Hit-Rate@5, long-tail metrics, and confidence intervals.',
+    solution: 'Evaluated the production rule and fallback path on held-out postings with Hit-Rate@3, Hit-Rate@5, long-tail rates, and confidence intervals.',
   },
 ];
 
@@ -107,7 +107,7 @@ export default function TechnicalDeepDive({ onGoToAnalyzer }) {
             </h1>
             <p className="text-sm text-slate-300 mt-2 max-w-2xl leading-relaxed">
               Complete technical transparency: mathematical formulation of vertical TID-list intersections, 
-              Leakage-safe masked-skill benchmarks, and defensible answers to academic defense questions.
+              Held-out masked-skill benchmarks, and clear answers to academic defense questions.
             </p>
           </div>
 
@@ -186,7 +186,7 @@ export default function TechnicalDeepDive({ onGoToAnalyzer }) {
           <div>
             <h2 className="text-2xl font-heading font-bold text-white">Masked Skill Hit-Rate@K Benchmark</h2>
             <p className="text-xs text-slate-400">
-              Thresholds selected on validation data; final results use unseen test postings
+              Fixed production thresholds; one skill masked from each held-out posting with at least three skills
             </p>
           </div>
           <span className="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 self-start sm:self-auto">
@@ -215,18 +215,24 @@ export default function TechnicalDeepDive({ onGoToAnalyzer }) {
                     <th className="py-3 px-4 text-emerald-400">ECLAT HR@3</th>
                     <th className="py-3 px-4 text-slate-400">Naive Prior HR@3</th>
                     <th className="py-3 px-4 text-cyan-400">ECLAT HR@5</th>
+                    <th className="py-3 px-4 text-slate-400">Non-Trivial n</th>
                     <th className="py-3 px-4 text-amber-300">Non-Trivial ECLAT</th>
                     <th className="py-3 px-4 text-slate-400">Non-Trivial Prior</th>
+                    <th className="py-3 px-4 text-slate-400">Rule Results</th>
+                    <th className="py-3 px-4 text-slate-400">Popularity Fallbacks</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/60">
                   {metrics.map((row, idx) => {
                     const testCount = row.test_transactions_count ?? row.test_transactions ?? 0;
+                    const nonTrivialTestCount = row.non_trivial_test_transactions_count ?? 0;
                     const eclatHr3 = (row.eclat_hr_at_3 ?? row.eclat_hit_rate_at_3 ?? 0) * 100;
                     const baseHr3 = (row.baseline_hr_at_3 ?? row.naive_hit_rate_at_3 ?? 0) * 100;
                     const eclatHr5 = (row.eclat_hr_at_5 ?? row.eclat_hit_rate_at_5 ?? 0) * 100;
                     const nonTrivialEclat = (row.non_trivial_eclat_hr_at_5 ?? row.eclat_non_trivial_hr_3 ?? 0) * 100;
                     const nonTrivialBase = (row.non_trivial_baseline_hr_at_5 ?? row.naive_non_trivial_hr_3 ?? 0) * 100;
+                    const nonTrivialEclatCI = row.non_trivial_eclat_hr_at_5_ci95 ?? [0, 0];
+                    const nonTrivialBaseCI = row.non_trivial_baseline_hr_at_5_ci95 ?? [0, 0];
 
                     return (
                       <tr key={idx} className="hover:bg-slate-800/40 transition-colors">
@@ -250,12 +256,19 @@ export default function TechnicalDeepDive({ onGoToAnalyzer }) {
                         <td className="py-3 px-4 text-cyan-400 font-bold">
                           {eclatHr5.toFixed(1)}%
                         </td>
+                        <td className="py-3 px-4 text-slate-400">{nonTrivialTestCount}</td>
                         <td className="py-3 px-4 text-amber-300 font-bold">
-                          {nonTrivialEclat.toFixed(1)}%
+                          <span title={`95% Wilson interval: ${(nonTrivialEclatCI[0] * 100).toFixed(1)}%-${(nonTrivialEclatCI[1] * 100).toFixed(1)}%`}>
+                            {nonTrivialEclat.toFixed(1)}%
+                          </span>
                         </td>
                         <td className="py-3 px-4 text-slate-400">
-                          {nonTrivialBase.toFixed(1)}%
+                          <span title={`95% Wilson interval: ${(nonTrivialBaseCI[0] * 100).toFixed(1)}%-${(nonTrivialBaseCI[1] * 100).toFixed(1)}%`}>
+                            {nonTrivialBase.toFixed(1)}%
+                          </span>
                         </td>
+                        <td className="py-3 px-4 text-slate-400">{row.rule_based_recommendation_transactions_count ?? 0} / {testCount}</td>
+                        <td className="py-3 px-4 text-slate-400">{row.popularity_fallback_transactions_count ?? 0} / {testCount}</td>
                       </tr>
                     );
                   })}
@@ -264,8 +277,8 @@ export default function TechnicalDeepDive({ onGoToAnalyzer }) {
             </div>
           )}
           <div className="p-4 border-t border-slate-800/80 bg-slate-950/40 flex items-center justify-between text-[11px] text-slate-400 font-mono">
-            <span>* Long-tail recovery uses skills below 30% training-set marginal frequency.</span>
-            <span className="text-slate-300 font-semibold">Compare measured ECLAT and popularity results</span>
+            <span>* Long-tail means the masked skill appeared in less than 30% of training postings; intervals are 95% Wilson intervals.</span>
+            <span className="text-slate-300 font-semibold">80/20 train/test · production thresholds · one mask per test posting</span>
           </div>
         </div>
       </section>

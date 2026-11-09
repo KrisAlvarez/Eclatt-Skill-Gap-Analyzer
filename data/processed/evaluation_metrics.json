@@ -2,51 +2,71 @@
   {
     "role": "Backend Developer",
     "experience_mode": "entry",
-    "evaluation_protocol": "train_validation_test_masked_skill",
-    "train_transactions_count": 824,
-    "validation_transactions_count": 275,
+    "evaluation_protocol": "train_test_masked_skill",
+    "train_transactions_count": 1099,
+    "validation_transactions_count": 0,
     "test_transactions_count": 275,
-    "selected_min_support": 0.03,
-    "selected_min_confidence": 0.25,
-    "selected_min_lift": 1.05,
-    "eclat_hr_at_3": 0.2509,
+    "production_min_support": 0.05,
+    "production_min_confidence": 0.35,
+    "production_min_lift": 1.15,
+    "eclat_hr_at_3": 0.1891,
     "baseline_hr_at_3": 0.2182,
-    "eclat_hr_at_5": 0.3018,
-    "baseline_hr_at_5": 0.2836,
-    "non_trivial_eclat_hr_at_5": 0.05,
-    "non_trivial_baseline_hr_at_5": 0.0,
-    "non_trivial_test_transactions_count": 100,
-    "lift_over_baseline_pct": 6.4,
+    "eclat_hr_at_5": 0.1927,
+    "baseline_hr_at_5": 0.2945,
+    "non_trivial_eclat_hr_at_5": 0.1088,
+    "non_trivial_baseline_hr_at_5": 0.1883,
+    "non_trivial_test_transactions_count": 239,
+    "non_trivial_eclat_hr_at_5_ci95": [
+      0.0753,
+      0.1546
+    ],
+    "non_trivial_baseline_hr_at_5_ci95": [
+      0.1438,
+      0.2426
+    ],
+    "rule_based_recommendation_transactions_count": 268,
+    "popularity_fallback_transactions_count": 7,
+    "lift_over_baseline_pct": -34.6,
     "eclat_hr_at_5_ci95": [
-      0.2506,
-      0.3585
+      0.1505,
+      0.2435
     ],
     "baseline_hr_at_5_ci95": [
-      0.2336,
-      0.3396
+      0.2438,
+      0.351
     ]
   },
   {
     "role": "Backend Developer",
     "experience_mode": "all",
-    "evaluation_protocol": "train_validation_test_masked_skill",
-    "train_transactions_count": 14279,
-    "validation_transactions_count": 4760,
+    "evaluation_protocol": "train_test_masked_skill",
+    "train_transactions_count": 19039,
+    "validation_transactions_count": 0,
     "test_transactions_count": 4760,
-    "selected_min_support": 0.03,
-    "selected_min_confidence": 0.25,
-    "selected_min_lift": 1.05,
-    "eclat_hr_at_3": 0.2586,
+    "production_min_support": 0.05,
+    "production_min_confidence": 0.35,
+    "production_min_lift": 1.15,
+    "eclat_hr_at_3": 0.2414,
     "baseline_hr_at_3": 0.22,
-    "eclat_hr_at_5": 0.3145,
+    "eclat_hr_at_5": 0.2634,
     "baseline_hr_at_5": 0.2884,
-    "non_trivial_eclat_hr_at_5": 0.0774,
-    "non_trivial_baseline_hr_at_5": 0.0,
-    "non_trivial_test_transactions_count": 1447,
-    "lift_over_baseline_pct": 9.0,
+    "non_trivial_eclat_hr_at_5": 0.1357,
+    "non_trivial_baseline_hr_at_5": 0.1507,
+    "non_trivial_test_transactions_count": 3988,
+    "non_trivial_eclat_hr_at_5_ci95": [
+      0.1254,
+      0.1466
+    ],
+    "non_trivial_baseline_hr_at_5_ci95": [
+      0.1399,
+      0.1621
+    ],
+    "rule_based_recommendation_transactions_count": 4603,
+    "popularity_fallback_transactions_count": 157,
+    "lift_over_baseline_pct": -8.7,
     "eclat_hr_at_5_ci95": [
-      0.3015,
-      0.3278
+      0.2511,
+      0.2761
     ],
     "baseline_hr_at_5_ci95": [
       0.2757,
@@ -56,51 +76,71 @@
   {
     "role": "Frontend Developer",
     "experience_mode": "entry",
-    "evaluation_protocol": "train_validation_test_masked_skill",
-    "train_transactions_count": 149,
-    "validation_transactions_count": 50,
+    "evaluation_protocol": "train_test_masked_skill",
+    "train_transactions_count": 199,
+    "validation_transactions_count": 0,
     "test_transactions_count": 50,
-    "selected_min_support": 0.03,
-    "selected_min_confidence": 0.25,
-    "selected_min_lift": 1.05,
-    "eclat_hr_at_3": 0.5,
+    "production_min_support": 0.05,
+    "production_min_confidence": 0.35,
+    "production_min_lift": 1.15,
+    "eclat_hr_at_3": 0.54,
     "baseline_hr_at_3": 0.54,
-    "eclat_hr_at_5": 0.58,
-    "baseline_hr_at_5": 0.54,
-    "non_trivial_eclat_hr_at_5": 0.0,
-    "non_trivial_baseline_hr_at_5": 0.0,
-    "non_trivial_test_transactions_count": 6,
-    "lift_over_baseline_pct": 7.4,
-    "eclat_hr_at_5_ci95": [
-      0.4423,
-      0.7063
+    "eclat_hr_at_5": 0.54,
+    "baseline_hr_at_5": 0.56,
+    "non_trivial_eclat_hr_at_5": 0.12,
+    "non_trivial_baseline_hr_at_5": 0.12,
+    "non_trivial_test_transactions_count": 25,
+    "non_trivial_eclat_hr_at_5_ci95": [
+      0.0417,
+      0.2996
     ],
-    "baseline_hr_at_5_ci95": [
+    "non_trivial_baseline_hr_at_5_ci95": [
+      0.0417,
+      0.2996
+    ],
+    "rule_based_recommendation_transactions_count": 44,
+    "popularity_fallback_transactions_count": 6,
+    "lift_over_baseline_pct": -3.6,
+    "eclat_hr_at_5_ci95": [
       0.404,
       0.6703
+    ],
+    "baseline_hr_at_5_ci95": [
+      0.4231,
+      0.6884
     ]
   },
   {
     "role": "Frontend Developer",
     "experience_mode": "all",
-    "evaluation_protocol": "train_validation_test_masked_skill",
-    "train_transactions_count": 1398,
-    "validation_transactions_count": 466,
+    "evaluation_protocol": "train_test_masked_skill",
+    "train_transactions_count": 1864,
+    "validation_transactions_count": 0,
     "test_transactions_count": 466,
-    "selected_min_support": 0.03,
-    "selected_min_confidence": 0.25,
-    "selected_min_lift": 1.05,
-    "eclat_hr_at_3": 0.5086,
+    "production_min_support": 0.05,
+    "production_min_confidence": 0.35,
+    "production_min_lift": 1.15,
+    "eclat_hr_at_3": 0.3906,
     "baseline_hr_at_3": 0.5172,
-    "eclat_hr_at_5": 0.5472,
+    "eclat_hr_at_5": 0.4077,
     "baseline_hr_at_5": 0.6094,
-    "non_trivial_eclat_hr_at_5": 0.0204,
-    "non_trivial_baseline_hr_at_5": 0.0,
-    "non_trivial_test_transactions_count": 98,
-    "lift_over_baseline_pct": -10.2,
+    "non_trivial_eclat_hr_at_5": 0.1719,
+    "non_trivial_baseline_hr_at_5": 0.2891,
+    "non_trivial_test_transactions_count": 256,
+    "non_trivial_eclat_hr_at_5_ci95": [
+      0.1306,
+      0.2229
+    ],
+    "non_trivial_baseline_hr_at_5_ci95": [
+      0.237,
+      0.3474
+    ],
+    "rule_based_recommendation_transactions_count": 405,
+    "popularity_fallback_transactions_count": 61,
+    "lift_over_baseline_pct": -33.1,
     "eclat_hr_at_5_ci95": [
-      0.5018,
-      0.5918
+      0.364,
+      0.4529
     ],
     "baseline_hr_at_5_ci95": [
       0.5644,
@@ -110,24 +150,34 @@
   {
     "role": "Data Analyst",
     "experience_mode": "entry",
-    "evaluation_protocol": "train_validation_test_masked_skill",
-    "train_transactions_count": 514,
-    "validation_transactions_count": 171,
+    "evaluation_protocol": "train_test_masked_skill",
+    "train_transactions_count": 685,
+    "validation_transactions_count": 0,
     "test_transactions_count": 172,
-    "selected_min_support": 0.03,
-    "selected_min_confidence": 0.25,
-    "selected_min_lift": 1.05,
-    "eclat_hr_at_3": 0.4709,
+    "production_min_support": 0.05,
+    "production_min_confidence": 0.35,
+    "production_min_lift": 1.15,
+    "eclat_hr_at_3": 0.3721,
     "baseline_hr_at_3": 0.6628,
-    "eclat_hr_at_5": 0.4942,
+    "eclat_hr_at_5": 0.3837,
     "baseline_hr_at_5": 0.7733,
-    "non_trivial_eclat_hr_at_5": 0.0,
-    "non_trivial_baseline_hr_at_5": 0.0,
-    "non_trivial_test_transactions_count": 30,
-    "lift_over_baseline_pct": -36.1,
+    "non_trivial_eclat_hr_at_5": 0.1111,
+    "non_trivial_baseline_hr_at_5": 0.1778,
+    "non_trivial_test_transactions_count": 45,
+    "non_trivial_eclat_hr_at_5_ci95": [
+      0.0484,
+      0.235
+    ],
+    "non_trivial_baseline_hr_at_5_ci95": [
+      0.0929,
+      0.3133
+    ],
+    "rule_based_recommendation_transactions_count": 148,
+    "popularity_fallback_transactions_count": 24,
+    "lift_over_baseline_pct": -50.4,
     "eclat_hr_at_5_ci95": [
-      0.4204,
-      0.5682
+      0.3143,
+      0.4582
     ],
     "baseline_hr_at_5_ci95": [
       0.7051,
@@ -137,24 +187,34 @@
   {
     "role": "Data Analyst",
     "experience_mode": "all",
-    "evaluation_protocol": "train_validation_test_masked_skill",
-    "train_transactions_count": 5517,
-    "validation_transactions_count": 1839,
+    "evaluation_protocol": "train_test_masked_skill",
+    "train_transactions_count": 7356,
+    "validation_transactions_count": 0,
     "test_transactions_count": 1839,
-    "selected_min_support": 0.03,
-    "selected_min_confidence": 0.25,
-    "selected_min_lift": 1.05,
-    "eclat_hr_at_3": 0.5454,
+    "production_min_support": 0.05,
+    "production_min_confidence": 0.35,
+    "production_min_lift": 1.15,
+    "eclat_hr_at_3": 0.4557,
     "baseline_hr_at_3": 0.5438,
-    "eclat_hr_at_5": 0.5895,
+    "eclat_hr_at_5": 0.466,
     "baseline_hr_at_5": 0.677,
-    "non_trivial_eclat_hr_at_5": 0.0928,
-    "non_trivial_baseline_hr_at_5": 0.0124,
-    "non_trivial_test_transactions_count": 485,
-    "lift_over_baseline_pct": -12.9,
+    "non_trivial_eclat_hr_at_5": 0.245,
+    "non_trivial_baseline_hr_at_5": 0.3036,
+    "non_trivial_test_transactions_count": 853,
+    "non_trivial_eclat_hr_at_5_ci95": [
+      0.2173,
+      0.275
+    ],
+    "non_trivial_baseline_hr_at_5_ci95": [
+      0.2737,
+      0.3353
+    ],
+    "rule_based_recommendation_transactions_count": 1785,
+    "popularity_fallback_transactions_count": 54,
+    "lift_over_baseline_pct": -31.2,
     "eclat_hr_at_5_ci95": [
-      0.5668,
-      0.6117
+      0.4433,
+      0.4889
     ],
     "baseline_hr_at_5_ci95": [
       0.6553,

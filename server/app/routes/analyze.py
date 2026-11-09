@@ -1,8 +1,7 @@
 """Skill Gap Analysis and Recommendation Controller."""
 
 import json
-from itertools import combinations
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from fastapi import APIRouter, HTTPException
 from server.app.config import RULES_FILE
 from server.app.schemas import (
@@ -11,12 +10,14 @@ from server.app.schemas import (
     GapRecommendation,
     AssociationRule,
 )
-from eclat_algorithm.taxonomy import get_category, normalize_skill
+from eclat_algorithm.recommendation import index_rules, recommend_from_artifact
+from eclat_algorithm.taxonomy import normalize_skill
 
 router = APIRouter(prefix="/api/v1", tags=["Analysis"])
 
 # In-memory rule cache for sub-millisecond response times
 _RULES_CACHE: Optional[Dict[str, any]] = None
+_RULE_INDEX_CACHE: Dict[Tuple[str, str], Dict[Tuple[str, ...], List[Dict[str, any]]]] = {}
 
 
 def get_rules_db() -> Dict[str, any]:
@@ -47,9 +48,6 @@ def analyze_skill_gap(payload: GapAnalysisRequest):
     mode = payload.experience_mode if payload.experience_mode in ["entry", "all"] else "entry"
     mode_data = rules_db[role].get(mode, {})
     total_jobs = mode_data.get("total_transactions", 0)
-    all_rules = mode_data.get("rules", [])
-    top_1_itemsets = mode_data.get("top_1_itemsets", [])
-
     user_skills = sorted({
         normalized
         for raw_skill in payload.possessed_skills
@@ -68,118 +66,27 @@ def analyze_skill_gap(payload: GapAnalysisRequest):
                 "unknown_skills": unknown_skills,
             },
         )
-    user_set = set(user_skills)
-    top_k = payload.top_k
-
-    recommendations: List[GapRecommendation] = []
-    active_rules: List[AssociationRule] = []
-    matched_subset: Optional[List[str]] = None
-    sub_lattice_used = False
-    tier_note = ""
-
-    # Tier 1: Exact Antecedent Match
-    exact_matches = [
-        r for r in all_rules
-        if set(r["antecedent"]) == user_set and r["consequent"][0] not in user_set
-    ]
-
-    if exact_matches:
-        tier_note = "Exact rule match found for your complete technology stack."
-        for r in exact_matches[:top_k]:
-            active_rules.append(AssociationRule(**r))
-            skill = r["consequent"][0]
-            recommendations.append(
-                GapRecommendation(
-                    skill=skill,
-                    category=r["category"],
-                    confidence=r["confidence"],
-                    lift=r["lift"],
-                    support=r["support"],
-                    evidence_jobs_count=r.get("joint_count", int(r["support"] * total_jobs)),
-                    tier="Tier 1: Exact Match",
-                    explanation=f"In this dataset, postings mentioning {r['antecedent']} also mention {skill} {int(r['confidence']*100)}% of the time (Lift: {r['lift']}x). This is an observed pattern, not a requirement.",
-                )
-            )
-
-    # Tier 2: Sub-Lattice Step-Down
-    if not recommendations and len(user_set) > 0:
-        for sub_len in range(len(user_set) - 1, 0, -1):
-            best_sub_rules = []
-            best_sub_support = -1
-
-            for sub in combinations(sorted(user_set), sub_len):
-                sub_fset = set(sub)
-                sub_matches = [
-                    r for r in all_rules
-                    if set(r["antecedent"]) == sub_fset and r["consequent"][0] not in user_set
-                ]
-                if sub_matches:
-                    sub_supp = max(r["support"] for r in sub_matches)
-                    if sub_supp > best_sub_support:
-                        best_sub_support = sub_supp
-                        best_sub_rules = sub_matches
-                        matched_subset = list(sub)
-
-            if best_sub_rules:
-                sub_lattice_used = True
-                tier_note = f"No exact match for all {len(user_set)} skills. Recommendations derived from strongest sub-lattice: {matched_subset}."
-                for r in best_sub_rules[:top_k]:
-                    active_rules.append(AssociationRule(**r))
-                    skill = r["consequent"][0]
-                    recommendations.append(
-                        GapRecommendation(
-                            skill=skill,
-                            category=r["category"],
-                            confidence=r["confidence"],
-                            lift=r["lift"],
-                            support=r["support"],
-                            evidence_jobs_count=r.get("joint_count", int(r["support"] * total_jobs)),
-                            tier="Tier 2: Sub-Lattice Complement",
-                            explanation=f"In this dataset, {skill} appeared with the selected skills {matched_subset} in {int(r['confidence']*100)}% of matching postings ({r['lift']}x Lift). This is an observed pattern, not a requirement.",
-                        )
-                    )
-                break
-
-    # Tier 3: Unconditional 1-Itemset Prior (Cold-Start)
-    if not recommendations:
-        sub_lattice_used = False
-        tier_note = "No close skill-combination pattern was found. These are skills frequently mentioned in the selected role and experience-level postings, offered as ideas to explore."
-        for item in top_1_itemsets:
-            skill = item["skill"]
-            if skill not in user_set:
-                supp = item["support"]
-                count = item["count"]
-                recommendations.append(
-                    GapRecommendation(
-                        skill=skill,
-                        category=item.get("category", get_category(skill)),
-                        confidence=supp,
-                        lift=1.0,
-                        support=supp,
-                        evidence_jobs_count=count,
-                        tier="Tier 3: Foundational Prior",
-                        explanation=f"Mentioned in {int(supp * 100)}% of the {role} postings in this dataset for the selected experience level. This frequency describes the sample; it does not establish a requirement.",
-                    )
-                )
-            if len(recommendations) >= top_k:
-                break
-
-    # Deduplicate while preserving rank
-    deduped = []
-    seen = set()
-    for rec in recommendations:
-        if rec.skill not in seen:
-            seen.add(rec.skill)
-            deduped.append(rec)
-
+    index_key = (role, mode)
+    rules_by_antecedent = _RULE_INDEX_CACHE.get(index_key)
+    if rules_by_antecedent is None:
+        rules_by_antecedent = index_rules(mode_data)
+        _RULE_INDEX_CACHE[index_key] = rules_by_antecedent
+    result = recommend_from_artifact(
+        mode_data,
+        user_skills,
+        payload.top_k,
+        rules_by_antecedent,
+    )
     return GapAnalysisResponse(
         role=role,
         experience_mode=mode,
         total_market_jobs=total_jobs,
         user_skills=user_skills,
-        recommendations=deduped[:top_k],
-        active_rules=active_rules[:top_k],
-        sub_lattice_fallback_used=sub_lattice_used,
-        matched_subset=matched_subset,
-        note=tier_note,
+        recommendations=[
+            GapRecommendation(**item) for item in result["recommendations"]
+        ],
+        active_rules=[AssociationRule(**item) for item in result["active_rules"]],
+        sub_lattice_fallback_used=result["sub_lattice_fallback_used"],
+        matched_subset=result["matched_subset"],
+        note=result["note"],
     )

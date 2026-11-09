@@ -11,14 +11,15 @@ eclat_algorithm/
 ├── __init__.py           # Package interface (exports ECLATMiner, taxonomy constants)
 ├── miner.py              # Core ECLATMiner: Vertical TID-lists, DFS lattice intersection, rule generation
 ├── taxonomy.py           # 10 IT Skill Categories, alias normalization, canonical regex mapping
-├── evaluation.py         # Train/validation/test masked recovery & baseline
+├── evaluation.py         # Production-path train/test masked recovery & baseline
+├── recommendation.py     # Shared production artifact building and recommendation tiers
 ├── builder.py            # Preprocessing pipeline & hybrid role classifier
 ├── runner.py             # Precomputation & serialization of association rules
 ├── scripts/              # Standalone CLI tools:
 │   ├── build_asaniczka.py # Ingestion pipeline for 1.3M asaniczka LinkedIn dataset
 │   ├── build_dataset.py  # Filters raw postings into Entry vs All market transactions
 │   ├── run_mining.py     # Offline rule precomputation -> data/processed/rules.json
-│   ├── run_evaluation.py # Offline validation benchmark -> data/processed/evaluation_metrics.json
+│   ├── run_evaluation.py # Offline held-out benchmark -> data/processed/evaluation_metrics.json
 │   ├── check_dataset.py  # Exploratory data analysis & TID-list intersection demonstration
 │   ├── check_dataset2.py # Experience level & job title transaction distribution
 │   └── check_duplicates.py # Multi-table deduplication audit
@@ -52,7 +53,10 @@ For an antecedent skill set $A$ and consequent skill $B$:
 - **Lift**:
   $$\text{Lift}(A \rightarrow B) = \frac{P(B \mid A)}{P(B)} = \frac{\text{Confidence}(A \rightarrow B)}{\text{Support}(B)}$$
 
-$\text{Lift} > 1.0$ indicates positive correlation (e.g., knowing Python & SQL makes Docker 1.86x more likely than pure chance).
+$\text{Lift} > 1.0$ indicates that the consequent appears more often with the antecedent than its overall frequency would suggest under independence. For example, a lift of 1.86 means the observed co-occurrence is 1.86 times the expected frequency; it does not show that one skill causes demand for another.
+
+### 4. Held-out Recommendation Evaluation
+The benchmark uses an 80/20 split of postings with at least three extracted skills. For each held-out posting, one skill is masked and the shared production recommendation path receives the remaining skills. Production support, confidence, and lift thresholds, rule caps, and the top-20 popularity fallback are used unchanged. Long-tail membership is calculated from training-posting frequency (<30%); the API reports its test count, 95% Wilson intervals, and how often rules versus the popularity fallback supplied recommendations. This measures masked-skill recovery only. It does not establish that a suggestion is useful to a learner, represents a requirement, or improves hiring outcomes.
 
 ---
 
@@ -67,7 +71,7 @@ python -m eclat_algorithm.scripts.build_dataset
 # 2. Mine frequent itemsets & serialize rules to data/processed/rules.json
 python -m eclat_algorithm.scripts.run_mining
 
-# 3. Run leakage-safe masked-skill benchmark
+# 3. Run held-out masked-skill benchmark
 python -m eclat_algorithm.scripts.run_evaluation
 ```
 

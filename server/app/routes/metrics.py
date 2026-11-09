@@ -11,7 +11,7 @@ router = APIRouter(prefix="/api/v1", tags=["Evaluation Metrics"])
 
 @router.get("/metrics", response_model=List[EvaluationMetricsItem])
 def get_evaluation_metrics():
-    """Return leakage-safe masked-skill metrics and baseline comparisons."""
+    """Return held-out masked-skill metrics and baseline comparisons."""
     if not METRICS_FILE.exists():
         raise HTTPException(
             status_code=503,

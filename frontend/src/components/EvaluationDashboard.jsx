@@ -41,17 +41,17 @@ export default function EvaluationDashboard() {
           Model Evaluation: Masked Skill Recovery
         </h2>
         <p className="text-sm text-slate-300 leading-relaxed max-w-3xl">
-          To measure whether conditional associations add value beyond popularity, we execute a leakage-safe
-          <strong> masked-skill recovery</strong> experiment on unseen test postings across each career track.
+          This offline experiment checks whether the production recommendation path can recover one hidden skill
+          from a held-out posting. It does not measure learner usefulness, skill mastery, or hiring outcomes.
         </p>
 
         {/* 3 Metric Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
             <span className="text-xs font-mono text-slate-400 block mb-1">Experiment Protocol</span>
-            <span className="text-base font-bold text-white block">60/20/20 Train-Validation-Test</span>
+            <span className="text-base font-bold text-white block">80/20 Train-Test</span>
             <p className="text-xs text-slate-400 mt-1">
-              Thresholds are selected on validation postings; one skill is masked from unseen test postings.
+              Production thresholds are fixed; one skill is masked from each held-out posting with at least three skills.
             </p>
           </div>
 
@@ -64,10 +64,10 @@ export default function EvaluationDashboard() {
           </div>
 
           <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
-            <span className="text-xs font-mono text-slate-400 block mb-1">ECLAT's Core Strength</span>
-            <span className="text-base font-bold text-violet-400 block">Non-Trivial Recovery</span>
+            <span className="text-xs font-mono text-slate-400 block mb-1">Recommendation Source</span>
+            <span className="text-base font-bold text-violet-400 block">Rules or Popularity Fallback</span>
             <p className="text-xs text-slate-400 mt-1">
-              The dashboard reports measured ECLAT and popularity-baseline results separately, including long-tail recovery.
+              Counts show how often a test input received association-rule suggestions or the fallback list.
             </p>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function EvaluationDashboard() {
         <div className="p-5 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BarChart3 className="w-5 h-5 text-violet-400" />
-            <h3 className="font-heading font-bold text-lg text-white">Validation Benchmark Table</h3>
+            <h3 className="font-heading font-bold text-lg text-white">Held-Out Benchmark Table</h3>
           </div>
           <span className="text-xs font-mono text-slate-400">Offline Test Results</span>
         </div>
@@ -107,6 +107,8 @@ export default function EvaluationDashboard() {
                   <th className="py-3 px-4">Non-Trivial Test Set</th>
                   <th className="py-3 px-4">Non-Trivial ECLAT HR@5</th>
                   <th className="py-3 px-4">Non-Trivial Prior HR@5</th>
+                  <th className="py-3 px-4">Rule Results</th>
+                  <th className="py-3 px-4">Popularity Fallbacks</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
@@ -129,11 +131,17 @@ export default function EvaluationDashboard() {
                     <td className="py-3.5 px-4 text-slate-400">{(row.baseline_hr_at_5 * 100).toFixed(1)}%</td>
                     <td className="py-3.5 px-4 text-slate-400">{row.non_trivial_test_transactions_count} jobs</td>
                     <td className="py-3.5 px-4 font-bold text-violet-400">
-                      {(row.non_trivial_eclat_hr_at_5 * 100).toFixed(1)}%
+                      <span title={`95% Wilson interval: ${((row.non_trivial_eclat_hr_at_5_ci95 || [0, 0])[0] * 100).toFixed(1)}%-${((row.non_trivial_eclat_hr_at_5_ci95 || [0, 0])[1] * 100).toFixed(1)}%`}>
+                        {(row.non_trivial_eclat_hr_at_5 * 100).toFixed(1)}%
+                      </span>
                     </td>
                     <td className="py-3.5 px-4 text-slate-500">
-                      {(row.non_trivial_baseline_hr_at_5 * 100).toFixed(1)}%
+                      <span title={`95% Wilson interval: ${((row.non_trivial_baseline_hr_at_5_ci95 || [0, 0])[0] * 100).toFixed(1)}%-${((row.non_trivial_baseline_hr_at_5_ci95 || [0, 0])[1] * 100).toFixed(1)}%`}>
+                        {(row.non_trivial_baseline_hr_at_5 * 100).toFixed(1)}%
+                      </span>
                     </td>
+                    <td className="py-3.5 px-4 text-slate-400">{row.rule_based_recommendation_transactions_count} / {row.test_transactions_count}</td>
+                    <td className="py-3.5 px-4 text-slate-400">{row.popularity_fallback_transactions_count} / {row.test_transactions_count}</td>
                   </tr>
                 ))}
               </tbody>

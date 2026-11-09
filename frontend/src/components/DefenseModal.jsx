@@ -16,7 +16,7 @@ const DEFENSE_QA = [
   },
   {
     q: 'How did you evaluate the machine learning model?',
-    a: 'We implemented leakage-safe masked-skill recovery with separate train, validation, and test partitions. Thresholds are selected on validation data, then one skill is masked from unseen postings and evaluated with Hit-Rate@3, Hit-Rate@5, long-tail recovery, and confidence intervals. Results are reported against popularity without assuming ECLAT wins every segment.',
+    a: 'We use an 80/20 train/test split with fixed production thresholds. One skill is masked from each held-out posting with at least three skills, then the production rule and fallback path are compared with a popularity baseline using Hit-Rate@3, Hit-Rate@5, and long-tail rates with confidence intervals. This measures recovery from partial posting data, not learner usefulness or hiring outcomes.',
   },
 ];
 

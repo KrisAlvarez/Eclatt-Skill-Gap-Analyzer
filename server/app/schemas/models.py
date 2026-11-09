@@ -66,9 +66,16 @@ class EvaluationMetricsItem(BaseModel):
     non_trivial_eclat_hr_at_5: float
     non_trivial_baseline_hr_at_5: float
     lift_over_baseline_pct: float
-    evaluation_protocol: str = "train_validation_test_masked_skill"
+    evaluation_protocol: str = "train_test_masked_skill"
     train_transactions_count: int = 0
     validation_transactions_count: int = 0
     non_trivial_test_transactions_count: int = 0
     eclat_hr_at_5_ci95: List[float] = Field(default_factory=list)
     baseline_hr_at_5_ci95: List[float] = Field(default_factory=list)
+    non_trivial_eclat_hr_at_5_ci95: List[float] = Field(default_factory=list)
+    non_trivial_baseline_hr_at_5_ci95: List[float] = Field(default_factory=list)
+    rule_based_recommendation_transactions_count: int = 0
+    popularity_fallback_transactions_count: int = 0
+    production_min_support: float = 0.0
+    production_min_confidence: float = 0.0
+    production_min_lift: float = 0.0
