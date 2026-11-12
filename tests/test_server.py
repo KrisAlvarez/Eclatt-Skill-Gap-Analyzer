@@ -117,3 +117,22 @@ def test_metrics_endpoint():
     first_metric = data[0]
     assert "eclat_hr_at_5" in first_metric
     assert "baseline_hr_at_5" in first_metric
+    for row in data:
+        for method in ("eclat", "baseline"):
+            assert row[f"{method}_hr_at_5"] <= row[f"{method}_hr_at_10"] <= row[f"{method}_hr_at_20"] <= 1
+            lower, upper = row[f"{method}_hr_at_10_ci95"]
+            assert 0 <= lower <= row[f"{method}_hr_at_10"] <= upper <= 1
+
+
+def test_hr20_api_matches_stored_metrics():
+    import json
+    from server.app.config import METRICS_FILE
+
+    stored = json.loads(METRICS_FILE.read_text(encoding="utf-8"))
+    served = client.get("/api/v1/metrics").json()
+    assert len(stored) == len(served) == 6
+    for source, row in zip(stored, served):
+        assert all(row[key] == value for key, value in source.items())
+        for method in ("eclat", "baseline"):
+            lower, upper = row[f"{method}_hr_at_20_ci95"]
+            assert 0 <= lower <= row[f"{method}_hr_at_20"] <= upper <= 1

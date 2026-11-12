@@ -17,13 +17,15 @@ MODE_PARAMETERS = {
 }
 
 
-def build_mode_artifact(transactions: List[List[str]], mode: str) -> Dict[str, Any]:
+def build_mode_artifact(transactions: List[List[str]], mode: str, *, parameters=None,
+                        max_rules=MAX_RULES_STORED_PER_MODE,
+                        max_rules_per_antecedent=MAX_RULES_PER_ANTECEDENT) -> Dict[str, Any]:
     """Create the same capped, serialized rule data used by production."""
     n = len(transactions)
     if n < 5:
         return {"total_transactions": n, "top_1_itemsets": [], "rules": []}
 
-    min_support, min_confidence, min_lift = MODE_PARAMETERS.get(
+    min_support, min_confidence, min_lift = parameters or MODE_PARAMETERS.get(
         mode, MODE_PARAMETERS["all"]
     )
 
@@ -43,7 +45,7 @@ def build_mode_artifact(transactions: List[List[str]], mode: str) -> Dict[str, A
     for rule in rules:
         key = tuple(rule["antecedent"])
         bucket = rules_by_antecedent.setdefault(key, [])
-        if len(bucket) < MAX_RULES_PER_ANTECEDENT:
+        if len(bucket) < max_rules_per_antecedent:
             bucket.append(rule)
     capped_rules = [rule for bucket in rules_by_antecedent.values() for rule in bucket]
     capped_rules.sort(
@@ -67,7 +69,7 @@ def build_mode_artifact(transactions: List[List[str]], mode: str) -> Dict[str, A
     return {
         "total_transactions": n,
         "top_1_itemsets": top_1[:MAX_TOP_ITEMSETS_STORED],
-        "rules": capped_rules[:MAX_RULES_STORED_PER_MODE],
+        "rules": capped_rules[:max_rules],
     }
 
 

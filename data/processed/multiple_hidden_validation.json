@@ -1,0 +1,931 @@
+{
+  "protocol": {
+    "partition": "validation",
+    "hidden_skills": 2,
+    "cutoff": 10,
+    "independent_fresh_data": false,
+    "assessment_replacement_approved": false,
+    "model": {
+      "support": 0.01,
+      "confidence": 0.15,
+      "lift": 1.0,
+      "max_rules": 10000,
+      "max_rules_per_antecedent": 100,
+      "weights": {
+        "eclat": 0.25,
+        "similarity": 0.5,
+        "popularity": 0.25
+      }
+    }
+  },
+  "groups": [
+    {
+      "role": "Backend Developer",
+      "experience_mode": "entry",
+      "scores": {
+        "balanced_evidence": {
+          "total": 1099,
+          "hit_cases": 909,
+          "recovered_skills": 1294,
+          "returned_count": 10990,
+          "hit_cases_at_5": 727,
+          "recovered_skills_at_5": 968,
+          "hit_at_5": 0.6615104640582348,
+          "precision_at_5": 0.1761601455868972,
+          "recall_at_5": 0.44040036396724297,
+          "hit_at_10": 0.827115559599636,
+          "precision_at_10": 0.11774340309372157,
+          "recall_at_10": 0.5887170154686078,
+          "mean_returned_count": 10.0
+        },
+        "popularity": {
+          "total": 1099,
+          "hit_cases": 750,
+          "recovered_skills": 977,
+          "returned_count": 10990,
+          "hit_cases_at_5": 563,
+          "recovered_skills_at_5": 666,
+          "hit_at_5": 0.5122838944494995,
+          "precision_at_5": 0.12120109190172884,
+          "recall_at_5": 0.30300272975432213,
+          "hit_at_10": 0.6824385805277525,
+          "precision_at_10": 0.08889899909008189,
+          "recall_at_10": 0.44449499545040944,
+          "mean_returned_count": 10.0
+        }
+      },
+      "folds": [
+        {
+          "fold": 0,
+          "mask_seed": 44,
+          "scores": {
+            "balanced_evidence": {
+              "total": 367,
+              "hit_cases": 315,
+              "recovered_skills": 452,
+              "returned_count": 3670,
+              "hit_cases_at_5": 259,
+              "recovered_skills_at_5": 347,
+              "hit_at_5": 0.7057220708446866,
+              "precision_at_5": 0.1891008174386921,
+              "recall_at_5": 0.47275204359673023,
+              "hit_at_10": 0.8583106267029973,
+              "precision_at_10": 0.12316076294277929,
+              "recall_at_10": 0.6158038147138964,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 367,
+              "hit_cases": 252,
+              "recovered_skills": 332,
+              "returned_count": 3670,
+              "hit_cases_at_5": 180,
+              "recovered_skills_at_5": 218,
+              "hit_at_5": 0.4904632152588556,
+              "precision_at_5": 0.11880108991825614,
+              "recall_at_5": 0.2970027247956403,
+              "hit_at_10": 0.6866485013623979,
+              "precision_at_10": 0.09046321525885559,
+              "recall_at_10": 0.45231607629427795,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "d2827947c0272bfb944e783e76fc285a2b929b9cd124dc8e91433a99ee8a87de"
+        },
+        {
+          "fold": 1,
+          "mask_seed": 45,
+          "scores": {
+            "balanced_evidence": {
+              "total": 366,
+              "hit_cases": 297,
+              "recovered_skills": 424,
+              "returned_count": 3660,
+              "hit_cases_at_5": 240,
+              "recovered_skills_at_5": 312,
+              "hit_at_5": 0.6557377049180327,
+              "precision_at_5": 0.17049180327868851,
+              "recall_at_5": 0.4262295081967213,
+              "hit_at_10": 0.8114754098360656,
+              "precision_at_10": 0.11584699453551912,
+              "recall_at_10": 0.5792349726775956,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 366,
+              "hit_cases": 260,
+              "recovered_skills": 334,
+              "returned_count": 3660,
+              "hit_cases_at_5": 192,
+              "recovered_skills_at_5": 231,
+              "hit_at_5": 0.5245901639344263,
+              "precision_at_5": 0.12622950819672132,
+              "recall_at_5": 0.3155737704918033,
+              "hit_at_10": 0.7103825136612022,
+              "precision_at_10": 0.0912568306010929,
+              "recall_at_10": 0.4562841530054645,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "9b20abed874f66528ebf5f21d0994d732c5e7614db9f0668ebdcf23140fcb73d"
+        },
+        {
+          "fold": 2,
+          "mask_seed": 46,
+          "scores": {
+            "balanced_evidence": {
+              "total": 366,
+              "hit_cases": 297,
+              "recovered_skills": 418,
+              "returned_count": 3660,
+              "hit_cases_at_5": 228,
+              "recovered_skills_at_5": 309,
+              "hit_at_5": 0.6229508196721312,
+              "precision_at_5": 0.16885245901639345,
+              "recall_at_5": 0.42213114754098363,
+              "hit_at_10": 0.8114754098360656,
+              "precision_at_10": 0.11420765027322405,
+              "recall_at_10": 0.5710382513661202,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 366,
+              "hit_cases": 238,
+              "recovered_skills": 311,
+              "returned_count": 3660,
+              "hit_cases_at_5": 191,
+              "recovered_skills_at_5": 217,
+              "hit_at_5": 0.5218579234972678,
+              "precision_at_5": 0.1185792349726776,
+              "recall_at_5": 0.296448087431694,
+              "hit_at_10": 0.6502732240437158,
+              "precision_at_10": 0.08497267759562842,
+              "recall_at_10": 0.4248633879781421,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "33ed8e43b2ba52c221553fa9bb6b1eeccab99db187a19344c3cd79455c183dba"
+        }
+      ]
+    },
+    {
+      "role": "Backend Developer",
+      "experience_mode": "all",
+      "scores": {
+        "balanced_evidence": {
+          "total": 19039,
+          "hit_cases": 15203,
+          "recovered_skills": 21841,
+          "returned_count": 190390,
+          "hit_cases_at_5": 12236,
+          "recovered_skills_at_5": 15611,
+          "hit_at_5": 0.6426808130679132,
+          "precision_at_5": 0.1639897053416671,
+          "recall_at_5": 0.40997426335416776,
+          "hit_at_10": 0.7985188297704712,
+          "precision_at_10": 0.1147171595146804,
+          "recall_at_10": 0.573585797573402,
+          "mean_returned_count": 10.0
+        },
+        "popularity": {
+          "total": 19039,
+          "hit_cases": 12725,
+          "recovered_skills": 16184,
+          "returned_count": 190390,
+          "hit_cases_at_5": 9443,
+          "recovered_skills_at_5": 10967,
+          "hit_at_5": 0.4959819318241504,
+          "precision_at_5": 0.11520563054782289,
+          "recall_at_5": 0.2880140763695572,
+          "hit_at_10": 0.6683649351331478,
+          "precision_at_10": 0.08500446452019539,
+          "recall_at_10": 0.42502232260097694,
+          "mean_returned_count": 10.0
+        }
+      },
+      "folds": [
+        {
+          "fold": 0,
+          "mask_seed": 44,
+          "scores": {
+            "balanced_evidence": {
+              "total": 6347,
+              "hit_cases": 5082,
+              "recovered_skills": 7275,
+              "returned_count": 63470,
+              "hit_cases_at_5": 4122,
+              "recovered_skills_at_5": 5239,
+              "hit_at_5": 0.6494406806365212,
+              "precision_at_5": 0.16508586733890027,
+              "recall_at_5": 0.4127146683472507,
+              "hit_at_10": 0.8006932409012132,
+              "precision_at_10": 0.11462108082558689,
+              "recall_at_10": 0.5731054041279344,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 6347,
+              "hit_cases": 4184,
+              "recovered_skills": 5303,
+              "returned_count": 63470,
+              "hit_cases_at_5": 3092,
+              "recovered_skills_at_5": 3603,
+              "hit_at_5": 0.48715928785252877,
+              "precision_at_5": 0.11353395304868442,
+              "recall_at_5": 0.283834882621711,
+              "hit_at_10": 0.6592090751536159,
+              "precision_at_10": 0.08355128407121475,
+              "recall_at_10": 0.41775642035607374,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "91f6e48322689b53113c213731a260a47f0713d91ef174cb4415cf791fc83b4f"
+        },
+        {
+          "fold": 1,
+          "mask_seed": 45,
+          "scores": {
+            "balanced_evidence": {
+              "total": 6346,
+              "hit_cases": 5031,
+              "recovered_skills": 7249,
+              "returned_count": 63460,
+              "hit_cases_at_5": 4047,
+              "recovered_skills_at_5": 5148,
+              "hit_at_5": 0.6377245508982036,
+              "precision_at_5": 0.16224393318625907,
+              "recall_at_5": 0.4056098329656477,
+              "hit_at_10": 0.7927828553419477,
+              "precision_at_10": 0.11422943586511188,
+              "recall_at_10": 0.5711471793255594,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 6346,
+              "hit_cases": 4293,
+              "recovered_skills": 5520,
+              "returned_count": 63460,
+              "hit_cases_at_5": 3187,
+              "recovered_skills_at_5": 3710,
+              "hit_at_5": 0.5022061140876143,
+              "precision_at_5": 0.11692404664355499,
+              "recall_at_5": 0.2923101166088875,
+              "hit_at_10": 0.6764891270091397,
+              "precision_at_10": 0.08698392688307595,
+              "recall_at_10": 0.4349196344153798,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "b951b86574a5c1fb6652cf9525b5414d71b3025aed6f87a8555da5c5b3ee5790"
+        },
+        {
+          "fold": 2,
+          "mask_seed": 46,
+          "scores": {
+            "balanced_evidence": {
+              "total": 6346,
+              "hit_cases": 5090,
+              "recovered_skills": 7317,
+              "returned_count": 63460,
+              "hit_cases_at_5": 4067,
+              "recovered_skills_at_5": 5224,
+              "hit_at_5": 0.6408761424519382,
+              "precision_at_5": 0.16463914276709737,
+              "recall_at_5": 0.4115978569177435,
+              "hit_at_10": 0.8020800504254648,
+              "precision_at_10": 0.11530097699338165,
+              "recall_at_10": 0.5765048849669083,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 6346,
+              "hit_cases": 4248,
+              "recovered_skills": 5361,
+              "returned_count": 63460,
+              "hit_cases_at_5": 3164,
+              "recovered_skills_at_5": 3654,
+              "hit_at_5": 0.4985817838008194,
+              "precision_at_5": 0.11515915537346359,
+              "recall_at_5": 0.287897888433659,
+              "hit_at_10": 0.6693980460132367,
+              "precision_at_10": 0.08447841159785692,
+              "recall_at_10": 0.4223920579892846,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "02e22fd67183ab7f2c0bf13343ed441dd8f49e28fc4a70b2e1eadbace085a3d2"
+        }
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "experience_mode": "entry",
+      "scores": {
+        "balanced_evidence": {
+          "total": 199,
+          "hit_cases": 190,
+          "recovered_skills": 309,
+          "returned_count": 1990,
+          "hit_cases_at_5": 169,
+          "recovered_skills_at_5": 256,
+          "hit_at_5": 0.8492462311557789,
+          "precision_at_5": 0.25728643216080405,
+          "recall_at_5": 0.6432160804020101,
+          "hit_at_10": 0.9547738693467337,
+          "precision_at_10": 0.15527638190954773,
+          "recall_at_10": 0.7763819095477387,
+          "mean_returned_count": 10.0
+        },
+        "popularity": {
+          "total": 199,
+          "hit_cases": 183,
+          "recovered_skills": 292,
+          "returned_count": 1990,
+          "hit_cases_at_5": 164,
+          "recovered_skills_at_5": 238,
+          "hit_at_5": 0.8241206030150754,
+          "precision_at_5": 0.23919597989949748,
+          "recall_at_5": 0.5979899497487438,
+          "hit_at_10": 0.9195979899497487,
+          "precision_at_10": 0.14673366834170853,
+          "recall_at_10": 0.7336683417085427,
+          "mean_returned_count": 10.0
+        }
+      },
+      "folds": [
+        {
+          "fold": 0,
+          "mask_seed": 44,
+          "scores": {
+            "balanced_evidence": {
+              "total": 67,
+              "hit_cases": 66,
+              "recovered_skills": 114,
+              "returned_count": 670,
+              "hit_cases_at_5": 61,
+              "recovered_skills_at_5": 97,
+              "hit_at_5": 0.9104477611940298,
+              "precision_at_5": 0.28955223880597014,
+              "recall_at_5": 0.7238805970149254,
+              "hit_at_10": 0.9850746268656716,
+              "precision_at_10": 0.1701492537313433,
+              "recall_at_10": 0.8507462686567164,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 67,
+              "hit_cases": 65,
+              "recovered_skills": 108,
+              "returned_count": 670,
+              "hit_cases_at_5": 61,
+              "recovered_skills_at_5": 90,
+              "hit_at_5": 0.9104477611940298,
+              "precision_at_5": 0.26865671641791045,
+              "recall_at_5": 0.6716417910447762,
+              "hit_at_10": 0.9701492537313433,
+              "precision_at_10": 0.16119402985074627,
+              "recall_at_10": 0.8059701492537313,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "438e9f4691662a0b832279b247b1fcb4c5221c02e50fd0609e2ade15eb2bfd6d"
+        },
+        {
+          "fold": 1,
+          "mask_seed": 45,
+          "scores": {
+            "balanced_evidence": {
+              "total": 66,
+              "hit_cases": 59,
+              "recovered_skills": 95,
+              "returned_count": 660,
+              "hit_cases_at_5": 51,
+              "recovered_skills_at_5": 80,
+              "hit_at_5": 0.7727272727272727,
+              "precision_at_5": 0.24242424242424243,
+              "recall_at_5": 0.6060606060606061,
+              "hit_at_10": 0.8939393939393939,
+              "precision_at_10": 0.14393939393939395,
+              "recall_at_10": 0.7196969696969697,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 66,
+              "hit_cases": 59,
+              "recovered_skills": 94,
+              "returned_count": 660,
+              "hit_cases_at_5": 52,
+              "recovered_skills_at_5": 78,
+              "hit_at_5": 0.7878787878787878,
+              "precision_at_5": 0.23636363636363636,
+              "recall_at_5": 0.5909090909090909,
+              "hit_at_10": 0.8939393939393939,
+              "precision_at_10": 0.14242424242424243,
+              "recall_at_10": 0.7121212121212122,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "0709ceae7c4ea3f46565dd3a1b9c0f87f6aad3b37ddbca82b3dcdefcd4a644a7"
+        },
+        {
+          "fold": 2,
+          "mask_seed": 46,
+          "scores": {
+            "balanced_evidence": {
+              "total": 66,
+              "hit_cases": 65,
+              "recovered_skills": 100,
+              "returned_count": 660,
+              "hit_cases_at_5": 57,
+              "recovered_skills_at_5": 79,
+              "hit_at_5": 0.8636363636363636,
+              "precision_at_5": 0.23939393939393938,
+              "recall_at_5": 0.5984848484848485,
+              "hit_at_10": 0.9848484848484849,
+              "precision_at_10": 0.15151515151515152,
+              "recall_at_10": 0.7575757575757576,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 66,
+              "hit_cases": 59,
+              "recovered_skills": 90,
+              "returned_count": 660,
+              "hit_cases_at_5": 51,
+              "recovered_skills_at_5": 70,
+              "hit_at_5": 0.7727272727272727,
+              "precision_at_5": 0.21212121212121213,
+              "recall_at_5": 0.5303030303030303,
+              "hit_at_10": 0.8939393939393939,
+              "precision_at_10": 0.13636363636363635,
+              "recall_at_10": 0.6818181818181818,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "55ca61d7389f5df2ae18b5d695aa971e896c3e0b6ef640f899eb31cad910d916"
+        }
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "experience_mode": "all",
+      "scores": {
+        "balanced_evidence": {
+          "total": 1864,
+          "hit_cases": 1759,
+          "recovered_skills": 2843,
+          "returned_count": 18640,
+          "hit_cases_at_5": 1630,
+          "recovered_skills_at_5": 2370,
+          "hit_at_5": 0.8744635193133047,
+          "precision_at_5": 0.2542918454935622,
+          "recall_at_5": 0.6357296137339056,
+          "hit_at_10": 0.9436695278969958,
+          "precision_at_10": 0.15252145922746782,
+          "recall_at_10": 0.762607296137339,
+          "mean_returned_count": 10.0
+        },
+        "popularity": {
+          "total": 1864,
+          "hit_cases": 1718,
+          "recovered_skills": 2675,
+          "returned_count": 18640,
+          "hit_cases_at_5": 1552,
+          "recovered_skills_at_5": 2147,
+          "hit_at_5": 0.8326180257510729,
+          "precision_at_5": 0.2303648068669528,
+          "recall_at_5": 0.5759120171673819,
+          "hit_at_10": 0.9216738197424893,
+          "precision_at_10": 0.14350858369098712,
+          "recall_at_10": 0.7175429184549357,
+          "mean_returned_count": 10.0
+        }
+      },
+      "folds": [
+        {
+          "fold": 0,
+          "mask_seed": 44,
+          "scores": {
+            "balanced_evidence": {
+              "total": 622,
+              "hit_cases": 581,
+              "recovered_skills": 941,
+              "returned_count": 6220,
+              "hit_cases_at_5": 543,
+              "recovered_skills_at_5": 795,
+              "hit_at_5": 0.8729903536977492,
+              "precision_at_5": 0.25562700964630225,
+              "recall_at_5": 0.6390675241157556,
+              "hit_at_10": 0.9340836012861736,
+              "precision_at_10": 0.15128617363344052,
+              "recall_at_10": 0.7564308681672026,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 622,
+              "hit_cases": 574,
+              "recovered_skills": 890,
+              "returned_count": 6220,
+              "hit_cases_at_5": 513,
+              "recovered_skills_at_5": 714,
+              "hit_at_5": 0.8247588424437299,
+              "precision_at_5": 0.22958199356913184,
+              "recall_at_5": 0.5739549839228296,
+              "hit_at_10": 0.9228295819935691,
+              "precision_at_10": 0.14308681672025725,
+              "recall_at_10": 0.7154340836012861,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "25eb70170c8a53738aed815a6d9374c563be9595ad1e2d2d3be40871669abec1"
+        },
+        {
+          "fold": 1,
+          "mask_seed": 45,
+          "scores": {
+            "balanced_evidence": {
+              "total": 621,
+              "hit_cases": 590,
+              "recovered_skills": 947,
+              "returned_count": 6210,
+              "hit_cases_at_5": 542,
+              "recovered_skills_at_5": 775,
+              "hit_at_5": 0.8727858293075684,
+              "precision_at_5": 0.249597423510467,
+              "recall_at_5": 0.6239935587761675,
+              "hit_at_10": 0.9500805152979066,
+              "precision_at_10": 0.15249597423510466,
+              "recall_at_10": 0.7624798711755234,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 621,
+              "hit_cases": 572,
+              "recovered_skills": 884,
+              "returned_count": 6210,
+              "hit_cases_at_5": 521,
+              "recovered_skills_at_5": 713,
+              "hit_at_5": 0.8389694041867954,
+              "precision_at_5": 0.22962962962962963,
+              "recall_at_5": 0.5740740740740741,
+              "hit_at_10": 0.9210950080515298,
+              "precision_at_10": 0.14235104669887277,
+              "recall_at_10": 0.711755233494364,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "f23f320c88a892fdd08aa36e56dbe12e70d8e09db68626a39a294e3f1b3dc74a"
+        },
+        {
+          "fold": 2,
+          "mask_seed": 46,
+          "scores": {
+            "balanced_evidence": {
+              "total": 621,
+              "hit_cases": 588,
+              "recovered_skills": 955,
+              "returned_count": 6210,
+              "hit_cases_at_5": 545,
+              "recovered_skills_at_5": 800,
+              "hit_at_5": 0.8776167471819646,
+              "precision_at_5": 0.2576489533011272,
+              "recall_at_5": 0.644122383252818,
+              "hit_at_10": 0.9468599033816425,
+              "precision_at_10": 0.1537842190016103,
+              "recall_at_10": 0.7689210950080515,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 621,
+              "hit_cases": 572,
+              "recovered_skills": 901,
+              "returned_count": 6210,
+              "hit_cases_at_5": 518,
+              "recovered_skills_at_5": 720,
+              "hit_at_5": 0.8341384863123994,
+              "precision_at_5": 0.2318840579710145,
+              "recall_at_5": 0.5797101449275363,
+              "hit_at_10": 0.9210950080515298,
+              "precision_at_10": 0.14508856682769727,
+              "recall_at_10": 0.7254428341384863,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "d20c2cba8235d02ba9c65126b26f53c9f4032895fd662252335af14a0e5a92b8"
+        }
+      ]
+    },
+    {
+      "role": "Data Analyst",
+      "experience_mode": "entry",
+      "scores": {
+        "balanced_evidence": {
+          "total": 685,
+          "hit_cases": 659,
+          "recovered_skills": 1173,
+          "returned_count": 6850,
+          "hit_cases_at_5": 625,
+          "recovered_skills_at_5": 1012,
+          "hit_at_5": 0.9124087591240876,
+          "precision_at_5": 0.2954744525547445,
+          "recall_at_5": 0.7386861313868613,
+          "hit_at_10": 0.962043795620438,
+          "precision_at_10": 0.17124087591240875,
+          "recall_at_10": 0.8562043795620438,
+          "mean_returned_count": 10.0
+        },
+        "popularity": {
+          "total": 685,
+          "hit_cases": 649,
+          "recovered_skills": 1139,
+          "returned_count": 6850,
+          "hit_cases_at_5": 613,
+          "recovered_skills_at_5": 986,
+          "hit_at_5": 0.8948905109489051,
+          "precision_at_5": 0.28788321167883213,
+          "recall_at_5": 0.7197080291970803,
+          "hit_at_10": 0.9474452554744526,
+          "precision_at_10": 0.16627737226277373,
+          "recall_at_10": 0.8313868613138686,
+          "mean_returned_count": 10.0
+        }
+      },
+      "folds": [
+        {
+          "fold": 0,
+          "mask_seed": 44,
+          "scores": {
+            "balanced_evidence": {
+              "total": 229,
+              "hit_cases": 219,
+              "recovered_skills": 395,
+              "returned_count": 2290,
+              "hit_cases_at_5": 210,
+              "recovered_skills_at_5": 349,
+              "hit_at_5": 0.9170305676855895,
+              "precision_at_5": 0.30480349344978164,
+              "recall_at_5": 0.7620087336244541,
+              "hit_at_10": 0.9563318777292577,
+              "precision_at_10": 0.17248908296943233,
+              "recall_at_10": 0.8624454148471615,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 229,
+              "hit_cases": 219,
+              "recovered_skills": 388,
+              "returned_count": 2290,
+              "hit_cases_at_5": 203,
+              "recovered_skills_at_5": 323,
+              "hit_at_5": 0.8864628820960698,
+              "precision_at_5": 0.28209606986899566,
+              "recall_at_5": 0.7052401746724891,
+              "hit_at_10": 0.9563318777292577,
+              "precision_at_10": 0.16943231441048034,
+              "recall_at_10": 0.8471615720524017,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "27d53ca0b92ae5347349de328048330ac5d1d71853d3dfe66cb03f0cf305d0f6"
+        },
+        {
+          "fold": 1,
+          "mask_seed": 45,
+          "scores": {
+            "balanced_evidence": {
+              "total": 228,
+              "hit_cases": 219,
+              "recovered_skills": 391,
+              "returned_count": 2280,
+              "hit_cases_at_5": 210,
+              "recovered_skills_at_5": 334,
+              "hit_at_5": 0.9210526315789473,
+              "precision_at_5": 0.2929824561403509,
+              "recall_at_5": 0.7324561403508771,
+              "hit_at_10": 0.9605263157894737,
+              "precision_at_10": 0.17149122807017544,
+              "recall_at_10": 0.8574561403508771,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 228,
+              "hit_cases": 213,
+              "recovered_skills": 376,
+              "returned_count": 2280,
+              "hit_cases_at_5": 207,
+              "recovered_skills_at_5": 339,
+              "hit_at_5": 0.9078947368421053,
+              "precision_at_5": 0.29736842105263156,
+              "recall_at_5": 0.743421052631579,
+              "hit_at_10": 0.9342105263157895,
+              "precision_at_10": 0.1649122807017544,
+              "recall_at_10": 0.8245614035087719,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "b362b0449f42c41e29260a397d3b04b34dc36b86f994be5f99ddf22fbe6d729f"
+        },
+        {
+          "fold": 2,
+          "mask_seed": 46,
+          "scores": {
+            "balanced_evidence": {
+              "total": 228,
+              "hit_cases": 221,
+              "recovered_skills": 387,
+              "returned_count": 2280,
+              "hit_cases_at_5": 205,
+              "recovered_skills_at_5": 329,
+              "hit_at_5": 0.8991228070175439,
+              "precision_at_5": 0.2885964912280702,
+              "recall_at_5": 0.7214912280701754,
+              "hit_at_10": 0.9692982456140351,
+              "precision_at_10": 0.16973684210526316,
+              "recall_at_10": 0.8486842105263158,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 228,
+              "hit_cases": 217,
+              "recovered_skills": 375,
+              "returned_count": 2280,
+              "hit_cases_at_5": 203,
+              "recovered_skills_at_5": 324,
+              "hit_at_5": 0.8903508771929824,
+              "precision_at_5": 0.28421052631578947,
+              "recall_at_5": 0.7105263157894737,
+              "hit_at_10": 0.9517543859649122,
+              "precision_at_10": 0.16447368421052633,
+              "recall_at_10": 0.8223684210526315,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "76abf22640140b7e4f4328a75442618117f1f8d0a5d11280387226cf08fb3cc6"
+        }
+      ]
+    },
+    {
+      "role": "Data Analyst",
+      "experience_mode": "all",
+      "scores": {
+        "balanced_evidence": {
+          "total": 7356,
+          "hit_cases": 7110,
+          "recovered_skills": 12441,
+          "returned_count": 73560,
+          "hit_cases_at_5": 6757,
+          "recovered_skills_at_5": 10799,
+          "hit_at_5": 0.9185698749320282,
+          "precision_at_5": 0.29361065796628605,
+          "recall_at_5": 0.734026644915715,
+          "hit_at_10": 0.966557911908646,
+          "precision_at_10": 0.16912724306688418,
+          "recall_at_10": 0.8456362153344209,
+          "mean_returned_count": 10.0
+        },
+        "popularity": {
+          "total": 7356,
+          "hit_cases": 6889,
+          "recovered_skills": 11509,
+          "returned_count": 73560,
+          "hit_cases_at_5": 6295,
+          "recovered_skills_at_5": 9750,
+          "hit_at_5": 0.8557640021750952,
+          "precision_at_5": 0.26508972267536707,
+          "recall_at_5": 0.6627243066884176,
+          "hit_at_10": 0.9365144100054378,
+          "precision_at_10": 0.1564573137574769,
+          "recall_at_10": 0.7822865687873845,
+          "mean_returned_count": 10.0
+        }
+      },
+      "folds": [
+        {
+          "fold": 0,
+          "mask_seed": 44,
+          "scores": {
+            "balanced_evidence": {
+              "total": 2452,
+              "hit_cases": 2366,
+              "recovered_skills": 4135,
+              "returned_count": 24520,
+              "hit_cases_at_5": 2243,
+              "recovered_skills_at_5": 3567,
+              "hit_at_5": 0.914763458401305,
+              "precision_at_5": 0.29094616639477977,
+              "recall_at_5": 0.7273654159869495,
+              "hit_at_10": 0.9649265905383361,
+              "precision_at_10": 0.16863784665579118,
+              "recall_at_10": 0.843189233278956,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 2452,
+              "hit_cases": 2275,
+              "recovered_skills": 3759,
+              "returned_count": 24520,
+              "hit_cases_at_5": 2067,
+              "recovered_skills_at_5": 3184,
+              "hit_at_5": 0.8429853181076672,
+              "precision_at_5": 0.2597063621533442,
+              "recall_at_5": 0.6492659053833605,
+              "hit_at_10": 0.9278140293637847,
+              "precision_at_10": 0.15330342577487766,
+              "recall_at_10": 0.7665171288743883,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "6590aaa8c43adf5335d3fa8efa0a7f7639728fcca0d3c35b2e2e82a58a21dcd9"
+        },
+        {
+          "fold": 1,
+          "mask_seed": 45,
+          "scores": {
+            "balanced_evidence": {
+              "total": 2452,
+              "hit_cases": 2368,
+              "recovered_skills": 4163,
+              "returned_count": 24520,
+              "hit_cases_at_5": 2250,
+              "recovered_skills_at_5": 3632,
+              "hit_at_5": 0.9176182707993474,
+              "precision_at_5": 0.29624796084828714,
+              "recall_at_5": 0.7406199021207178,
+              "hit_at_10": 0.965742251223491,
+              "precision_at_10": 0.16977977161500815,
+              "recall_at_10": 0.8488988580750407,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 2452,
+              "hit_cases": 2303,
+              "recovered_skills": 3871,
+              "returned_count": 24520,
+              "hit_cases_at_5": 2101,
+              "recovered_skills_at_5": 3273,
+              "hit_at_5": 0.8568515497553018,
+              "precision_at_5": 0.2669657422512235,
+              "recall_at_5": 0.6674143556280587,
+              "hit_at_10": 0.9392332789559543,
+              "precision_at_10": 0.15787112561174552,
+              "recall_at_10": 0.7893556280587276,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "9c2377da5fb4c2e356d64dd16044b5b65d2ae7cc055b40606c55747867229392"
+        },
+        {
+          "fold": 2,
+          "mask_seed": 46,
+          "scores": {
+            "balanced_evidence": {
+              "total": 2452,
+              "hit_cases": 2376,
+              "recovered_skills": 4143,
+              "returned_count": 24520,
+              "hit_cases_at_5": 2264,
+              "recovered_skills_at_5": 3600,
+              "hit_at_5": 0.9233278955954323,
+              "precision_at_5": 0.2936378466557912,
+              "recall_at_5": 0.734094616639478,
+              "hit_at_10": 0.9690048939641109,
+              "precision_at_10": 0.16896411092985317,
+              "recall_at_10": 0.8448205546492659,
+              "mean_returned_count": 10.0
+            },
+            "popularity": {
+              "total": 2452,
+              "hit_cases": 2311,
+              "recovered_skills": 3879,
+              "returned_count": 24520,
+              "hit_cases_at_5": 2127,
+              "recovered_skills_at_5": 3293,
+              "hit_at_5": 0.8674551386623165,
+              "precision_at_5": 0.26859706362153346,
+              "recall_at_5": 0.6714926590538336,
+              "hit_at_10": 0.9424959216965743,
+              "precision_at_10": 0.1581973898858075,
+              "recall_at_10": 0.7909869494290375,
+              "mean_returned_count": 10.0
+            }
+          },
+          "masked_pairs_sha256": "d91c3751c9604fd3bd77199fd671b829dfd153c7a02581eb450097c060480781"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Experimental offline model differs from current production cascade.",
+    "Existing test benchmark was previously inspected; original random split can contain duplicate candidates.",
+    "Entry and all-level populations overlap; source identities are incomplete.",
+    "Two-hidden-skill acceptance remains subject to instructor approval."
+  ],
+  "protected_artifact_sha256": {
+    "data/processed/clean_transactions.json": "affc2f9be5158783718cdafba79399f3d87cd7daef6040f15de6545ed1359a8f",
+    "data/processed/rules.json": "1a1f3a838f0c7cea5c8f79aa1589b80bdd4d2e9250e1272eb64c78606ad8ff45",
+    "data/processed/evaluation_metrics.json": "f7f709d84337f9bda469d541600cf7a09ef3109a2800bfe8ca070973f2275bc4"
+  },
+  "pipeline_sha256": {
+    "eclat_algorithm/assessment.py": "87c8e3b15d30fc44e114c469329d4f263d961382d32f8120d2b8e414f662f680"
+  }
+}

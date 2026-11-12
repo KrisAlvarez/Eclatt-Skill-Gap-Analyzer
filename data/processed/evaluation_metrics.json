@@ -13,6 +13,26 @@
     "baseline_hr_at_3": 0.2182,
     "eclat_hr_at_5": 0.1927,
     "baseline_hr_at_5": 0.2945,
+    "eclat_hr_at_10": 0.2,
+    "baseline_hr_at_10": 0.4109,
+    "eclat_hr_at_10_ci95": [
+      0.157,
+      0.2513
+    ],
+    "baseline_hr_at_10_ci95": [
+      0.3544,
+      0.4699
+    ],
+    "eclat_hr_at_20": 0.2073,
+    "baseline_hr_at_20": 0.6509,
+    "eclat_hr_at_20_ci95": [
+      0.1636,
+      0.2591
+    ],
+    "baseline_hr_at_20_ci95": [
+      0.5928,
+      0.7048
+    ],
     "non_trivial_eclat_hr_at_5": 0.1088,
     "non_trivial_baseline_hr_at_5": 0.1883,
     "non_trivial_test_transactions_count": 239,
@@ -50,6 +70,26 @@
     "baseline_hr_at_3": 0.22,
     "eclat_hr_at_5": 0.2634,
     "baseline_hr_at_5": 0.2884,
+    "eclat_hr_at_10": 0.2756,
+    "baseline_hr_at_10": 0.413,
+    "eclat_hr_at_10_ci95": [
+      0.2631,
+      0.2885
+    ],
+    "baseline_hr_at_10_ci95": [
+      0.3991,
+      0.4271
+    ],
+    "eclat_hr_at_20": 0.2866,
+    "baseline_hr_at_20": 0.6502,
+    "eclat_hr_at_20_ci95": [
+      0.2739,
+      0.2996
+    ],
+    "baseline_hr_at_20_ci95": [
+      0.6365,
+      0.6636
+    ],
     "non_trivial_eclat_hr_at_5": 0.1357,
     "non_trivial_baseline_hr_at_5": 0.1507,
     "non_trivial_test_transactions_count": 3988,
@@ -87,6 +127,26 @@
     "baseline_hr_at_3": 0.54,
     "eclat_hr_at_5": 0.54,
     "baseline_hr_at_5": 0.56,
+    "eclat_hr_at_10": 0.6,
+    "baseline_hr_at_10": 0.78,
+    "eclat_hr_at_10_ci95": [
+      0.4618,
+      0.7239
+    ],
+    "baseline_hr_at_10_ci95": [
+      0.6476,
+      0.8725
+    ],
+    "eclat_hr_at_20": 0.6,
+    "baseline_hr_at_20": 0.92,
+    "eclat_hr_at_20_ci95": [
+      0.4618,
+      0.7239
+    ],
+    "baseline_hr_at_20_ci95": [
+      0.8116,
+      0.9685
+    ],
     "non_trivial_eclat_hr_at_5": 0.12,
     "non_trivial_baseline_hr_at_5": 0.12,
     "non_trivial_test_transactions_count": 25,
@@ -124,6 +184,26 @@
     "baseline_hr_at_3": 0.5172,
     "eclat_hr_at_5": 0.4077,
     "baseline_hr_at_5": 0.6094,
+    "eclat_hr_at_10": 0.4206,
+    "baseline_hr_at_10": 0.7339,
+    "eclat_hr_at_10_ci95": [
+      0.3766,
+      0.4659
+    ],
+    "baseline_hr_at_10_ci95": [
+      0.692,
+      0.772
+    ],
+    "eclat_hr_at_20": 0.4464,
+    "baseline_hr_at_20": 0.8712,
+    "eclat_hr_at_20_ci95": [
+      0.4018,
+      0.4917
+    ],
+    "baseline_hr_at_20_ci95": [
+      0.8378,
+      0.8986
+    ],
     "non_trivial_eclat_hr_at_5": 0.1719,
     "non_trivial_baseline_hr_at_5": 0.2891,
     "non_trivial_test_transactions_count": 256,
@@ -161,6 +241,26 @@
     "baseline_hr_at_3": 0.6628,
     "eclat_hr_at_5": 0.3837,
     "baseline_hr_at_5": 0.7733,
+    "eclat_hr_at_10": 0.4012,
+    "baseline_hr_at_10": 0.843,
+    "eclat_hr_at_10_ci95": [
+      0.3308,
+      0.4758
+    ],
+    "baseline_hr_at_10_ci95": [
+      0.7812,
+      0.8898
+    ],
+    "eclat_hr_at_20": 0.407,
+    "baseline_hr_at_20": 0.9128,
+    "eclat_hr_at_20_ci95": [
+      0.3364,
+      0.4817
+    ],
+    "baseline_hr_at_20_ci95": [
+      0.8611,
+      0.9464
+    ],
     "non_trivial_eclat_hr_at_5": 0.1111,
     "non_trivial_baseline_hr_at_5": 0.1778,
     "non_trivial_test_transactions_count": 45,
@@ -198,6 +298,26 @@
     "baseline_hr_at_3": 0.5438,
     "eclat_hr_at_5": 0.466,
     "baseline_hr_at_5": 0.677,
+    "eclat_hr_at_10": 0.4676,
+    "baseline_hr_at_10": 0.7754,
+    "eclat_hr_at_10_ci95": [
+      0.4449,
+      0.4905
+    ],
+    "baseline_hr_at_10_ci95": [
+      0.7558,
+      0.7939
+    ],
+    "eclat_hr_at_20": 0.4709,
+    "baseline_hr_at_20": 0.9005,
+    "eclat_hr_at_20_ci95": [
+      0.4482,
+      0.4938
+    ],
+    "baseline_hr_at_20_ci95": [
+      0.886,
+      0.9133
+    ],
     "non_trivial_eclat_hr_at_5": 0.245,
     "non_trivial_baseline_hr_at_5": 0.3036,
     "non_trivial_test_transactions_count": 853,

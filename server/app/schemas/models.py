@@ -64,6 +64,14 @@ class EvaluationMetricsItem(BaseModel):
     baseline_hr_at_3: float
     eclat_hr_at_5: float
     baseline_hr_at_5: float
+    eclat_hr_at_10: Optional[float] = None
+    baseline_hr_at_10: Optional[float] = None
+    eclat_hr_at_10_ci95: List[float] = Field(default_factory=list)
+    baseline_hr_at_10_ci95: List[float] = Field(default_factory=list)
+    eclat_hr_at_20: Optional[float] = None
+    baseline_hr_at_20: Optional[float] = None
+    eclat_hr_at_20_ci95: List[float] = Field(default_factory=list)
+    baseline_hr_at_20_ci95: List[float] = Field(default_factory=list)
     non_trivial_eclat_hr_at_5: float
     non_trivial_baseline_hr_at_5: float
     lift_over_baseline_pct: float

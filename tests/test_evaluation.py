@@ -1,6 +1,8 @@
 """Focused checks for masked-skill evaluation methodology."""
 
-from eclat_algorithm.evaluation import _masked_hits
+import pytest
+
+from eclat_algorithm.evaluation import _masked_hits, evaluate_role_mode
 
 
 def test_non_trivial_frequency_uses_training_population_denominator():
@@ -30,3 +32,31 @@ def test_non_trivial_frequency_uses_training_population_denominator():
     )
 
     assert result["non_trivial_total"] == 1
+
+
+@pytest.mark.parametrize("rank", [1, 3, 5, 6, 10, 11, 20, 21])
+def test_hit_rate_cutoffs_for_both_methods(rank):
+    ranked = [f"Candidate {i}" for i in range(20)]
+    ranked.insert(rank - 1, "Docker")
+    artifact = {
+        "total_transactions": 100,
+        "rules": [],
+        "top_1_itemsets": [
+            {"skill": skill, "category": "DevOps & Cloud", "support": 0.5, "count": 50}
+            for skill in ranked[:20]
+        ],
+    }
+    result = _masked_hits(artifact, [["Docker", "SQL", "Git"]], ranked,
+                          [["Docker", "SQL", "Git"]], seed=1)
+    assert result["total"] == 1
+    for method in ("eclat", "baseline"):
+        for cutoff in (3, 5, 10, 20):
+            assert result[f"{method}_at_{cutoff}"] == int(rank <= cutoff)
+
+
+@pytest.mark.parametrize("cutoff", [10, 20])
+def test_insufficient_training_data_has_zero_rates(cutoff):
+    result = evaluate_role_mode([], "Backend Developer", "entry")
+    for method in ("eclat", "baseline"):
+        assert result[f"{method}_hr_at_{cutoff}"] == 0.0
+        assert result[f"{method}_hr_at_{cutoff}_ci95"] == [0.0, 0.0]

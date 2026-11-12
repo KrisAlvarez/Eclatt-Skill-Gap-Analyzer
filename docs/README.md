@@ -1,22 +1,13 @@
-# 📑 Documentation Hub
+# Defense documentation
 
-Welcome to the documentation repository for the **SkillGap: ECLAT-Based IT Skill Pattern and Gap Analysis System**.
+- [Current architecture, setup and checks](../README.md)
+- [Final HR@10 validation/test table](final-evaluation.md)
+- [Data evidence and audit](../data/README.md)
+- [Frozen final protocol](../data/processed/assessment_protocol.json)
+- [Compact experimental history](../data/processed/experiment_summary.json)
+- [Assessment methodology](multiple-hidden-skill-experiment.md)
+- [Instructor decision brief](feasibility-review.md)
+- [Classification scope evidence](classification-review.md)
+- [Progress checklist](project-plan.md)
 
----
-
-## 📂 Documents Directory
-
-| Document / Folder | Description |
-| :--- | :--- |
-| **[SYSTEM_COMPREHENSIVE_GUIDE.md](./SYSTEM_COMPREHENSIVE_GUIDE.md)** | **Master System Compendium**: Exhaustive, AI-readable technical reference covering the 7 loopholes, ECLAT mathematics, dataset evolution, 3-tier cascade, and codebase file map. |
-| **[project-plan.md](./project-plan.md)** | **Primary Blueprint & Academic Specification**: Course positioning, problem statement, resolution of 7 loopholes, dataset architecture, ECLAT mechanics, evaluation methodology, and defense Q&A. |
-| **[research/](./research/README.md)** | **Research & Defense Preparation**: Evaluation transcripts, loophole studies, literature findings, raw scrapes, and extraction tools. |
-
----
-
-## 🚀 Quick Navigation
-
-- **AI-Readable Master Reference**: Read [`SYSTEM_COMPREHENSIVE_GUIDE.md`](./SYSTEM_COMPREHENSIVE_GUIDE.md) for the complete end-to-end breakdown of all work done, loopholes, and operational instructions.
-- **Core Academic Blueprint**: Read [`project-plan.md`](./project-plan.md) for the thesis formulation and academic defense Q&A.
-- **Academic Loopholes**: See [`research/clean_loopholes.md`](./research/clean_loopholes.md) for the original critical evaluation notes.
-- **Evaluation Design**: See Section 5 in [`project-plan.md`](./project-plan.md) for the Masked Skill Recovery benchmark design.
+Superseded experiment runners, raw transcript tools, old architecture guides and unused UI panels were removed after retaining final reproducibility inputs and historical result summaries. Production recommendations and experimental assessments remain separate. Synthetic demonstrations exist only as labeled historical summary data; they never feed production or final assessment.

@@ -61,8 +61,12 @@ def _masked_hits(
         "total": 0,
         "eclat_at_3": 0,
         "eclat_at_5": 0,
+        "eclat_at_10": 0,
+        "eclat_at_20": 0,
         "baseline_at_3": 0,
         "baseline_at_5": 0,
+        "baseline_at_10": 0,
+        "baseline_at_20": 0,
         "non_trivial_total": 0,
         "non_trivial_eclat_at_5": 0,
         "non_trivial_baseline_at_5": 0,
@@ -83,18 +87,22 @@ def _masked_hits(
         recommendation_result = recommend_from_artifact(
             mode_data,
             input_skills,
-            top_k=5,
+            top_k=20,
             rules_by_antecedent=rules_by_antecedent,
         )
         eclat_skills = [
             item["skill"] for item in recommendation_result["recommendations"]
         ]
-        baseline = [skill for skill in popularity if skill not in input_skills][:5]
+        baseline = [skill for skill in popularity if skill not in input_skills][:20]
         result["total"] += 1
         result["eclat_at_3"] += int(masked in eclat_skills[:3])
         result["eclat_at_5"] += int(masked in eclat_skills[:5])
         result["baseline_at_3"] += int(masked in baseline[:3])
         result["baseline_at_5"] += int(masked in baseline[:5])
+        result["eclat_at_10"] += int(masked in eclat_skills[:10])
+        result["baseline_at_10"] += int(masked in baseline[:10])
+        result["eclat_at_20"] += int(masked in eclat_skills[:20])
+        result["baseline_at_20"] += int(masked in baseline[:20])
 
         if recommendation_result["tier_used"].startswith(("Tier 1", "Tier 2")):
             result["rule_based_recommendations"] += 1
@@ -155,6 +163,14 @@ def evaluate_role_mode(
             "baseline_hr_at_3": 0.0,
             "eclat_hr_at_5": 0.0,
             "baseline_hr_at_5": 0.0,
+            "eclat_hr_at_10": 0.0,
+            "baseline_hr_at_10": 0.0,
+            "eclat_hr_at_10_ci95": [0.0, 0.0],
+            "baseline_hr_at_10_ci95": [0.0, 0.0],
+            "eclat_hr_at_20": 0.0,
+            "baseline_hr_at_20": 0.0,
+            "eclat_hr_at_20_ci95": [0.0, 0.0],
+            "baseline_hr_at_20_ci95": [0.0, 0.0],
             "non_trivial_eclat_hr_at_5": 0.0,
             "non_trivial_baseline_hr_at_5": 0.0,
             "non_trivial_test_transactions_count": 0,
@@ -190,6 +206,14 @@ def evaluate_role_mode(
         "baseline_hr_at_3": _rate(result["baseline_at_3"], total),
         "eclat_hr_at_5": eclat_hr_5,
         "baseline_hr_at_5": baseline_hr_5,
+        "eclat_hr_at_10": _rate(result["eclat_at_10"], total),
+        "baseline_hr_at_10": _rate(result["baseline_at_10"], total),
+        "eclat_hr_at_10_ci95": _wilson(result["eclat_at_10"], total),
+        "baseline_hr_at_10_ci95": _wilson(result["baseline_at_10"], total),
+        "eclat_hr_at_20": _rate(result["eclat_at_20"], total),
+        "baseline_hr_at_20": _rate(result["baseline_at_20"], total),
+        "eclat_hr_at_20_ci95": _wilson(result["eclat_at_20"], total),
+        "baseline_hr_at_20_ci95": _wilson(result["baseline_at_20"], total),
         "non_trivial_eclat_hr_at_5": _rate(
             result["non_trivial_eclat_at_5"], non_trivial_total
         ),
@@ -233,7 +257,11 @@ def run_evaluation() -> List[Dict[str, Any]]:
             print(
                 f"[{role} - {mode.upper()}] "
                 f"ECLAT HR@5={result['eclat_hr_at_5']:.1%}, "
-                f"baseline HR@5={result['baseline_hr_at_5']:.1%}"
+                f"baseline HR@5={result['baseline_hr_at_5']:.1%}, "
+                f"SkillGap HR@10={result['eclat_hr_at_10']:.1%}, "
+                f"baseline HR@10={result['baseline_hr_at_10']:.1%}, "
+                f"SkillGap HR@20={result['eclat_hr_at_20']:.1%}, "
+                f"baseline HR@20={result['baseline_hr_at_20']:.1%}"
             )
 
     with open(METRICS_FILE, "w", encoding="utf-8") as file:
