@@ -44,7 +44,7 @@ Open the Vite URL printed in the terminal (normally http://localhost:5173). API:
 | `tests/` | Algorithm, API, split, masking and metric contracts |
 | `backend/` | Documented compatibility imports/CLI wrappers; canonical code is elsewhere |
 
-The active flow is browser -> FastAPI controller -> recommendation cascade -> precomputed JSON. There is no database or online model training. Current serving uses exact rules, one matching subset, or popularity fallback. The experimental hybrid is not deployed. Roadmaps are session state in the browser.
+The active flow is browser -> FastAPI controller -> hybrid ranker -> cached role/level evidence built from the processed posting transactions. The ranker blends ECLAT rule evidence, cosine skill similarity, and popularity using the frozen assessment weights. Evidence is built and cached on first use per role/level in each server process. There is no database or model training per request. Roadmaps are session state in the browser. The `/api/v1/metrics` endpoint still exposes the historical single-hidden-skill benchmark; the primary two-hidden-skill benchmark is documented separately.
 
 ## Evaluation and defense evidence
 
