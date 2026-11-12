@@ -77,6 +77,13 @@ def analyze_skill_gap(payload: GapAnalysisRequest):
         payload.top_k,
         rules_by_antecedent,
     )
+    excluded_skills = set(user_skills) | {
+        item["skill"] for item in result["recommendations"]
+    }
+    popular_skills = [
+        item for item in recommend_from_artifact(mode_data, [], top_k=20)["recommendations"]
+        if item["skill"] not in excluded_skills
+    ][:payload.top_k]
     return GapAnalysisResponse(
         role=role,
         experience_mode=mode,
@@ -85,6 +92,7 @@ def analyze_skill_gap(payload: GapAnalysisRequest):
         recommendations=[
             GapRecommendation(**item) for item in result["recommendations"]
         ],
+        popular_skills=[GapRecommendation(**item) for item in popular_skills],
         active_rules=[AssociationRule(**item) for item in result["active_rules"]],
         sub_lattice_fallback_used=result["sub_lattice_fallback_used"],
         matched_subset=result["matched_subset"],

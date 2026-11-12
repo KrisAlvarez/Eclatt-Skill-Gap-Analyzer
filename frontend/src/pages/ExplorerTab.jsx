@@ -14,7 +14,7 @@ function FriendlyEvidence({ rec, results }) {
   const change = Math.round(Math.abs(rec.lift - 1) * 100);
   const foundational = rec.tier?.startsWith('Tier 3');
   return <details className="evidence"><summary>Why this suggestion?</summary>
-    {foundational ? <p>{rec.skill} appears in about {percent}% of postings for this role. This suggestion is based on its overall popularity.</p> : <>
+    {foundational ? <p>{rec.skill} appears in about {percent}% of postings for this role and experience level. This suggestion is based on its overall popularity.</p> : <>
       {paired && <p><strong>{rec.skill} is {change === 0 ? 'about as common' : `${change}% ${rec.lift > 1 ? 'more' : 'less'} common`} in postings mentioning {paired}</strong>, compared with all postings in this role and experience group.</p>}
       {paired && <p>About {percent} out of every 100 postings mentioning {paired} also mention {rec.skill}.</p>}
       {results?.sub_lattice_fallback_used && <p>This pattern matches some of your selected skills, rather than the full combination.</p>}
@@ -39,6 +39,7 @@ export default function ExplorerTab({ roles, skillsByCategory, selectedRole, onS
   const skills = [...new Set(Object.values(skillsByCategory).flat())];
   const matches = skills.filter(s => s.toLowerCase().includes(search.trim().toLowerCase()));
   const recommendations = analysisResults?.recommendations || [];
+  const popularSkills = analysisResults?.popular_skills || [];
   const usedPopularityFallback = recommendations.some(rec => rec.tier?.startsWith('Tier 3'));
   const resultNote = usedPopularityFallback
     ? analysisResults.user_skills.length
@@ -47,6 +48,14 @@ export default function ExplorerTab({ roles, skillsByCategory, selectedRole, onS
     : analysisResults?.note;
   const analyze = async () => {
     if (await onAnalyze()) { setShowAll(false); setStep(3); }
+  };
+  const renderRecommendation = rec => {
+    const saved = roadmapSkills.includes(rec.skill);
+    return <article className="recommendation" key={rec.skill}>
+      <div className="recommendation-top"><div><p className="eyebrow">{rec.category}</p><h2 className="font-editorial">{rec.skill}</h2></div><button className={`save-button ${saved ? 'saved' : ''}`} aria-pressed={saved} aria-label={`${saved ? 'Remove' : 'Save'} ${rec.skill} ${saved ? 'from' : 'to'} roadmap`} onClick={() => onToggleRoadmapSkill(rec.skill)}>{saved ? <Check size={16} /> : <Plus size={16} />}{saved ? 'Saved' : 'Save skill'}</button></div>
+      <p className="skill-description">{getSkillPurpose(rec.skill)}</p>
+      <FriendlyEvidence rec={rec} results={analysisResults} />
+    </article>;
   };
   return <div className="guided-flow">
     <ol className="flow-steps" aria-label="Your progress">{['Your direction', 'Your skills', 'Next steps'].map((label, i) => <li key={label} aria-current={step === i + 1 ? 'step' : undefined} className={step > i + 1 ? 'complete' : ''}><span>{step > i + 1 ? <Check size={14} aria-hidden="true" /> : i + 1}</span>{label}</li>)}</ol>
@@ -86,16 +95,14 @@ export default function ExplorerTab({ roles, skillsByCategory, selectedRole, onS
       <div className="results-context"><p>{selectedSkills.length ? `Based on ${selectedSkills.length} selected skill${selectedSkills.length === 1 ? '' : 's'}` : 'A starting point for beginners'} · {experienceMode === 'entry' ? 'Entry-level jobs' : 'All experience levels'}</p><button className="text-button" onClick={() => setStep(2)}>Edit my choices</button></div>
       <p className="muted">These suggestions summarize patterns in the selected postings. Choose any that interest you; they are not a checklist of requirements or a measure of job readiness.</p>
       {recommendations.length === 0 && <div className="flow-panel"><h2 className="font-editorial text-2xl">No suggestions for these choices yet.</h2><p className="muted mt-3">Try a different role or fewer skills to explore other patterns.</p><button className="text-button mt-4" onClick={() => setStep(1)}>Change my choices <ArrowRight size={16} /></button></div>}
-      {(showAll ? recommendations : recommendations.slice(0, 3)).map(rec => {
-        const saved = roadmapSkills.includes(rec.skill);
-        return <article className="recommendation" key={rec.skill}>
-          <div className="recommendation-top"><div><p className="eyebrow">{rec.category}</p><h2 className="font-editorial">{rec.skill}</h2></div><button className={`save-button ${saved ? 'saved' : ''}`} aria-pressed={saved} aria-label={`${saved ? 'Remove' : 'Save'} ${rec.skill} ${saved ? 'from' : 'to'} roadmap`} onClick={() => onToggleRoadmapSkill(rec.skill)}>{saved ? <Check size={16} /> : <Plus size={16} />}{saved ? 'Saved' : 'Save skill'}</button></div>
-          <p className="skill-description">{getSkillPurpose(rec.skill)}</p>
-          <FriendlyEvidence rec={rec} results={analysisResults} />
-        </article>;
-      })}
+      {(showAll ? recommendations : recommendations.slice(0, 3)).map(renderRecommendation)}
       {recommendations.length > 3 && <button className="text-button more-suggestions" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show fewer suggestions' : `See ${recommendations.length - 3} more suggestions`}</button>}
       {resultNote && <details className="muted result-note"><summary>About these results</summary><p>{resultNote}</p></details>}
+      {popularSkills.length > 0 && <section aria-labelledby="popular-skills-heading" className="mt-8">
+        <h2 id="popular-skills-heading" className="font-editorial text-2xl">More skills often mentioned in these postings</h2>
+        <p className="muted">Popular skills in {analysisResults.role} postings ({analysisResults.experience_mode === 'entry' ? 'entry level' : 'all experience levels'}). These are based on how often they appear, rather than a match to your selected skills. Skills you selected or already see above are excluded.</p>
+        {popularSkills.map(renderRecommendation)}
+      </section>}
       <div className="flow-actions"><span role="status">{roadmapSkills.length ? `${roadmapSkills.length} skill${roadmapSkills.length === 1 ? '' : 's'} in your roadmap` : 'Save a skill to start your learning roadmap.'}</span>{roadmapSkills.length > 0 && <button className="primary-button" onClick={onGoToRoadmaps}>View my roadmap <ArrowRight size={17} /></button>}</div>
     </section>}
   </div>;

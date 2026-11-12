@@ -27,8 +27,8 @@ const DEFENSE_QA = [
     tag: 'ML vs Naive SQL',
   },
   {
-    q: 'How did you handle the seniority bias where 89% of LinkedIn postings are senior?',
-    a: 'We parsed the formatted_experience_level metadata from postings.csv and isolated Entry-level and Associate postings from Mid-Senior postings. This created two separate rule bases: an Entry-Level model and an All-Seniority model. This ensures fresh graduates and students are not overwhelmed with high-level architecture expectations (like multi-region Kubernetes or Terraform) that belong to senior engineering roles.',
+    q: 'How are entry-level postings identified?',
+    a: 'The builder flags entry-level records using job_level or junior title keywords, with senior title keywords taking precedence. Descriptions and years of experience are not checked. The entry view is a heuristic subset of all retained records; its accuracy awaits human review and it does not guarantee that suggestions suit beginners.',
     tag: 'Dataset Anti-Bias',
   },
   {
@@ -41,8 +41,8 @@ const DEFENSE_QA = [
 const LOOPHOLES = [
   {
     title: 'Loophole 1: Seniority Bias',
-    problem: '89% of LinkedIn postings require Senior / Lead qualifications.',
-    solution: 'Filtered postings via formatted_experience_level into a dedicated Junior/Entry-level mining model.',
+    problem: 'Source experience labels and title signals can be incomplete or inaccurate.',
+    solution: 'Offer a heuristic entry subset with explicit limitations; human label review is pending.',
   },
   {
     title: 'Loophole 2: Predictive Overreach',

@@ -1,4 +1,4 @@
-# SkillGap: An ECLAT-Based IT Skill Pattern and Gap Analysis System
+# SkillGap: An Exploratory IT Skill-Pattern Tool
 
 [![FastAPI](https://img.shields.io/badge/Server-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/Frontend-React-61DAFB?logo=react&logoColor=black)](https://react.dev)
@@ -10,6 +10,8 @@
 > **Application Domain:** Information Technology (IT) Career Development  
 > **Target Audience:** IT Students, Fresh Graduates, and Career Changers  
 > **Deployment Architecture:** GitHub &rarr; Render (FastAPI REST Server) + Vercel (React Frontend)
+
+SkillGap explores skills mentioned together in historical postings. The source reports 1,348,454 postings; SkillGap retains 44,441 rule-assigned records, including 3,454 entry-flagged records. Labels await human review. Geographic coverage and exact collection dates are not established from retained records. See [data evidence and audit instructions](data/README.md) for counts, duplicate candidates across splits, and the human review sheet.
 
 ---
 
@@ -81,7 +83,7 @@ Eclatt-Skill-Gap-Analyzer/
 │   ├── raw/                         # Automated via kagglehub ("asaniczka/1-3m-linkedin-jobs-and-skills-2024")
 │   │   └── README.md                # Ingestion instructions & dataset details
 │   ├── processed/                   # Preprocessed transactions & precomputed indexes
-│   │   ├── clean_transactions.json  # Sanitized role-segmented transactions (44,441 unique primary-assigned IT postings; 0 overlap)
+│   │   ├── clean_transactions.json  # Sanitized role-segmented transactions (44,441 heuristic role-assigned records; source deduplication unverified)
 │   │   ├── clean_summary.json       # Seniority & track distribution counts
 │   │   ├── rules.json               # Precomputed association rules (sub-millisecond lookups)
 │   │   ├── evaluation_metrics.json  # Masked-skill Hit-Rate@K and target status
@@ -165,10 +167,10 @@ npm run dev
 
 | Loophole Identified | Root Academic Risk | SkillGap Engineering Solution | Reference |
 | :--- | :--- | :--- | :--- |
-| **1. Seniority Bias** | 89% mid-senior posts skew advice toward senior tooling | Dual mode: **Entry-Level Market** (`experience_mode='entry'`) vs **General Market** (`'all'`) | [`docs/project-plan.md`](./docs/project-plan.md#32-addressing-seniority-bias-loophole-1) |
+| **1. Seniority Bias** | Experience labels may be incomplete or inaccurate | Explore an entry-flagged subset or all retained records; human label review is pending | [`docs/project-plan.md`](./docs/project-plan.md#32-addressing-seniority-bias-loophole-1) |
 | **2. Predictive Overreach** | ECLAT cannot guarantee hiring or sequence priorities | Framed strictly as empirical co-occurrence patterns; ranked by **Lift** and **Confidence** | [`docs/research/clean_loopholes.md`](./docs/research/clean_loopholes.md) |
 | **3. ECLAT vs Count(*)** | Popular skills alone don't justify machine learning | Generates **conditional dependencies** ($P(B \mid A)$) vs marginal frequency ($P(B)$) | [`docs/project-plan.md`](./docs/project-plan.md#13-refined-objective) |
 | **4. Unvetted Skills** | Soft skills and generic perks pollute transactions | Strict IT skill taxonomy whitelist with canonical normalization | [`eclat_algorithm/taxonomy.py`](./eclat_algorithm/taxonomy.py) |
 | **5. Excessive Scope** | 15+ job roles lead to sparse mapping and noise | Scoped strictly to **3 core tracks**: Backend, Frontend, and Data Analyst | [`docs/project-plan.md`](./docs/project-plan.md#33-focused-scope-3-core-it-tracks-loophole-5) |
-| **6. Lack of Evaluation** | Subjective recommendations cannot be defended | **Train/validation/test masked-skill recovery** with popularity baseline and confidence intervals | [`eclat_algorithm/evaluation.py`](./eclat_algorithm/evaluation.py) |
+| **6. Lack of Evaluation** | Subjective recommendations cannot be defended | **80/20 train/test masked-skill recovery** through the production rule/fallback path with popularity baseline and confidence intervals | [`eclat_algorithm/evaluation.py`](./eclat_algorithm/evaluation.py) |
 | **7. Cold-Start Failure** | Zero input skills or unseen combinations yield empty rules | 3-tier cascade: Exact Match &rarr; Sub-Lattice Step-Down &rarr; Unconditional Prior | [`server/app/routes/analyze.py`](./server/app/routes/analyze.py) |
