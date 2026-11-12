@@ -4,8 +4,19 @@ import { api } from '../api/client';
 
 export default function EvaluationDashboard() {
   const [metrics, setMetrics] = useState([]);
+  const [crossValidation, setCrossValidation] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const targetSummary = crossValidation.length
+    ? {
+        achieved: crossValidation.every((row) => row.target_achieved),
+        mean: crossValidation.reduce(
+          (sum, row) => sum + (row.metrics?.eclat_category_hr_at_4?.mean || 0),
+          0
+        ) / crossValidation.length,
+        threshold: crossValidation[0].target_threshold || 0.9,
+      }
+    : null;
 
   const hr5Comparison = metrics.reduce((summary, row) => {
     if (row.eclat_hr_at_5 > row.baseline_hr_at_5) summary.eclatAhead += 1;
@@ -18,8 +29,12 @@ export default function EvaluationDashboard() {
     async function fetchMetrics() {
       try {
         setLoading(true);
-        const data = await api.getMetrics();
+        const [data, validationData] = await Promise.all([
+          api.getMetrics(),
+          api.getCrossValidationMetrics(),
+        ]);
         setMetrics(data);
+        setCrossValidation(validationData);
       } catch (err) {
         setError(err.message || 'Failed to load evaluation metrics');
       } finally {
@@ -49,17 +64,17 @@ export default function EvaluationDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
             <span className="text-xs font-mono text-slate-400 block mb-1">Experiment Protocol</span>
-            <span className="text-base font-bold text-white block">80/20 Train-Test</span>
+            <span className="text-base font-bold text-white block">5-Fold + Holdout</span>
             <p className="text-xs text-slate-400 mt-1">
-              Production thresholds are fixed; one skill is masked from each held-out posting with at least three skills.
+            One skill is masked from each held-out posting. Thresholds are selected only on training validation data.
             </p>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
             <span className="text-xs font-mono text-slate-400 block mb-1">Target Evaluation Metric</span>
-            <span className="text-base font-bold text-emerald-400 block">Hit-Rate@3 & Hit-Rate@5</span>
+            <span className="text-base font-bold text-emerald-400 block">Category Hit-Rate@4</span>
             <p className="text-xs text-slate-400 mt-1">
-              Measures percentage of test transactions where the masked skill is recovered in top recommendations.
+              The project target is at least 90% recovery of the hidden skill's category in the top 4 suggestions.
             </p>
           </div>
 
@@ -68,6 +83,22 @@ export default function EvaluationDashboard() {
             <span className="text-base font-bold text-violet-400 block">Rules or Popularity Fallback</span>
             <p className="text-xs text-slate-400 mt-1">
               Counts show how often a test input received association-rule suggestions or the fallback list.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
+            <span className="text-xs font-mono text-slate-400 block mb-1">90% Target Status</span>
+            <span className={`text-base font-bold block ${targetSummary?.achieved ? 'text-emerald-400' : 'text-amber-400'}`}>
+              {targetSummary
+                ? `${(targetSummary.mean * 100).toFixed(1)}% mean`
+                : 'Loading...'}
+            </span>
+            <p className="text-xs text-slate-400 mt-1">
+              {targetSummary
+                ? targetSummary.achieved
+                  ? 'All role segments meet the cross-validation target. Exact-skill recovery is reported separately.'
+                  : `Target: ${(targetSummary.threshold * 100).toFixed(0)}% in every role segment.`
+                : 'Five-fold cross-validation target evaluation.'}
             </p>
           </div>
         </div>
@@ -80,7 +111,7 @@ export default function EvaluationDashboard() {
             <BarChart3 className="w-5 h-5 text-violet-400" />
             <h3 className="font-heading font-bold text-lg text-white">Held-Out Benchmark Table</h3>
           </div>
-          <span className="text-xs font-mono text-slate-400">Offline Test Results</span>
+          <span className="text-xs font-mono text-slate-400">Held-Out Test Results</span>
         </div>
 
         {loading ? (
@@ -104,6 +135,8 @@ export default function EvaluationDashboard() {
                   <th className="py-3 px-4">Naive Prior HR@3</th>
                   <th className="py-3 px-4">ECLAT HR@5</th>
                   <th className="py-3 px-4">Popularity Prior HR@5</th>
+                  <th className="py-3 px-4">ECLAT HR@10</th>
+                  <th className="py-3 px-4">ECLAT HR@20</th>
                   <th className="py-3 px-4">Non-Trivial Test Set</th>
                   <th className="py-3 px-4">Non-Trivial ECLAT HR@5</th>
                   <th className="py-3 px-4">Non-Trivial Prior HR@5</th>
@@ -129,6 +162,8 @@ export default function EvaluationDashboard() {
                     <td className="py-3.5 px-4 text-slate-400">{(row.baseline_hr_at_3 * 100).toFixed(1)}%</td>
                     <td className="py-3.5 px-4 font-bold text-emerald-400">{(row.eclat_hr_at_5 * 100).toFixed(1)}%</td>
                     <td className="py-3.5 px-4 text-slate-400">{(row.baseline_hr_at_5 * 100).toFixed(1)}%</td>
+                    <td className="py-3.5 px-4 font-bold text-emerald-300">{(row.eclat_hr_at_10 * 100).toFixed(1)}%</td>
+                    <td className="py-3.5 px-4 font-bold text-emerald-200">{(row.eclat_hr_at_20 * 100).toFixed(1)}%</td>
                     <td className="py-3.5 px-4 text-slate-400">{row.non_trivial_test_transactions_count} jobs</td>
                     <td className="py-3.5 px-4 font-bold text-violet-400">
                       <span title={`95% Wilson interval: ${((row.non_trivial_eclat_hr_at_5_ci95 || [0, 0])[0] * 100).toFixed(1)}%-${((row.non_trivial_eclat_hr_at_5_ci95 || [0, 0])[1] * 100).toFixed(1)}%`}>

@@ -7,6 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 PROCESSED_DIR = BASE_DIR / "data" / "processed"
 RULES_FILE = PROCESSED_DIR / "rules.json"
 METRICS_FILE = PROCESSED_DIR / "evaluation_metrics.json"
+CV_METRICS_FILE = PROCESSED_DIR / "cross_validation_metrics.json"
 TRANSACTIONS_FILE = PROCESSED_DIR / "clean_transactions.json"
 
 class Settings(BaseModel):

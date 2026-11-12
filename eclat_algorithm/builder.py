@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set
 import pandas as pd
 import kagglehub
-
+    
 from eclat_algorithm.taxonomy import SKILL_TAXONOMY, ALIAS_MAP
 
 BASE_DIR = Path(__file__).resolve().parent.parent

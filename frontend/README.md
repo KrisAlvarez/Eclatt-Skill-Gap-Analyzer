@@ -24,7 +24,7 @@ frontend/
 │   │   ├── RoleSelector.jsx      # Track switcher (Backend, Frontend, Data Analyst)
 │   │   ├── SkillSelector.jsx     # Category-grouped multi-select skill chips
 │   │   ├── AnalysisResults.jsx   # Recommended skills, Lift/Confidence badges
-│   │   ├── EvaluationDashboard.jsx  # Hit-Rate@K vs Naive Baseline benchmark
+│   │   ├── EvaluationDashboard.jsx  # Hit-Rate@K, five-fold validation, and 90% target status
 │   │   ├── LearningRoadmap.jsx   # Skill roadmap timeline renderer
 │   │   ├── TechnicalDeepDive.jsx # Algorithm explainer panel
 │   │   └── DefenseModal.jsx      # Defense Q&A and loophole resolution modal

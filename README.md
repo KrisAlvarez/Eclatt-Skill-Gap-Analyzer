@@ -43,6 +43,9 @@ Eclatt-Skill-Gap-Analyzer/
 │   │   ├── build_dataset.py         # Builds clean transactions from asaniczka 1.3M dataset (via kagglehub)
 │   │   ├── run_mining.py            # Executes ECLAT offline & saves rules.json
 │   │   ├── run_evaluation.py        # Computes Hit-Rate@K benchmark & saves metrics
+│   │   ├── run_cross_validation.py  # Five-fold validation
+│   │   ├── run_benchmark.py         # Complete reproducible benchmark workflow
+│   │   ├── run_category_benchmark.py # Category HR@3/HR@4 test and validation report
 │   │   ├── check_dataset.py         # TID-list demonstration & pair intersection test
 │   │   ├── check_dataset2.py        # Title distributions & co-occurrence counts
 │   │   └── check_duplicates.py      # Multi-table deduplication audit
@@ -81,7 +84,8 @@ Eclatt-Skill-Gap-Analyzer/
 │   │   ├── clean_transactions.json  # Sanitized role-segmented transactions (44,441 unique primary-assigned IT postings; 0 overlap)
 │   │   ├── clean_summary.json       # Seniority & track distribution counts
 │   │   ├── rules.json               # Precomputed association rules (sub-millisecond lookups)
-│   │   └── evaluation_metrics.json  # Hit-Rate@3, Hit-Rate@5, Lift over baseline
+│   │   ├── evaluation_metrics.json  # Masked-skill Hit-Rate@K and target status
+│   │   └── cross_validation_metrics.json # Five-fold category-recovery target metrics
 │   └── README.md                    # Dataset dictionary, schema & storage notes
 │
 ├── 🧪 tests/                        # AUTOMATED TEST SUITE
@@ -106,6 +110,13 @@ Eclatt-Skill-Gap-Analyzer/
 └── README.md                        # Master repository navigation hub (this file)
 ```
 
+### Quality target
+
+The project is aligned to a measurable **90% category-recovery-at-Top-4** target
+(`eclat_category_hr_at_4`) for every role and experience segment under five-fold
+cross-validation. This is not a claim of 90% exact-skill accuracy; both metrics
+remain visible so improvements cannot be hidden by changing the definition.
+
 ---
 
 ## ⚡ Quickstart Commands
@@ -121,6 +132,12 @@ python -m eclat_algorithm.scripts.run_mining
 
 # Run Masked Skill Recovery benchmark
 python -m eclat_algorithm.scripts.run_evaluation
+
+# Run mining, holdout evaluation, and five-fold validation in one command
+python -m eclat_algorithm.scripts.run_benchmark
+
+# Reuse the existing rules.json artifact
+python -m eclat_algorithm.scripts.run_benchmark --skip-mining
 ```
 
 ### 2. Run All Automated Tests

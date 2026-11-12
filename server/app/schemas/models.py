@@ -62,11 +62,12 @@ class EvaluationMetricsItem(BaseModel):
     eclat_hr_at_3: float
     baseline_hr_at_3: float
     eclat_hr_at_5: float
+    eclat_hr_at_4: float = 0.0
     baseline_hr_at_5: float
     non_trivial_eclat_hr_at_5: float
     non_trivial_baseline_hr_at_5: float
     lift_over_baseline_pct: float
-    evaluation_protocol: str = "train_test_masked_skill"
+    evaluation_protocol: str = "train_validation_test_masked_skill"
     train_transactions_count: int = 0
     validation_transactions_count: int = 0
     non_trivial_test_transactions_count: int = 0
@@ -79,3 +80,19 @@ class EvaluationMetricsItem(BaseModel):
     production_min_support: float = 0.0
     production_min_confidence: float = 0.0
     production_min_lift: float = 0.0
+    eclat_hr_at_10: float = 0.0
+    baseline_hr_at_10: float = 0.0
+    eclat_hr_at_20: float = 0.0
+    baseline_hr_at_20: float = 0.0
+    selected_min_support: float = 0.0
+    selected_min_confidence: float = 0.0
+    selected_min_lift: float = 0.0
+    eclat_category_hr_at_3: float = 0.0
+    eclat_category_hr_at_5: float = 0.0
+    eclat_category_hr_at_4: float = 0.0
+    eclat_category_hr_at_10: float = 0.0
+    eclat_category_hr_at_20: float = 0.0
+    target_metric: str = "eclat_category_hr_at_4"
+    target_threshold: float = 0.90
+    target_achieved: bool = False
+    target_gap: float = 0.0

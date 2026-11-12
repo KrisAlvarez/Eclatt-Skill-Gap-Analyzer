@@ -88,4 +88,9 @@ export const api = {
   async getMetrics() {
     return request('/api/v1/metrics');
   },
+
+  /** Retrieves five-fold cross-validation metrics */
+  async getCrossValidationMetrics() {
+    return request('/api/v1/metrics/cross-validation');
+  },
 };

@@ -7,23 +7,28 @@ from eclat_algorithm.miner import ECLATMiner
 from eclat_algorithm.taxonomy import get_category
 
 MIN_SUPPORT_ABSOLUTE_COUNT = 3
-MAX_RULES_STORED_PER_MODE = 2000
+MAX_RULES_STORED_PER_MODE = 5000
 MAX_RULES_PER_ANTECEDENT = 25
-MAX_TOP_ITEMSETS_STORED = 20
+MAX_TOP_ITEMSETS_STORED = 100
 MAX_RULE_ANTECEDENT_SIZE = 3
+
 MODE_PARAMETERS = {
     "entry": (0.05, 0.35, 1.15),
     "all": (0.05, 0.35, 1.15),
 }
 
 
-def build_mode_artifact(transactions: List[List[str]], mode: str) -> Dict[str, Any]:
+def build_mode_artifact(
+    transactions: List[List[str]],
+    mode: str,
+    parameters: Optional[tuple[float, float, float]] = None,
+) -> Dict[str, Any]:
     """Create the same capped, serialized rule data used by production."""
     n = len(transactions)
     if n < 5:
         return {"total_transactions": n, "top_1_itemsets": [], "rules": []}
 
-    min_support, min_confidence, min_lift = MODE_PARAMETERS.get(
+    min_support, min_confidence, min_lift = parameters or MODE_PARAMETERS.get(
         mode, MODE_PARAMETERS["all"]
     )
 
@@ -47,8 +52,8 @@ def build_mode_artifact(transactions: List[List[str]], mode: str) -> Dict[str, A
             bucket.append(rule)
     capped_rules = [rule for bucket in rules_by_antecedent.values() for rule in bucket]
     capped_rules.sort(
-        key=lambda rule: -(
-            rule["lift"] * rule["confidence"] * max(rule["support"], 1e-9)
+        key=lambda rule: (
+            -(rule["lift"] * rule["confidence"] * max(rule["support"], 1e-9))
         )
     )
 
@@ -56,12 +61,14 @@ def build_mode_artifact(transactions: List[List[str]], mode: str) -> Dict[str, A
     for itemset, count in miner.frequent_itemsets.items():
         if len(itemset) == 1:
             skill = next(iter(itemset))
-            top_1.append({
-                "skill": skill,
-                "category": get_category(skill),
-                "count": count,
-                "support": round(count / n, 4),
-            })
+            top_1.append(
+                {
+                    "skill": skill,
+                    "category": get_category(skill),
+                    "count": count,
+                    "support": round(count / n, 4),
+                }
+            )
     top_1.sort(key=lambda item: -item["count"])
 
     return {
@@ -71,7 +78,9 @@ def build_mode_artifact(transactions: List[List[str]], mode: str) -> Dict[str, A
     }
 
 
-def index_rules(mode_data: Dict[str, Any]) -> Dict[tuple[str, ...], List[Dict[str, Any]]]:
+def index_rules(
+    mode_data: Dict[str, Any],
+) -> Dict[tuple[str, ...], List[Dict[str, Any]]]:
     """Index stored rules by sorted antecedent for repeated recommendations."""
     indexed: Dict[tuple[str, ...], List[Dict[str, Any]]] = {}
     for rule in mode_data.get("rules", []):
@@ -98,7 +107,8 @@ def recommend_from_artifact(
     tier_note = ""
 
     exact_matches = [
-        rule for rule in rules_by_antecedent.get(tuple(sorted(user_set)), [])
+        rule
+        for rule in rules_by_antecedent.get(tuple(sorted(user_set)), [])
         if rule["consequent"][0] not in user_set
     ]
     if exact_matches:
@@ -106,50 +116,68 @@ def recommend_from_artifact(
         for rule in exact_matches[:top_k]:
             active_rules.append(rule)
             skill = rule["consequent"][0]
-            recommendations.append({
-                "skill": skill,
-                "category": rule["category"],
-                "confidence": rule["confidence"],
-                "lift": rule["lift"],
-                "support": rule["support"],
-                "evidence_jobs_count": rule.get(
-                    "joint_count", int(rule["support"] * total_jobs)
-                ),
-                "tier": "Tier 1: Exact Match",
-                "explanation": (
-                    f"In this dataset, postings mentioning {rule['antecedent']} also "
-                    f"mention {skill} {int(rule['confidence'] * 100)}% of the time "
-                    f"(Lift: {rule['lift']}x). This is an observed pattern, not a requirement."
-                ),
-            })
+            recommendations.append(
+                {
+                    "skill": skill,
+                    "category": rule["category"],
+                    "confidence": rule["confidence"],
+                    "lift": rule["lift"],
+                    "support": rule["support"],
+                    "evidence_jobs_count": rule.get(
+                        "joint_count", int(rule["support"] * total_jobs)
+                    ),
+                    "tier": "Tier 1: Exact Match",
+                    "explanation": (
+                        f"In this dataset, postings mentioning {rule['antecedent']} also "
+                        f"mention {skill} {int(rule['confidence'] * 100)}% of the time "
+                        f"(Lift: {rule['lift']}x). This is an observed pattern, not a requirement."
+                    ),
+                }
+            )
 
     if not recommendations and user_set:
         max_subset_size = min(MAX_RULE_ANTECEDENT_SIZE, len(user_set) - 1)
+        matching_rules: Dict[str, Dict[str, Any]] = {}
+        matching_subset: Dict[str, List[str]] = {}
         for subset_size in range(max_subset_size, 0, -1):
-            best_subset_rules: List[Dict[str, Any]] = []
-            best_subset_support = -1.0
             for subset in combinations(sorted(user_set), subset_size):
                 subset_rules = [
-                    rule for rule in rules_by_antecedent.get(tuple(subset), [])
+                    rule
+                    for rule in rules_by_antecedent.get(tuple(subset), [])
                     if rule["consequent"][0] not in user_set
                 ]
-                if subset_rules:
-                    subset_support = max(rule["support"] for rule in subset_rules)
-                    if subset_support > best_subset_support:
-                        best_subset_support = subset_support
-                        best_subset_rules = subset_rules
-                        matched_subset = list(subset)
-
-            if best_subset_rules:
-                sub_lattice_used = True
-                tier_note = (
-                    f"No close pattern was found for the complete skill selection. "
-                    f"These suggestions match the selected subset {matched_subset}."
-                )
-                for rule in best_subset_rules[:top_k]:
-                    active_rules.append(rule)
+                for rule in subset_rules:
                     skill = rule["consequent"][0]
-                    recommendations.append({
+                    current = matching_rules.get(skill)
+                    score = rule["confidence"] * rule["lift"] * rule["support"]
+                    current_score = (
+                        current["confidence"] * current["lift"] * current["support"]
+                        if current
+                        else -1
+                    )
+                    if score > current_score:
+                        matching_rules[skill] = rule
+                        matching_subset[skill] = list(subset)
+
+            if matching_rules and subset_size == max_subset_size:
+                matched_subset = matching_subset[next(iter(matching_rules))]
+
+        if matching_rules:
+            sub_lattice_used = True
+            tier_note = (
+                f"No close pattern was found for the complete skill selection. "
+                f"These suggestions combine matching subsets, including {matched_subset}."
+            )
+            ranked_rules = sorted(
+                matching_rules.values(),
+                key=lambda rule: -(rule["confidence"] * rule["lift"] * rule["support"]),
+            )
+            for rule in ranked_rules[:top_k]:
+                active_rules.append(rule)
+                skill = rule["consequent"][0]
+                subset = matching_subset[skill]
+                recommendations.append(
+                    {
                         "skill": skill,
                         "category": rule["category"],
                         "confidence": rule["confidence"],
@@ -161,12 +189,12 @@ def recommend_from_artifact(
                         "tier": "Tier 2: Sub-Lattice Complement",
                         "explanation": (
                             f"In this dataset, {skill} appeared with the selected skills "
-                            f"{matched_subset} in {int(rule['confidence'] * 100)}% of "
-                            f"matching postings ({rule['lift']}x Lift). This is an "
-                            "observed pattern, not a requirement."
+                            f"{subset} in {int(rule['confidence'] * 100)}% of matching "
+                            f"postings ({rule['lift']}x Lift). This is an observed pattern, "
+                            "not a requirement."
                         ),
-                    })
-                break
+                    }
+                )
 
     if not recommendations:
         tier_note = (
@@ -178,22 +206,47 @@ def recommend_from_artifact(
             if skill in user_set:
                 continue
             support = item["support"]
-            recommendations.append({
-                "skill": skill,
-                "category": item.get("category", get_category(skill)),
-                "confidence": support,
-                "lift": 1.0,
-                "support": support,
-                "evidence_jobs_count": item["count"],
-                "tier": "Tier 3: Foundational Prior",
-                "explanation": (
-                    f"Mentioned in {int(support * 100)}% of postings in this dataset "
-                    "for the selected role and experience level. This describes the "
-                    "sample; it does not establish a requirement."
-                ),
-            })
+            recommendations.append(
+                {
+                    "skill": skill,
+                    "category": item.get("category", get_category(skill)),
+                    "confidence": support,
+                    "lift": 1.0,
+                    "support": support,
+                    "evidence_jobs_count": item["count"],
+                    "tier": "Tier 3: Foundational Prior",
+                    "explanation": (
+                        f"Mentioned in {int(support * 100)}% of postings in this dataset "
+                        "for the selected role and experience level. This describes the "
+                        "sample; it does not establish a requirement."
+                    ),
+                }
+            )
             if len(recommendations) >= top_k:
                 break
+
+    existing_categories = {item["category"] for item in recommendations}
+    for item in mode_data.get("top_1_itemsets", []):
+        skill = item["skill"]
+        category = item.get("category", get_category(skill))
+        if skill in user_set or category in existing_categories:
+            continue
+        recommendations.append(
+            {
+                "skill": skill,
+                "category": category,
+                "confidence": item["support"],
+                "lift": 1.0,
+                "support": item["support"],
+                "evidence_jobs_count": item["count"],
+                "tier": "Tier 3: Category Coverage Prior",
+                "explanation": (
+                    f"Included to represent the {category} category in this role's "
+                    "observed market profile; this is not a requirement."
+                ),
+            }
+        )
+        existing_categories.add(category)
 
     deduplicated = []
     seen_skills = set()
@@ -202,9 +255,27 @@ def recommend_from_artifact(
             seen_skills.add(recommendation["skill"])
             deduplicated.append(recommendation)
 
+    if len(deduplicated) > 1:
+        category_order = []
+        by_category = {}
+        for recommendation in deduplicated:
+            category = recommendation["category"]
+            by_category.setdefault(category, []).append(recommendation)
+            if category not in category_order:
+                category_order.append(category)
+
+        diversified = [by_category[category][0] for category in category_order]
+        diversified_skills = {item["skill"] for item in diversified}
+        diversified.extend(
+            item for item in deduplicated if item["skill"] not in diversified_skills
+        )
+        deduplicated = diversified
+
     return {
         "recommendations": deduplicated[:top_k],
-        "tier_used": deduplicated[0]["tier"] if deduplicated else "Tier 3: Foundational Prior",
+        "tier_used": deduplicated[0]["tier"]
+        if deduplicated
+        else "Tier 3: Foundational Prior",
         "active_rules": active_rules[:top_k],
         "sub_lattice_fallback_used": sub_lattice_used,
         "matched_subset": matched_subset,

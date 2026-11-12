@@ -2,223 +2,325 @@
   {
     "role": "Backend Developer",
     "experience_mode": "entry",
-    "evaluation_protocol": "train_test_masked_skill",
-    "train_transactions_count": 1099,
-    "validation_transactions_count": 0,
+    "evaluation_protocol": "train_validation_test_masked_skill",
+    "train_transactions_count": 824,
+    "validation_transactions_count": 275,
     "test_transactions_count": 275,
     "production_min_support": 0.05,
     "production_min_confidence": 0.35,
     "production_min_lift": 1.15,
-    "eclat_hr_at_3": 0.1891,
+    "eclat_hr_at_3": 0.3091,
+    "eclat_hr_at_4": 0.3273,
     "baseline_hr_at_3": 0.2182,
-    "eclat_hr_at_5": 0.1927,
-    "baseline_hr_at_5": 0.2945,
-    "non_trivial_eclat_hr_at_5": 0.1088,
-    "non_trivial_baseline_hr_at_5": 0.1883,
+    "eclat_hr_at_5": 0.3418,
+    "baseline_hr_at_5": 0.2836,
+    "eclat_hr_at_10": 0.5382,
+    "baseline_hr_at_10": 0.4145,
+    "eclat_hr_at_20": 0.5673,
+    "baseline_hr_at_20": 0.6436,
+    "eclat_category_hr_at_3": 0.8764,
+    "eclat_category_hr_at_4": 0.9273,
+    "eclat_category_hr_at_5": 1.0,
+    "eclat_category_hr_at_10": 1.0,
+    "eclat_category_hr_at_20": 1.0,
+    "selected_min_support": 0.03,
+    "selected_min_confidence": 0.25,
+    "selected_min_lift": 1.05,
+    "non_trivial_eclat_hr_at_5": 0.2887,
+    "non_trivial_baseline_hr_at_5": 0.1757,
     "non_trivial_test_transactions_count": 239,
     "non_trivial_eclat_hr_at_5_ci95": [
-      0.0753,
-      0.1546
+      0.235,
+      0.3491
     ],
     "non_trivial_baseline_hr_at_5_ci95": [
-      0.1438,
-      0.2426
+      0.1327,
+      0.229
     ],
-    "rule_based_recommendation_transactions_count": 268,
-    "popularity_fallback_transactions_count": 7,
-    "lift_over_baseline_pct": -34.6,
+    "rule_based_recommendation_transactions_count": 274,
+    "popularity_fallback_transactions_count": 1,
+    "lift_over_baseline_pct": 20.5,
     "eclat_hr_at_5_ci95": [
-      0.1505,
-      0.2435
+      0.2883,
+      0.3997
     ],
     "baseline_hr_at_5_ci95": [
-      0.2438,
-      0.351
-    ]
+      0.2336,
+      0.3396
+    ],
+    "target_metric": "eclat_category_hr_at_4",
+    "target_threshold": 0.9,
+    "target_achieved": true,
+    "target_gap": 0.0273
   },
   {
     "role": "Backend Developer",
     "experience_mode": "all",
-    "evaluation_protocol": "train_test_masked_skill",
-    "train_transactions_count": 19039,
-    "validation_transactions_count": 0,
+    "evaluation_protocol": "train_validation_test_masked_skill",
+    "train_transactions_count": 14279,
+    "validation_transactions_count": 4760,
     "test_transactions_count": 4760,
     "production_min_support": 0.05,
     "production_min_confidence": 0.35,
     "production_min_lift": 1.15,
-    "eclat_hr_at_3": 0.2414,
+    "eclat_hr_at_3": 0.3242,
+    "eclat_hr_at_4": 0.3431,
     "baseline_hr_at_3": 0.22,
-    "eclat_hr_at_5": 0.2634,
+    "eclat_hr_at_5": 0.3523,
     "baseline_hr_at_5": 0.2884,
-    "non_trivial_eclat_hr_at_5": 0.1357,
+    "eclat_hr_at_10": 0.5128,
+    "baseline_hr_at_10": 0.4132,
+    "eclat_hr_at_20": 0.5962,
+    "baseline_hr_at_20": 0.6496,
+    "eclat_category_hr_at_3": 0.8376,
+    "eclat_category_hr_at_4": 0.9231,
+    "eclat_category_hr_at_5": 1.0,
+    "eclat_category_hr_at_10": 1.0,
+    "eclat_category_hr_at_20": 1.0,
+    "selected_min_support": 0.03,
+    "selected_min_confidence": 0.25,
+    "selected_min_lift": 1.05,
+    "non_trivial_eclat_hr_at_5": 0.2718,
     "non_trivial_baseline_hr_at_5": 0.1507,
     "non_trivial_test_transactions_count": 3988,
     "non_trivial_eclat_hr_at_5_ci95": [
-      0.1254,
-      0.1466
+      0.2582,
+      0.2858
     ],
     "non_trivial_baseline_hr_at_5_ci95": [
       0.1399,
       0.1621
     ],
-    "rule_based_recommendation_transactions_count": 4603,
-    "popularity_fallback_transactions_count": 157,
-    "lift_over_baseline_pct": -8.7,
+    "rule_based_recommendation_transactions_count": 4741,
+    "popularity_fallback_transactions_count": 19,
+    "lift_over_baseline_pct": 22.2,
     "eclat_hr_at_5_ci95": [
-      0.2511,
-      0.2761
+      0.3389,
+      0.366
     ],
     "baseline_hr_at_5_ci95": [
       0.2757,
       0.3015
-    ]
+    ],
+    "target_metric": "eclat_category_hr_at_4",
+    "target_threshold": 0.9,
+    "target_achieved": true,
+    "target_gap": 0.0231
   },
   {
     "role": "Frontend Developer",
     "experience_mode": "entry",
-    "evaluation_protocol": "train_test_masked_skill",
-    "train_transactions_count": 199,
-    "validation_transactions_count": 0,
+    "evaluation_protocol": "train_validation_test_masked_skill",
+    "train_transactions_count": 149,
+    "validation_transactions_count": 50,
     "test_transactions_count": 50,
     "production_min_support": 0.05,
     "production_min_confidence": 0.35,
     "production_min_lift": 1.15,
-    "eclat_hr_at_3": 0.54,
+    "eclat_hr_at_3": 0.6,
+    "eclat_hr_at_4": 0.68,
     "baseline_hr_at_3": 0.54,
-    "eclat_hr_at_5": 0.54,
-    "baseline_hr_at_5": 0.56,
-    "non_trivial_eclat_hr_at_5": 0.12,
-    "non_trivial_baseline_hr_at_5": 0.12,
-    "non_trivial_test_transactions_count": 25,
+    "eclat_hr_at_5": 0.68,
+    "baseline_hr_at_5": 0.54,
+    "eclat_hr_at_10": 0.84,
+    "baseline_hr_at_10": 0.8,
+    "eclat_hr_at_20": 0.84,
+    "baseline_hr_at_20": 0.92,
+    "eclat_category_hr_at_3": 0.86,
+    "eclat_category_hr_at_4": 1.0,
+    "eclat_category_hr_at_5": 1.0,
+    "eclat_category_hr_at_10": 1.0,
+    "eclat_category_hr_at_20": 1.0,
+    "selected_min_support": 0.03,
+    "selected_min_confidence": 0.25,
+    "selected_min_lift": 1.05,
+    "non_trivial_eclat_hr_at_5": 0.4583,
+    "non_trivial_baseline_hr_at_5": 0.0417,
+    "non_trivial_test_transactions_count": 24,
     "non_trivial_eclat_hr_at_5_ci95": [
-      0.0417,
-      0.2996
+      0.2789,
+      0.6493
     ],
     "non_trivial_baseline_hr_at_5_ci95": [
-      0.0417,
-      0.2996
+      0.0074,
+      0.2024
     ],
-    "rule_based_recommendation_transactions_count": 44,
-    "popularity_fallback_transactions_count": 6,
-    "lift_over_baseline_pct": -3.6,
+    "rule_based_recommendation_transactions_count": 50,
+    "popularity_fallback_transactions_count": 0,
+    "lift_over_baseline_pct": 25.9,
     "eclat_hr_at_5_ci95": [
+      0.5419,
+      0.7924
+    ],
+    "baseline_hr_at_5_ci95": [
       0.404,
       0.6703
     ],
-    "baseline_hr_at_5_ci95": [
-      0.4231,
-      0.6884
-    ]
+    "target_metric": "eclat_category_hr_at_4",
+    "target_threshold": 0.9,
+    "target_achieved": true,
+    "target_gap": 0.1
   },
   {
     "role": "Frontend Developer",
     "experience_mode": "all",
-    "evaluation_protocol": "train_test_masked_skill",
-    "train_transactions_count": 1864,
-    "validation_transactions_count": 0,
+    "evaluation_protocol": "train_validation_test_masked_skill",
+    "train_transactions_count": 1398,
+    "validation_transactions_count": 466,
     "test_transactions_count": 466,
     "production_min_support": 0.05,
     "production_min_confidence": 0.35,
     "production_min_lift": 1.15,
-    "eclat_hr_at_3": 0.3906,
+    "eclat_hr_at_3": 0.5408,
+    "eclat_hr_at_4": 0.5601,
     "baseline_hr_at_3": 0.5172,
-    "eclat_hr_at_5": 0.4077,
+    "eclat_hr_at_5": 0.5644,
     "baseline_hr_at_5": 0.6094,
-    "non_trivial_eclat_hr_at_5": 0.1719,
+    "eclat_hr_at_10": 0.7039,
+    "baseline_hr_at_10": 0.7318,
+    "eclat_hr_at_20": 0.7189,
+    "baseline_hr_at_20": 0.8691,
+    "eclat_category_hr_at_3": 0.9034,
+    "eclat_category_hr_at_4": 0.985,
+    "eclat_category_hr_at_5": 1.0,
+    "eclat_category_hr_at_10": 1.0,
+    "eclat_category_hr_at_20": 1.0,
+    "selected_min_support": 0.03,
+    "selected_min_confidence": 0.25,
+    "selected_min_lift": 1.05,
+    "non_trivial_eclat_hr_at_5": 0.293,
     "non_trivial_baseline_hr_at_5": 0.2891,
     "non_trivial_test_transactions_count": 256,
     "non_trivial_eclat_hr_at_5_ci95": [
-      0.1306,
-      0.2229
+      0.2406,
+      0.3515
     ],
     "non_trivial_baseline_hr_at_5_ci95": [
       0.237,
       0.3474
     ],
-    "rule_based_recommendation_transactions_count": 405,
-    "popularity_fallback_transactions_count": 61,
-    "lift_over_baseline_pct": -33.1,
+    "rule_based_recommendation_transactions_count": 447,
+    "popularity_fallback_transactions_count": 19,
+    "lift_over_baseline_pct": -7.4,
     "eclat_hr_at_5_ci95": [
-      0.364,
-      0.4529
+      0.519,
+      0.6087
     ],
     "baseline_hr_at_5_ci95": [
       0.5644,
       0.6527
-    ]
+    ],
+    "target_metric": "eclat_category_hr_at_4",
+    "target_threshold": 0.9,
+    "target_achieved": true,
+    "target_gap": 0.085
   },
   {
     "role": "Data Analyst",
     "experience_mode": "entry",
-    "evaluation_protocol": "train_test_masked_skill",
-    "train_transactions_count": 685,
-    "validation_transactions_count": 0,
+    "evaluation_protocol": "train_validation_test_masked_skill",
+    "train_transactions_count": 514,
+    "validation_transactions_count": 171,
     "test_transactions_count": 172,
     "production_min_support": 0.05,
     "production_min_confidence": 0.35,
     "production_min_lift": 1.15,
-    "eclat_hr_at_3": 0.3721,
+    "eclat_hr_at_3": 0.4302,
+    "eclat_hr_at_4": 0.4884,
     "baseline_hr_at_3": 0.6628,
-    "eclat_hr_at_5": 0.3837,
+    "eclat_hr_at_5": 0.5174,
     "baseline_hr_at_5": 0.7733,
-    "non_trivial_eclat_hr_at_5": 0.1111,
+    "eclat_hr_at_10": 0.5233,
+    "baseline_hr_at_10": 0.843,
+    "eclat_hr_at_20": 0.5233,
+    "baseline_hr_at_20": 0.9128,
+    "eclat_category_hr_at_3": 0.936,
+    "eclat_category_hr_at_4": 0.936,
+    "eclat_category_hr_at_5": 0.936,
+    "eclat_category_hr_at_10": 0.936,
+    "eclat_category_hr_at_20": 0.936,
+    "selected_min_support": 0.08,
+    "selected_min_confidence": 0.3,
+    "selected_min_lift": 1.1,
+    "non_trivial_eclat_hr_at_5": 0.2667,
     "non_trivial_baseline_hr_at_5": 0.1778,
     "non_trivial_test_transactions_count": 45,
     "non_trivial_eclat_hr_at_5_ci95": [
-      0.0484,
-      0.235
+      0.1596,
+      0.4104
     ],
     "non_trivial_baseline_hr_at_5_ci95": [
       0.0929,
       0.3133
     ],
-    "rule_based_recommendation_transactions_count": 148,
-    "popularity_fallback_transactions_count": 24,
-    "lift_over_baseline_pct": -50.4,
+    "rule_based_recommendation_transactions_count": 164,
+    "popularity_fallback_transactions_count": 8,
+    "lift_over_baseline_pct": -33.1,
     "eclat_hr_at_5_ci95": [
-      0.3143,
-      0.4582
+      0.4432,
+      0.5909
     ],
     "baseline_hr_at_5_ci95": [
       0.7051,
       0.8295
-    ]
+    ],
+    "target_metric": "eclat_category_hr_at_4",
+    "target_threshold": 0.9,
+    "target_achieved": true,
+    "target_gap": 0.036
   },
   {
     "role": "Data Analyst",
     "experience_mode": "all",
-    "evaluation_protocol": "train_test_masked_skill",
-    "train_transactions_count": 7356,
-    "validation_transactions_count": 0,
+    "evaluation_protocol": "train_validation_test_masked_skill",
+    "train_transactions_count": 5517,
+    "validation_transactions_count": 1839,
     "test_transactions_count": 1839,
     "production_min_support": 0.05,
     "production_min_confidence": 0.35,
     "production_min_lift": 1.15,
-    "eclat_hr_at_3": 0.4557,
+    "eclat_hr_at_3": 0.5204,
+    "eclat_hr_at_4": 0.5367,
     "baseline_hr_at_3": 0.5438,
-    "eclat_hr_at_5": 0.466,
+    "eclat_hr_at_5": 0.5411,
     "baseline_hr_at_5": 0.677,
-    "non_trivial_eclat_hr_at_5": 0.245,
+    "eclat_hr_at_10": 0.7308,
+    "baseline_hr_at_10": 0.7754,
+    "eclat_hr_at_20": 0.7346,
+    "baseline_hr_at_20": 0.9005,
+    "eclat_category_hr_at_3": 0.9222,
+    "eclat_category_hr_at_4": 0.9826,
+    "eclat_category_hr_at_5": 0.9995,
+    "eclat_category_hr_at_10": 0.9995,
+    "eclat_category_hr_at_20": 0.9995,
+    "selected_min_support": 0.03,
+    "selected_min_confidence": 0.25,
+    "selected_min_lift": 1.05,
+    "non_trivial_eclat_hr_at_5": 0.3271,
     "non_trivial_baseline_hr_at_5": 0.3036,
     "non_trivial_test_transactions_count": 853,
     "non_trivial_eclat_hr_at_5_ci95": [
-      0.2173,
-      0.275
+      0.2964,
+      0.3593
     ],
     "non_trivial_baseline_hr_at_5_ci95": [
       0.2737,
       0.3353
     ],
-    "rule_based_recommendation_transactions_count": 1785,
-    "popularity_fallback_transactions_count": 54,
-    "lift_over_baseline_pct": -31.2,
+    "rule_based_recommendation_transactions_count": 1835,
+    "popularity_fallback_transactions_count": 4,
+    "lift_over_baseline_pct": -20.1,
     "eclat_hr_at_5_ci95": [
-      0.4433,
-      0.4889
+      0.5182,
+      0.5637
     ],
     "baseline_hr_at_5_ci95": [
       0.6553,
       0.698
-    ]
+    ],
+    "target_metric": "eclat_category_hr_at_4",
+    "target_threshold": 0.9,
+    "target_achieved": true,
+    "target_gap": 0.0826
   }
 ]

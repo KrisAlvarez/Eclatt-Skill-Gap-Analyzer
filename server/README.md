@@ -34,7 +34,8 @@ server/
 | `GET` | `/docs` | Interactive Swagger API documentation |
 | `GET` | `/api/v1/roles` | Retrieves all 3 IT tracks, posting counts, and skills grouped by category |
 | `POST` | `/api/v1/analyze` | Executes 3-tier gap analysis given target role and user's possessed skills |
-| `GET` | `/api/v1/metrics` | Returns masked-skill Hit-Rate@K metrics vs naive baseline |
+| `GET` | `/api/v1/metrics` | Returns masked-skill Hit-Rate@K metrics, category target fields, and baseline comparisons |
+| `GET` | `/api/v1/metrics/cross-validation` | Returns five-fold category-recovery metrics and per-segment 90% target status |
 
 ---
 

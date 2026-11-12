@@ -20,6 +20,9 @@ eclat_algorithm/
 │   ├── build_dataset.py  # Filters raw postings into Entry vs All market transactions
 │   ├── run_mining.py     # Offline rule precomputation -> data/processed/rules.json
 │   ├── run_evaluation.py # Offline held-out benchmark -> data/processed/evaluation_metrics.json
+│   ├── run_cross_validation.py # Five-fold validation
+│   ├── run_benchmark.py  # Complete reproducible mining + evaluation workflow
+│   ├── run_category_benchmark.py # Category HR@3/HR@4 test and validation report
 │   ├── check_dataset.py  # Exploratory data analysis & TID-list intersection demonstration
 │   ├── check_dataset2.py # Experience level & job title transaction distribution
 │   └── check_duplicates.py # Multi-table deduplication audit
@@ -58,6 +61,27 @@ $\text{Lift} > 1.0$ indicates that the consequent appears more often with the an
 ### 4. Held-out Recommendation Evaluation
 The benchmark uses an 80/20 split of postings with at least three extracted skills. For each held-out posting, one skill is masked and the shared production recommendation path receives the remaining skills. Production support, confidence, and lift thresholds, rule caps, and the top-20 popularity fallback are used unchanged. Long-tail membership is calculated from training-posting frequency (<30%); the API reports its test count, 95% Wilson intervals, and how often rules versus the popularity fallback supplied recommendations. This measures masked-skill recovery only. It does not establish that a suggestion is useful to a learner, represents a requirement, or improves hiring outcomes.
 
+The project quality target is **at least 90% category recovery in the top 4 recommendations**, measured as
+`eclat_category_hr_at_4` across every role and experience segment in five-fold cross-validation. Exact skill
+recovery remains reported separately and is not represented as 90% accuracy. The generated metrics include
+`target_achieved` and `target_gap` so a result cannot be presented as passing before it actually meets the threshold.
+The production ranker also preserves category coverage from the role-specific market prior before filling
+remaining slots by recommendation strength; this improves breadth, not exact-skill recovery.
+
+### What the HR@4 number means
+
+For each eligible posting containing at least three canonical skills, the benchmark:
+
+1. Holds out one fifth of the postings as a test fold and trains rules on the other four fifths.
+2. Selects one skill at random from each test posting and hides it.
+3. Sends the remaining skills through the same production recommendation function.
+4. Checks the first 4 recommendations. A category hit occurs when at least one recommendation has the same taxonomy category as the hidden skill.
+5. Computes `category HR@4 = category_hits / evaluated_test_postings`.
+
+Five folds run with a fixed seed (`42`), and the reported value is their mean. Thus, 99% HR@4
+means the hidden skill's **category** was represented in the first 4 suggestions for 99% of
+evaluated cases. It does not mean the exact hidden skill was recovered 99% of the time.
+
 ---
 
 ## 🚀 How to Run ECLAT Workflows
@@ -73,6 +97,12 @@ python -m eclat_algorithm.scripts.run_mining
 
 # 3. Run held-out masked-skill benchmark
 python -m eclat_algorithm.scripts.run_evaluation
+
+# 4. Run five-fold target validation
+python -m eclat_algorithm.scripts.run_cross_validation
+
+# Report category HR@3 and HR@4 for holdout test and five-fold validation
+python -m eclat_algorithm.scripts.run_category_benchmark
 ```
 
 ---

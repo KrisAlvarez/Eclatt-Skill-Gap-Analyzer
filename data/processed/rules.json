@@ -122,6 +122,120 @@
           "category": "Programming Languages",
           "count": 172,
           "support": 0.0998
+        },
+        {
+          "skill": "Jira",
+          "category": "Architecture & Developer Tools",
+          "count": 151,
+          "support": 0.0876
+        },
+        {
+          "skill": "Automation",
+          "category": "Architecture & Developer Tools",
+          "count": 145,
+          "support": 0.0841
+        },
+        {
+          "skill": "Machine Learning",
+          "category": "Architecture & Developer Tools",
+          "count": 143,
+          "support": 0.0829
+        },
+        {
+          "skill": "GCP",
+          "category": "Cloud & DevOps",
+          "count": 143,
+          "support": 0.0829
+        },
+        {
+          "skill": "Oracle",
+          "category": "Databases & Storage",
+          "count": 139,
+          "support": 0.0806
+        },
+        {
+          "skill": "REST API",
+          "category": "Architecture & Developer Tools",
+          "count": 138,
+          "support": 0.08
+        },
+        {
+          "skill": "ASP.NET",
+          "category": "Frameworks & Libraries",
+          "count": 130,
+          "support": 0.0754
+        },
+        {
+          "skill": "R",
+          "category": "Programming Languages",
+          "count": 122,
+          "support": 0.0708
+        },
+        {
+          "skill": "Jenkins",
+          "category": "Cloud & DevOps",
+          "count": 119,
+          "support": 0.069
+        },
+        {
+          "skill": "Microsoft SQL Server",
+          "category": "Databases & Storage",
+          "count": 113,
+          "support": 0.0655
+        },
+        {
+          "skill": "HTML",
+          "category": "Programming Languages",
+          "count": 110,
+          "support": 0.0638
+        },
+        {
+          "skill": "Data Visualization",
+          "category": "Architecture & Developer Tools",
+          "count": 107,
+          "support": 0.0621
+        },
+        {
+          "skill": "React",
+          "category": "Frameworks & Libraries",
+          "count": 101,
+          "support": 0.0586
+        },
+        {
+          "skill": "MySQL",
+          "category": "Databases & Storage",
+          "count": 100,
+          "support": 0.058
+        },
+        {
+          "skill": "PostgreSQL",
+          "category": "Databases & Storage",
+          "count": 100,
+          "support": 0.058
+        },
+        {
+          "skill": "PowerShell",
+          "category": "Programming Languages",
+          "count": 99,
+          "support": 0.0574
+        },
+        {
+          "skill": "Ansible",
+          "category": "Cloud & DevOps",
+          "count": 95,
+          "support": 0.0551
+        },
+        {
+          "skill": "Spring Boot",
+          "category": "Frameworks & Libraries",
+          "count": 95,
+          "support": 0.0551
+        },
+        {
+          "skill": "Ruby",
+          "category": "Programming Languages",
+          "count": 88,
+          "support": 0.051
         }
       ],
       "rules": [
@@ -1009,6 +1123,162 @@
           "category": "Programming Languages",
           "count": 3223,
           "support": 0.1135
+        },
+        {
+          "skill": "React",
+          "category": "Frameworks & Libraries",
+          "count": 2844,
+          "support": 0.1002
+        },
+        {
+          "skill": "Jira",
+          "category": "Architecture & Developer Tools",
+          "count": 2833,
+          "support": 0.0998
+        },
+        {
+          "skill": "Microservices",
+          "category": "Architecture & Developer Tools",
+          "count": 2786,
+          "support": 0.0981
+        },
+        {
+          "skill": "Jenkins",
+          "category": "Cloud & DevOps",
+          "count": 2725,
+          "support": 0.096
+        },
+        {
+          "skill": "Automation",
+          "category": "Architecture & Developer Tools",
+          "count": 2722,
+          "support": 0.0959
+        },
+        {
+          "skill": "Node.js",
+          "category": "Frameworks & Libraries",
+          "count": 2696,
+          "support": 0.095
+        },
+        {
+          "skill": "Terraform",
+          "category": "Cloud & DevOps",
+          "count": 2621,
+          "support": 0.0923
+        },
+        {
+          "skill": "Ansible",
+          "category": "Cloud & DevOps",
+          "count": 2569,
+          "support": 0.0905
+        },
+        {
+          "skill": "Networking",
+          "category": "Architecture & Developer Tools",
+          "count": 2554,
+          "support": 0.09
+        },
+        {
+          "skill": "PowerShell",
+          "category": "Programming Languages",
+          "count": 2365,
+          "support": 0.0833
+        },
+        {
+          "skill": "REST API",
+          "category": "Architecture & Developer Tools",
+          "count": 2339,
+          "support": 0.0824
+        },
+        {
+          "skill": "TypeScript",
+          "category": "Programming Languages",
+          "count": 2304,
+          "support": 0.0812
+        },
+        {
+          "skill": "NoSQL",
+          "category": "Databases & Storage",
+          "count": 2199,
+          "support": 0.0775
+        },
+        {
+          "skill": "Kafka",
+          "category": "Architecture & Developer Tools",
+          "count": 2024,
+          "support": 0.0713
+        },
+        {
+          "skill": "Machine Learning",
+          "category": "Architecture & Developer Tools",
+          "count": 2018,
+          "support": 0.0711
+        },
+        {
+          "skill": "HTML",
+          "category": "Programming Languages",
+          "count": 1944,
+          "support": 0.0685
+        },
+        {
+          "skill": "ASP.NET",
+          "category": "Frameworks & Libraries",
+          "count": 1916,
+          "support": 0.0675
+        },
+        {
+          "skill": "Angular",
+          "category": "Frameworks & Libraries",
+          "count": 1850,
+          "support": 0.0652
+        },
+        {
+          "skill": "PostgreSQL",
+          "category": "Databases & Storage",
+          "count": 1749,
+          "support": 0.0616
+        },
+        {
+          "skill": "Oracle",
+          "category": "Databases & Storage",
+          "count": 1643,
+          "support": 0.0579
+        },
+        {
+          "skill": "Microsoft SQL Server",
+          "category": "Databases & Storage",
+          "count": 1629,
+          "support": 0.0574
+        },
+        {
+          "skill": "CSS",
+          "category": "Programming Languages",
+          "count": 1611,
+          "support": 0.0567
+        },
+        {
+          "skill": "Data Visualization",
+          "category": "Architecture & Developer Tools",
+          "count": 1610,
+          "support": 0.0567
+        },
+        {
+          "skill": "Spring Boot",
+          "category": "Frameworks & Libraries",
+          "count": 1541,
+          "support": 0.0543
+        },
+        {
+          "skill": "MySQL",
+          "category": "Databases & Storage",
+          "count": 1517,
+          "support": 0.0534
+        },
+        {
+          "skill": "Bash",
+          "category": "Programming Languages",
+          "count": 1494,
+          "support": 0.0526
         }
       ],
       "rules": [
@@ -5890,6 +6160,24 @@
           "category": "Frameworks & Libraries",
           "count": 17,
           "support": 0.0582
+        },
+        {
+          "skill": "Microsoft SQL Server",
+          "category": "Databases & Storage",
+          "count": 16,
+          "support": 0.0548
+        },
+        {
+          "skill": "React Native",
+          "category": "Frameworks & Libraries",
+          "count": 15,
+          "support": 0.0514
+        },
+        {
+          "skill": "Vue.js",
+          "category": "Frameworks & Libraries",
+          "count": 14,
+          "support": 0.0479
         }
       ],
       "rules": [
@@ -10218,6 +10506,36 @@
           "category": "Architecture & Developer Tools",
           "count": 178,
           "support": 0.0706
+        },
+        {
+          "skill": "PHP",
+          "category": "Programming Languages",
+          "count": 175,
+          "support": 0.0694
+        },
+        {
+          "skill": "Redux",
+          "category": "Frameworks & Libraries",
+          "count": 167,
+          "support": 0.0663
+        },
+        {
+          "skill": "GraphQL",
+          "category": "Architecture & Developer Tools",
+          "count": 158,
+          "support": 0.0627
+        },
+        {
+          "skill": "Python",
+          "category": "Programming Languages",
+          "count": 147,
+          "support": 0.0583
+        },
+        {
+          "skill": "AWS",
+          "category": "Cloud & DevOps",
+          "count": 144,
+          "support": 0.0571
         }
       ],
       "rules": [

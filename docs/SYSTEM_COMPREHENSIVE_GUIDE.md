@@ -51,7 +51,7 @@ During research and defense preparation, the system was subjected to rigorous ac
 * **The Vulnerability:** If 70% of backend jobs require Python and 60% require SQL, a simple SQL `SELECT skill, COUNT(*) GROUP BY skill` could suggest the most popular technologies without any data mining algorithm.
 * **The Solution:**
   1. **Lift-Driven Dependency:** ECLAT computes $\text{Lift}(A \rightarrow B) = \frac{P(B|A)}{P(B)}$. While COUNT(*) only identifies globally popular tools, Lift surfaces **context-dependent companions**. For example, if a user selects `Pandas`, ECLAT recommends `NumPy` and `Tableau` (high Lift within Data Analyst), whereas a global count would naively suggest `Git` or `Docker` regardless of relevance.
-  2. **Empirical Benchmark:** In `eclat_algorithm/evaluation.py`, we use an 80/20 held-out masked-skill evaluation that runs the same capped rule and fallback path as production and compares it with a popularity baseline.
+  2. **Empirical Benchmark:** In `eclat_algorithm/evaluation.py`, we use leakage-safe held-out and five-fold masked-skill evaluations that run the same capped rule and fallback path as production and compare with a popularity baseline.
 
 ### Loophole 4: Taxonomy Pollution & Wishlist Extraction Errors
 * **The Vulnerability:** Job descriptions contain corporate boilerplate, soft skills, benefits, and third-party tools that pollute itemsets (e.g., "communication", "health insurance", "office 365").
@@ -73,10 +73,11 @@ During research and defense preparation, the system was subjected to rigorous ac
 * **The Solution:** We use an automated **train/test masked-skill recovery** benchmark in `eclat_algorithm/evaluation.py`:
   - 80% of transactions form the training set; 20% are held out as an unseen test set.
   - For each test transaction, exactly one skill is masked at random ($S_{\text{masked}}$).
-  - The remaining skills are fed to the model to generate Top-3 and Top-5 recommendations.
+  - The remaining skills are fed to the model to generate Top-3, Top-4, and Top-5 recommendations.
   - **Hit-Rate@K** measures whether $S_{\text{masked}} \in \text{Top-K}$.
   - Long-tail cases use each skill's training-set posting frequency ($<30\%$). Results report that subgroup's test count and 95% Wilson intervals; they do not presume ECLAT beats popularity or establish learner usefulness or hiring outcomes.
   - The split is posting-level and randomized; it does not rule out duplicate-posting or employer-level overlap.
+  - The project target is 90% category recovery at Top-4 in every role and experience segment under five-fold validation. This is reported as achieved only when `eclat_category_hr_at_4` meets the threshold; it is not exact-skill accuracy.
 
 ### Loophole 7: The Cold Start & Unusual Combinations Problem
 * **The Vulnerability:** What happens if a user inputs zero skills, or an atypical combination with zero support in the dataset?
@@ -217,7 +218,6 @@ Eclatt-Skill-Gap-Analyzer/
 │   └── research/                      # In-depth loophole analyses & scraper utilities
 │
 ├── eclat_colab.ipynb                  # Fully self-contained Google Colab Notebook (34 cells)
-├── backend/                           # Backward-compatibility shim layer (redirects to server & eclat_algorithm)
 ├── render.yaml                        # Render cloud deployment blueprint
 ├── pytest.ini                         # Pytest configuration
 ├── requirements.txt                   # Root dependency manifest

@@ -65,3 +65,13 @@ def test_metrics_endpoint():
     first_metric = data[0]
     assert "eclat_hr_at_5" in first_metric
     assert "baseline_hr_at_5" in first_metric
+    assert first_metric["target_metric"] == "eclat_category_hr_at_4"
+
+
+def test_cross_validation_metrics_endpoint_exposes_target_status():
+    response = client.get("/api/v1/metrics/cross-validation")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    assert data[0]["target_threshold"] == 0.9
+    assert "target_achieved" in data[0]
