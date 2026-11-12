@@ -37,6 +37,7 @@ class GapAnalysisResponse(BaseModel):
     total_market_jobs: int
     user_skills: List[str]
     recommendations: List[GapRecommendation]
+    popular_skills: List[GapRecommendation] = Field(default_factory=list)
     active_rules: List[AssociationRule]
     sub_lattice_fallback_used: bool
     matched_subset: Optional[List[str]] = None
