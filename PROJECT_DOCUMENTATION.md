@@ -1,3 +1,5 @@
+> Historical document: dataset fields, seniority percentages, and validation claims below are superseded by the [current data evidence guide](data/README.md) and [retained-data audit](data/processed/data_audit.json). Human classification review is pending.
+
 # SkillGap: Project Execution & Architecture Documentation
 ## Comprehensive Record from Project Inception to Current Status
 

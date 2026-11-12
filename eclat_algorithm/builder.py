@@ -9,13 +9,13 @@ lowers skill threshold to >= 2 canonical skills, and re-mines ECLAT models.
 """
 
 import json
+import hashlib
 import os
 import re
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 import pandas as pd
-import kagglehub
 
 from eclat_algorithm.taxonomy import SKILL_TAXONOMY, ALIAS_MAP
 
@@ -98,6 +98,8 @@ def clean_skill_token(token: str) -> Optional[str]:
 
 def get_dataset_directory() -> Path:
     """Download or retrieve cached asaniczka dataset directory using kagglehub."""
+    import kagglehub
+
     dataset_dir = Path(kagglehub.dataset_download(DATASET_NAME))
     return dataset_dir
 
@@ -229,6 +231,8 @@ def build_clean_dataset(limit_rows: Optional[int] = None) -> Dict[str, any]:
             job_counter += 1
             item = {
                 "job_id": job_counter,
+                "source_posting_id": hashlib.sha256(str(link).encode("utf-8")).hexdigest(),
+                "source_job_level": meta["exp_level"],
                 "title": meta["title"],
                 "skills": skills_list,
                 "is_entry": meta["is_entry"],
@@ -259,6 +263,35 @@ def build_clean_dataset(limit_rows: Optional[int] = None) -> Dict[str, any]:
     summary_file = PROCESSED_DIR / "clean_summary.json"
     with open(summary_file, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
+
+    # Capture the actual resolved download and input hashes; do not infer them
+    # later from the dataset title or the processed row count.
+    def fingerprint(path):
+        digest = hashlib.sha256()
+        with path.open("rb") as file:
+            for block in iter(lambda: file.read(1024 * 1024), b""):
+                digest.update(block)
+        return {"name": path.name, "sha256": digest.hexdigest(), "bytes": path.stat().st_size}
+
+    provenance = {
+        "dataset": DATASET_NAME,
+        "resolved_directory": str(dataset_dir),
+        "source_files": [fingerprint(postings_path), fingerprint(skills_path)],
+        "pipeline_files": [fingerprint(Path(__file__)), fingerprint(Path(__file__).with_name("taxonomy.py"))],
+        "postings_rows_scanned": total_postings,
+        "candidate_posting_links": len(matched_jobs),
+        "skills_rows_scanned": skills_scanned,
+        "retained_records": retained_transactions,
+        "limit_rows": limit_rows,
+        "output": fingerprint(output_json),
+        "source_identity": "SHA-256 of exact source job_link; synthetic job_id retained for compatibility",
+        "deduplication": "Posting metadata keyed by job_link; repeated skill rows are not deduplicated",
+        "classification": "One primary role or excluded tie; entry flag uses job_level/title with senior title veto",
+        "geographic_coverage": "Not established; locations not retained",
+        "collection_dates": "Not established from processed records",
+    }
+    with (PROCESSED_DIR / "dataset_provenance.json").open("w", encoding="utf-8") as file:
+        json.dump(provenance, file, indent=2)
         
     print(f"\nArtifacts saved to:\n  - {output_json}\n  - {summary_file}")
     return summary

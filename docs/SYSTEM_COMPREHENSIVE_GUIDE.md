@@ -34,12 +34,12 @@ flowchart LR
 During research and defense preparation, the system was subjected to rigorous academic scrutiny. Seven critical vulnerabilities were identified, formulated, and engineered:
 
 ### Loophole 1: Seniority Bias in the Dataset vs. Target Population
-* **The Vulnerability:** Public job scrapers (such as LinkedIn 2024 datasets) skew heavily toward senior positions (~89% mid-senior, only ~11% junior/associate). If trained indiscriminately, the algorithm would recommend complex senior tooling (Kubernetes orchestration, distributed architecture, legacy migration) to fresh graduates.
+* **The Limitation:** Available experience labels may be incomplete or inaccurate. The retained entry subset does not establish which technologies are suitable for beginners, and the source-wide seniority distribution is not established here.
 * **The Solution:** We implemented **multi-signal seniority partitioning** in `eclat_algorithm/builder.py` and `build_asaniczka.py`:
   1. Metadata check: `job_level` in `["Entry level", "Associate", "Internship"]`.
   2. Title regex: Matching signals like `junior`, `jr`, `intern`, `graduate`, `entry-level`.
-  3. Description regex: Detecting experience thresholds like `0-2 years`, `no experience required`.
-* **Result:** Transactions are split into two parallel mining indexes: `entry` (fresh graduates) and `all` (general market benchmark).
+  3. Senior title keywords override entry metadata/title signals. Descriptions and years of experience are not read.
+* **Result:** `entry` contains records flagged by the heuristic; it is a subset of `all`. A negative entry flag does not prove seniority. Human label validation is pending.
 
 ### Loophole 2: Algorithmic Overclaim (Co-occurrence vs. Causality / Pedagogy)
 * **The Vulnerability:** ECLAT only mines undirected frequent itemsets and directional conditional probabilities ($P(B|A)$). It cannot mathematically determine pedagogical prerequisites (e.g., whether HTML must be learned before React) or guarantee employment.
@@ -58,7 +58,7 @@ During research and defense preparation, the system was subjected to rigorous ac
 * **The Solution:**
   1. **Curated 100+ Skill Taxonomy:** In `eclat_algorithm/taxonomy.py`, we maintained a closed whitelist across 5 functional categories (`Programming Languages`, `Frameworks & Libraries`, `Databases & Storage`, `Cloud & DevOps`, `Architecture & Developer Tools`).
   2. **Boundary-Aware Alias Normalization:** Regex patterns with word-boundaries map aliases (e.g., `postgres` &rarr; `PostgreSQL`, `k8s` &rarr; `Kubernetes`, `react.js` &rarr; `React`).
-  3. **Density Threshold:** Postings with fewer than 3 valid technical skills are eliminated, preventing single-item noise from corrupting associations.
+  3. **Density Threshold:** Ingestion retains at least two canonical skills; masked-skill evaluation uses only records with at least three.
 
 ### Loophole 5: Role Definition Scope Creep
 * **The Vulnerability:** Modeling too many career paths (Full Stack, QA, Mobile, DevOps, Cloud Architect, Data Engineer) creates extreme data sparsity and classification overlap.
@@ -125,7 +125,7 @@ During research and defense preparation, the system was subjected to rigorous ac
 
 ### 4.1 From Kaggle 123K to asaniczka 1.3M
 * **Initial Dataset:** Kaggle 2024 LinkedIn Job Postings (123,849 raw postings in `data/raw/postings.csv`, 516 MB).
-* **Current Production Dataset:** [asaniczka 1.3M+ LinkedIn Jobs and Skills 2024](https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024), version 2 (`linkedin_job_postings.csv` + `job_skills.csv`).
+* **Current Production Dataset:** [asaniczka 1.3M+ LinkedIn Jobs and Skills 2024](https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024) (`linkedin_job_postings.csv` + `job_skills.csv`). The original raw files and build manifest are unavailable locally, so the current artifact's source version and source totals cannot be independently verified.
 
 ### 4.2 Production Clean Transaction Distribution (`clean_summary.json`)
 Streamed and filtered through `eclat_algorithm/scripts/build_asaniczka.py`:
@@ -135,8 +135,8 @@ Streamed and filtered through `eclat_algorithm/scripts/build_asaniczka.py`:
 | **Backend Developer** | 28,388 | 1,724 |
 | **Frontend Developer** | 2,520 | 292 |
 | **Data Analyst** | 13,533 | 1,438 |
-| **Total Verified Transactions** | **44,441** | **3,454** |
-*(Unique clean IT transactions: **44,441**, 0 cross-track overlap).*
+| **Total Retained Records** | **44,441** | **3,454** |
+*(44,441 retained heuristic assignments, including 3,454 entry-flagged records. Synthetic IDs do not overlap across tracks because each record receives one primary assignment; this does not validate labels or source deduplication. See [the data audit](../data/README.md).)*
 
 ---
 
@@ -201,7 +201,7 @@ Eclatt-Skill-Gap-Analyzer/
 │   ├── raw/                           # Automated via kagglehub ('asaniczka/1-3m-linkedin-jobs-and-skills-2024')
 │   │   └── README.md                  # Ingestion instructions & dataset details
 │   ├── processed/                     # Sanitized artifacts:
-│   │   ├── clean_transactions.json    # 44,441 vetted IT transactions (0 cross-track overlap)
+│   │   ├── clean_transactions.json    # 44,441 heuristic role-assigned records; source duplicates unverified
 │   │   ├── clean_summary.json         # Segment distribution breakdown
 │   │   ├── rules.json                 # Precomputed association rules (~1.8 MB)
 │   │   └── evaluation_metrics.json    # Hit-Rate@3, Hit-Rate@5, Lift metrics

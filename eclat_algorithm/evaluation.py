@@ -4,7 +4,7 @@ import json
 import random
 from math import sqrt
 from pathlib import Path
-from typing import Any, Dict, List, Sequence, Tuple
+from typing import Any, Dict, List, Sequence, Tuple, TypeVar
 
 from eclat_algorithm.recommendation import (
     MODE_PARAMETERS,
@@ -19,9 +19,10 @@ TRANSACTIONS_FILE = PROCESSED_DIR / "clean_transactions.json"
 METRICS_FILE = PROCESSED_DIR / "evaluation_metrics.json"
 MAX_TEST_TRANSACTIONS = 10000
 NON_TRIVIAL_FREQUENCY_LIMIT = 0.30
+Record = TypeVar("Record")
 
 
-def _split(records: Sequence[List[str]], seed: int) -> Tuple[List[List[str]], List[List[str]]]:
+def _split(records: Sequence[Record], seed: int) -> Tuple[List[Record], List[Record]]:
     shuffled = list(records)
     random.Random(seed).shuffle(shuffled)
     train_end = int(len(shuffled) * 0.80)

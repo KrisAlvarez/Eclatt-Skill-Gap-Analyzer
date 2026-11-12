@@ -28,7 +28,7 @@ export default function HowToUseTab({ onGoToExplorer }) {
   const faqs = [
     {
       q: 'How does this work?',
-      a: 'SkillGap looks for skills that appear together in job postings. The 2024 source dataset contains 1,348,454 postings; after filtering for IT roles and canonical technical skills, 44,441 postings are included across the three career tracks. For example, it can show whether postings with Python and SQL also mention Docker or REST APIs. A mention does not prove that a skill is required.',
+      a: 'SkillGap looks for skills that appear together in historical job postings. The 2024 source dataset reports 1,348,454 postings; SkillGap retains 44,441 records assigned to three tracks, including an entry-flagged subset of 3,454. Track and experience labels are assigned by rules and await human validation. For example, it can show whether postings with Python and SQL also mention Docker. A mention does not prove that a skill is required.',
     },
     {
       q: 'What do the benchmark results tell me?',
@@ -36,7 +36,7 @@ export default function HowToUseTab({ onGoToExplorer }) {
     },
     {
       q: 'What is the entry-level filter?',
-      a: 'Entry level uses the postings classified as early-career in this dataset. The label is based on available posting information and may not describe every role perfectly. You can switch to all experience levels under Job experience in the skills step.',
+      a: 'Entry level uses a subset flagged from job-level labels or junior title keywords, with senior title keywords excluded. Job descriptions and years of experience are not checked. A record outside this subset is not necessarily senior. You can switch to all experience levels under Job experience in the skills step.',
     },
   ];
 

@@ -11,8 +11,8 @@ const DEFENSE_QA = [
     a: 'No. A simple COUNT(*) gives marginal probability P(B), recommending the exact same skills to every student. ECLAT computes conditional association rules P(B | A) and Lift. For example, knowing Python and SQL increases the conditional requirement of Docker with a Lift of 1.86x, whereas knowing Java pivots recommendations toward Spring Boot. ECLAT personalizes recommendations based on conditional itemsets.',
   },
   {
-    q: 'How did you handle the seniority bias where 89% of LinkedIn postings are senior?',
-    a: 'We parsed the formatted_experience_level metadata from postings.csv and isolated Entry-level and Associate postings from Mid-Senior postings. This ensures fresh graduates and students are not overwhelmed with high-level architecture expectations that belong to senior engineering roles.',
+    q: 'How are entry-level postings identified?',
+    a: 'The builder uses job_level or junior title keywords, with senior title keywords taking precedence. It does not check descriptions or years of experience. The entry view is a heuristic subset of all retained records, and human label review is pending.',
   },
   {
     q: 'How did you evaluate the machine learning model?',

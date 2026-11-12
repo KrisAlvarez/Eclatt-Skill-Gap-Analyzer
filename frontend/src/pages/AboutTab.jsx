@@ -27,10 +27,10 @@ export default function AboutTab() {
         <div className="p-5 rounded-2xl bg-white border border-[#e1e6dd] space-y-2">
           <h3 className="font-bold text-sm text-[#1b2b20]">Where is the data from?</h3>
           <p className="text-xs text-[#526456] leading-relaxed">
-            SkillGap uses asaniczka's LinkedIn Jobs &amp; Skills (2024) dataset, which contains 1,348,454 source postings. After filtering for IT roles and canonical technical skills, the analysis covers 44,441 postings across Backend Developer, Frontend Developer, and Data Analyst. Of those retained postings, 3,454 are classified as entry-level.
+            SkillGap uses asaniczka's LinkedIn Jobs &amp; Skills (2024) dataset, reported to contain 1,348,454 source postings. After filtering titles and skill mentions, SkillGap retains 44,441 records assigned to Backend Developer, Frontend Developer, or Data Analyst. Of these, 3,454 are flagged as entry-level and are also included in the total. These labels come from rules applied to the data; human validation is still pending.
           </p>
           <p className="text-xs text-[#526456] leading-relaxed">
-            Geographic coverage is not established: SkillGap's processed records do not retain posting locations.
+            This is a historical dataset, not a live view of the job market. Exact collection dates and geographic coverage are not established from SkillGap's retained records, which do not include posting dates or locations.
           </p>
         </div>
 
