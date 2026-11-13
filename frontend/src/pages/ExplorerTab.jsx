@@ -39,7 +39,6 @@ export default function ExplorerTab({ roles, skillsByCategory, selectedRole, onS
   const skills = [...new Set(Object.values(skillsByCategory).flat())];
   const matches = skills.filter(s => s.toLowerCase().includes(search.trim().toLowerCase()));
   const recommendations = analysisResults?.recommendations || [];
-  const popularSkills = analysisResults?.popular_skills || [];
   const usedPopularityFallback = recommendations.some(rec => rec.tier?.startsWith('Tier 3'));
   const resultNote = usedPopularityFallback
     ? analysisResults.user_skills.length
@@ -98,11 +97,6 @@ export default function ExplorerTab({ roles, skillsByCategory, selectedRole, onS
       {(showAll ? recommendations : recommendations.slice(0, 3)).map(renderRecommendation)}
       {recommendations.length > 3 && <button className="text-button more-suggestions" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show fewer suggestions' : `See ${recommendations.length - 3} more suggestions`}</button>}
       {resultNote && <details className="muted result-note"><summary>About these results</summary><p>{resultNote}</p></details>}
-      {popularSkills.length > 0 && <section aria-labelledby="popular-skills-heading" className="mt-8">
-        <h2 id="popular-skills-heading" className="font-editorial text-2xl">More skills often mentioned in these postings</h2>
-        <p className="muted">Popular skills in {analysisResults.role} postings ({analysisResults.experience_mode === 'entry' ? 'entry level' : 'all experience levels'}). These are based on how often they appear, rather than a match to your selected skills. Skills you selected or already see above are excluded.</p>
-        {popularSkills.map(renderRecommendation)}
-      </section>}
       <div className="flow-actions"><span role="status">{roadmapSkills.length ? `${roadmapSkills.length} skill${roadmapSkills.length === 1 ? '' : 's'} in your roadmap` : 'Save a skill to start your learning roadmap.'}</span>{roadmapSkills.length > 0 && <button className="primary-button" onClick={onGoToRoadmaps}>View my roadmap <ArrowRight size={17} /></button>}</div>
     </section>}
   </div>;

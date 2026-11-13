@@ -72,3 +72,11 @@ No dedicated frontend lint/typecheck script is configured. Production deployment
 ```
 
 Verification reproduces saved counts and scores without overwriting files. Running without `--verify` refuses to replace an existing report. The frozen protocol lists model settings, exact membership, masks and protected production hashes. Historical experiment summaries describe retired variants and should not be presented as independent tests. Source dataset rebuilds additionally require the optional `kagglehub` downloader; the web/API runtime does not.
+
+Generate the current evaluation matrix from the saved validation and held-out reports:
+
+```powershell
+.\.venv\Scripts\python.exe eclat_algorithm/scripts/generate_evaluation_matrix.py
+```
+
+Use `--format json` for machine-readable output.
