@@ -36,7 +36,7 @@ export default function App() {
     setIsAnalyzing(true);
     setAnalysisError(null);
     try {
-      const res = await api.analyze({ role: selectedRole, possessed_skills: selectedSkills, experience_mode: experienceMode, top_k: 6 });
+      const res = await api.analyze({ role: selectedRole, possessed_skills: selectedSkills, experience_mode: experienceMode, top_k: 10 });
       if (id !== requestId.current) return false;
       setAnalysisResults(res);
       return true;
